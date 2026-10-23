@@ -72,7 +72,6 @@ button:disabled{cursor:default}
 .bar.atb.ready{box-shadow:0 0 0 1px #f2c25b,0 0 10px #f2c25b}
 .bar.atb.ready>div{background:linear-gradient(90deg,#f2c25b,#fff2c4)}
 .boss-atb{width:100%;height:6px;margin-top:3px}
-.atb-lab{display:flex;justify-content:space-between;font-size:9px;font-weight:900;color:#a8914a;margin-top:2px}
 .speed{flex-shrink:0;border:1px solid #314052;background:#0f1722;border-radius:9px;padding:5px 9px;font-weight:900;font-size:12px;color:#cad7e7}
 
 .arena{position:absolute;z-index:2;top:52px;bottom:34px;left:3%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -105,6 +104,9 @@ button:disabled{cursor:default}
 .boss-stars span:nth-child(2){animation-delay:-.4s}.boss-stars span:nth-child(3){animation-delay:-.8s}
 .boss-reticle{position:absolute;inset:18%;border:2px dashed var(--gold);border-radius:50%;opacity:0;animation:spin 6s linear infinite;pointer-events:none}
 .boss-wrap.marked .boss-reticle{opacity:.75}
+.boss-wrap.focus .boss-avatar{outline:3px solid var(--gold);outline-offset:5px}
+.mob.focus{border-color:var(--gold);box-shadow:0 0 12px #f2c25b77}
+.boss-avatar,.mob{cursor:pointer}
 @keyframes breathe{50%{transform:scale(1.025) translateY(-2px)}}
 @keyframes blink{0%,92%,100%{transform:translateX(-50%) scaleY(1)}95%{transform:translateX(-50%) scaleY(.1)}}
 @keyframes auraWave{50%{width:46%;opacity:.7}}
@@ -164,6 +166,9 @@ button:disabled{cursor:default}
 @keyframes act{35%{transform:translate(-10px,-4px) scale(1.07);filter:brightness(1.35)}}
 .unit.hit{animation:uhit .38s ease}
 @keyframes uhit{0%{filter:brightness(2) sepia(1) hue-rotate(-40deg) saturate(4)}25%{transform:translateX(5px)}50%{transform:translateX(-5px)}75%{transform:translateX(3px)}}
+.unit.aimed{border-color:#ff4f6a;box-shadow:0 0 0 1px #ff4f6a88,0 0 16px #ff4f6a55}
+.unit.aimed:before{content:"🎯";position:absolute;left:-6px;top:-8px;font-size:13px;z-index:1;filter:drop-shadow(0 1px 2px #000)}
+.rowlab{grid-row:1;text-align:center;font-size:9px;font-weight:900;letter-spacing:1px;color:var(--muted-2);margin-bottom:-6px}
 .unit.dead{filter:grayscale(1);opacity:.32}
 .unit.dead .unit-badge{animation:none;transform:rotate(-12deg)}
 
@@ -172,8 +177,6 @@ button:disabled{cursor:default}
 .mut{flex-shrink:0;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1px solid #4a3a6a;background:#1a1430e6;color:#d9ceff;white-space:nowrap}
 .round{font-size:10.5px;font-weight:900;color:#9fb0c2;white-space:nowrap}
 .round b{color:var(--ink)}
-.round .best{letter-spacing:1px;margin-left:4px;color:#3a4756}
-.round .best .on{color:var(--gold)}
 
 /* fx */
 .fx{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;overflow:clip}
@@ -372,15 +375,17 @@ button:disabled{cursor:default}
 .learn{font-size:11.5px;line-height:1.55;color:#c3cfdd;background:#18142c;border:1px solid #3a2f6a;border-radius:10px;padding:8px 10px}
 .learn b{color:#d9ceff}
 .modal.intro-modal{z-index:30}
+/* job picker, skill list */
 .intro{display:flex;gap:12px;align-items:center;margin:10px 0 8px}
-/* tutorial coach, job picker, skill list */
-.coach{position:absolute;left:8px;right:8px;bottom:34px;z-index:9;display:flex;align-items:flex-start;gap:8px;background:#1d1a0ef2;border:1px solid #c79a2c;color:#f5e6b8;font-size:11.5px;font-weight:700;line-height:1.5;padding:8px 10px;border-radius:12px;box-shadow:0 8px 22px #000b}
-.coach.show{animation:coachIn .3s ease}
+/* tutorial spotlight: dims everything except one element; tap anywhere to continue */
+.spot{position:absolute;inset:0;z-index:15;cursor:pointer;overflow:hidden;overflow:clip}
+.spot.full{background:#02040ad0}
+.spot-hole{position:absolute;border-radius:14px;pointer-events:none;box-shadow:0 0 0 3000px #02040ad0,0 0 0 3px var(--gold),0 0 26px 6px #f2c25b88;animation:holePulse 1.4s ease-in-out infinite}
+@keyframes holePulse{50%{box-shadow:0 0 0 3000px #02040ad0,0 0 0 3px #fff2c4,0 0 36px 10px #f2c25baa}}
+.spot-msg{position:absolute;left:20px;right:20px;text-align:center;font-size:19px;font-weight:900;line-height:1.55;color:#fff;text-shadow:0 2px 10px #000;word-break:keep-all;pointer-events:none}
+.spot-msg.show{animation:coachIn .3s ease}
 @keyframes coachIn{from{opacity:0;transform:translateY(8px)}}
-.coach.top{top:40px;bottom:auto}
-.coach span{flex:1}
-.coach button{flex-shrink:0;color:#c9a95a;font-size:13px;padding:0 2px}
-.coach .ok{align-self:center;background:#c79a2c;color:#1d1a0e;font-size:11px;font-weight:900;padding:5px 11px;border-radius:999px}
+.spot-tap{position:absolute;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom,0px));text-align:center;font-size:12px;font-weight:700;color:#c9a95a;pointer-events:none;animation:warnPulse 1.6s ease-in-out infinite}
 .boss-avatar.tgtable{outline:3px dashed #f2c25b;outline-offset:4px;cursor:pointer}
 .mob.tgtable{cursor:pointer;outline:2px dashed #f2c25b;outline-offset:2px;animation:tgtPulse 1s ease-in-out infinite}
 @keyframes tgtPulse{50%{outline-color:#f2c25b44}}
@@ -390,6 +395,7 @@ button:disabled{cursor:default}
 .jobpick span{display:flex;flex-direction:column;align-items:center;line-height:1.2}
 .jobpick small{font-size:9px;color:var(--muted)}
 .expbar{height:6px;border-radius:99px;background:#0d141d;border:1px solid #1d2a38;overflow:hidden}
+.desc{font-size:11px;color:var(--muted)}
 .expbar div{height:100%;background:linear-gradient(90deg,#c79a2c,#f2c25b)}
 .sklist{display:flex;flex-direction:column;gap:5px}
 .skrow{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:#121b26;border:1px solid #1d2a38}
@@ -421,7 +427,8 @@ button:disabled{cursor:default}
 
 .nav{flex-shrink:0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:5px max(5px,env(safe-area-inset-right,0px)) calc(5px + env(safe-area-inset-bottom,0px)) max(5px,env(safe-area-inset-left,0px));background:#090e14}
 .nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:46px;border:1px solid transparent;border-radius:10px;background:transparent;color:#728292;font-size:10px;font-weight:900}
-.nav button .ni{font-size:18px;line-height:1.1}
+.nav button .ni{position:relative;font-size:18px;line-height:1.1}
+.nav button.badge .ni:after{content:"";position:absolute;right:-5px;top:0;width:8px;height:8px;border-radius:50%;background:#ff4f6a;box-shadow:0 0 6px #ff4f6a}
 .nav button[aria-current="page"]{color:#e3e9ff;border-color:#c8d2e6;background:#111a26}
 
 /* ---------- sub screens ---------- */
@@ -436,6 +443,10 @@ button:disabled{cursor:default}
 .slot{min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border-radius:12px;background:#101823;border:1px dashed #2c3a4c;font-size:10px;font-weight:900;color:var(--muted)}
 .slot b{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#1a2333;border:1px solid #344150;color:var(--ink);font-size:15px}
 .slot.filled{border-style:solid}
+.slotpick{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;border:0;background:none;padding:0;font-size:10px;font-weight:900;color:var(--ink)}
+.slotpick span{color:var(--muted-2)}
+.rowbtn{margin-top:3px;border:1px solid #5a2a30;border-radius:7px;background:#1f1014;font-size:10px;font-weight:900;padding:2px 9px;color:#ffb3a8}
+.rowbtn.B{border-color:#2a4a66;background:#0f1a26;color:#9fd0ff}
 .roster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .rh{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 3px;border-radius:12px;background:#101823;border:1px solid #1f2b39;font-size:9.5px;font-weight:900;color:#c9d4e0}
 .rh b{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#1a2333;border:1px solid #344150;font-size:15px}
@@ -500,22 +511,31 @@ button:disabled{cursor:default}
 .modal h3.win{color:var(--gold)}
 .modal h3.lose{color:var(--danger)}
 .modal h3.plain{font-size:20px;text-align:left}
-.stars{display:flex;justify-content:center;gap:10px;margin:8px 0 2px}
-.stars span{font-size:34px;color:#253242;transform:scale(.6);transition:transform .35s cubic-bezier(.2,1.8,.4,1),color .2s}
-.stars span.on{color:var(--gold);transform:scale(1);text-shadow:0 0 18px #f2c25b99}
-.goals{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;font-size:10.5px;color:var(--muted-2);margin-bottom:10px}
-.goals .ok{color:#d8c37f}
-.loot{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px}
-.loot span{font-size:12px;font-weight:900;padding:4px 10px;border-radius:999px;background:#1d1a0d;border:1px solid #6a5a26;color:#ffe7a8}
-.loot span.item2{background:#0f1e2d;border-color:#3e6c96;color:#bfe0ff}
-.loot span.item3{background:#1d1640;border-color:#7d63d0;color:#e1d6ff}
+/* rewards: currency, EXP per character, item drops */
+.rw-cur{display:flex;justify-content:center;gap:10px;margin:12px 0 10px}
+.rw-cur span{font-family:var(--font-display);font-size:24px;line-height:1.2;padding:6px 16px;border-radius:14px;background:#1d1a0d;border:1px solid #6a5a26;color:#ffe7a8}
+.rw-chars{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.rw-char{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 10px;border-radius:12px;background:#121b26;border:1px solid #1d2a38}
+.rw-char .thumb{height:38px}
+.rw-char b{font-size:14px}
+.rw-char small{font-size:11px;color:var(--muted);font-weight:700}
+.rw-char .expbar{height:8px;margin-top:5px}
+.rw-char .expbar div{transition:width 1s ease .35s}
+.rw-char .gain{font-family:var(--font-display);font-size:22px;color:#8ff5d2;white-space:nowrap;text-align:right;line-height:1}
+.rw-char .gain small{display:block;font-family:var(--font-body);font-size:9px;color:#5fae92}
+.rw-char.up{border-color:#c79a2c;background:#221c0c}
+.lvup{display:inline-block;font-size:10px;font-weight:900;color:#1d1a0e;background:var(--gold);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px;animation:pillPulse .8s ease-in-out infinite}
+.lvup.job{background:#b9a8ff}
+.rw-items{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.rw-items .item{padding:9px 11px}
+.rw-items .item .ii{width:36px;height:36px;font-size:19px}
+.rw-items .item .it b{font-size:14px}
+.rw-items .item .it small{font-size:11.5px}
+.rw-items .new{font-size:10px;font-weight:900;color:#1d1a0e;background:#8ff5d2;border-radius:6px;padding:1px 6px}
 .rep{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
 .rep div{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:6px 10px;background:#121b26;border:1px solid #1d2a38;border-radius:8px;color:var(--muted)}
 .rep b{color:var(--ink);font-variant-numeric:tabular-nums}
 .rep b.ok{color:#7fe0b8}.rep b.bad{color:#ff7b8a}
-.share{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#121b26;margin:6px 0 4px}
-.share-leg{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:10.5px;color:var(--muted);margin-bottom:8px}
-.share-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
 .hint{font-size:12px;line-height:1.6;color:#c3cfdd;background:#18142c;border:1px solid #3a2f6a;border-radius:10px;padding:9px 11px}
 .hint b{color:#d9ceff}
 .near{font-size:11.5px;color:#ffb3c0;text-align:center;margin-top:6px;font-weight:700}
@@ -582,7 +602,6 @@ button:disabled{cursor:default}
         <div class="boss-label"><span id="bossName"></span> <span id="bossHPText" class="mono"></span></div>
         <div class="hp-track"><div class="hp-lag" id="bossHPLag"></div><div class="hp-fill" id="bossHPBar"></div></div>
         <div class="bar atb boss-atb" id="bossAtb" title="행동 게이지"><div></div></div>
-        <div class="atb-lab"><span>행동 게이지</span><span id="bossSpd"></span></div>
         <div class="debuffs" id="debuffs"></div>
         <div class="boss-body" id="bossBody">
           <div class="boss-ring"></div>
@@ -607,7 +626,6 @@ button:disabled{cursor:default}
       <div class="fx" id="fx"></div>
       <div class="banner" id="banner" hidden></div>
       <div class="toast" id="toast" hidden></div>
-      <div class="coach" id="coach" role="status" hidden></div>
       <div class="cutin" id="cutin" hidden>
         <div class="ci-flash"></div>
         <div class="ci-band">
@@ -654,9 +672,9 @@ button:disabled{cursor:default}
   <div class="screen pad" id="screen-characters" hidden>
     <div class="eyebrow">PARTY / UNITS</div>
     <h2>편성과 성장</h2>
-    <p class="sub">모두 방랑자로 시작해요. 싸우면 경험치가 쌓여 레벨이 오르고, 레벨 5에 직업을 골라 전직해요. 강화석(💎)으로 스킬을 배우고 3개까지 장착할 수 있어요.</p>
+    <p class="sub">Lv5에 전직 · 💎로 스킬을 배워 3개까지 장착</p>
     <div class="card">
-      <div class="section-title"><span>출전 파티 (행동은 속도 순)</span><span id="partyCount"></span></div>
+      <div class="section-title"><span>출전 파티 · 전열 / 후열</span><span id="partyCount"></span></div>
       <div class="slots" id="partySlots"></div>
     </div>
     <div class="card">
@@ -688,7 +706,7 @@ button:disabled{cursor:default}
   <div class="screen pad" id="screen-inventory" hidden>
     <div class="eyebrow">INVENTORY</div>
     <h2>가방</h2>
-    <p class="sub">보스를 잡으면 골드, 강화석, 장비가 나와요. 장비는 캐릭터 화면에서 영웅에게 끼울 수 있어요.</p>
+    <p class="sub">장비는 캐릭터 탭에서 끼워요.</p>
     <div class="card">
       <div class="section-title"><span>재화</span></div>
       <div class="statgrid" style="grid-template-columns:repeat(2,1fr);margin:0"><div>골드<b id="iGold">0</b></div><div>강화석<b id="iStone">0</b></div></div>
@@ -703,24 +721,26 @@ button:disabled{cursor:default}
   <div class="screen pad" id="screen-boss" hidden>
     <div class="eyebrow">MONSTER GUIDE</div>
     <h2>몬스터 도감</h2>
-    <p class="sub">만난 적의 행동 순서예요. 적은 정해진 순서대로 움직이고, 다음 행동은 전투 중 보스 아래에 항상 예고돼요.</p>
+    <p class="sub">적은 정해진 순서대로 움직이고, 다음 행동은 보스 아래에 예고돼요.</p>
     <div id="bestiary"></div>
     <div class="card">
       <div class="section-title"><span>행동 종류</span></div>
       <table class="tbl"><tbody>
-        <tr><td>🐙 일반 공격</td><td>단일 피해. 가드·도발 중인 아군이 있으면 그쪽을, 아니면 HP 비율이 가장 낮은 아군을 노려요.</td></tr>
-        <tr><td>🌊 광역 공격</td><td>아군 전원 피해. 가드는 70%, 보호막은 50% 줄여 줘요.</td></tr>
-        <tr><td>💥 돌진</td><td>강한 단일 피해. 미리 예고돼요.</td></tr>
-        <tr><td>🐚 껍질 닫기</td><td>적의 다음 차례까지 받는 피해 절반. 어둠 화염은 막지 못해요.</td></tr>
-        <tr><td>👁️ 응시</td><td>다음 차례 강공격 준비. 유인 외침이나 돌진으로 끊으면 BREAK, 적이 한 차례 쉬고 받는 피해가 늘어요.</td></tr>
+        <tr><td>🐙 공격</td><td>예고된 줄(전열/후열) 전원 피해. 가드 중인 아군이 있으면 혼자 대신 맞아요.</td></tr>
+        <tr><td>🌊 광역 공격</td><td>아군 전원 피해.</td></tr>
+        <tr><td>💥 돌진</td><td>예고된 줄에 강한 피해.</td></tr>
+        <tr><td>🐚 껍질 닫기</td><td>다음 차례까지 받는 피해 절반. 어둠 화염은 무시해요.</td></tr>
+        <tr><td>👁️ 응시</td><td>다음 차례 강공격. 돌팔매나 유인 외침으로 끊으면 BREAK.</td></tr>
+        <tr><td>전열 / 후열</td><td>보스는 주로 전열을 노려요. 전열은 주는 피해 +20%, 후열은 받는 피해 -20%.</td></tr>
       </tbody></table>
     </div>
     <div class="card">
       <div class="section-title"><span>변이 효과 (심연의 문부터)</span></div>
       <table class="tbl"><tbody id="mutTable"></tbody></table>
     </div>
-    <p class="panel-note">별 3개 목표: <b>격파</b> · <b>아무도 쓰러지지 않기</b> · <b>스테이지마다 정해진 보스 턴 안에 격파</b>.</p>
   </div>
+
+  <div class="spot" id="spot" role="status" hidden><div class="spot-hole" id="spotHole"></div><div class="spot-msg" id="spotMsg"></div><div class="spot-tap">화면을 터치하면 넘어가요</div></div>
 
   <nav class="nav" id="nav" aria-label="메뉴">
     <button data-screen="battle" aria-current="page"><span class="ni">⚔️</span>전투</button>
@@ -742,20 +762,17 @@ button:disabled{cursor:default}
 <div class="modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle" hidden>
   <div class="modal-inner">
     <h3 id="resultTitle"></h3>
-    <div class="stars" id="resultStars"><span>★</span><span>★</span><span>★</span></div>
-    <div class="goals" id="resultGoals"></div>
-    <div class="loot" id="resultLoot"></div>
-    <div class="rep" id="resultRep"></div>
-    <div class="share" id="resultShare"></div>
-    <div class="share-leg" id="resultLeg"></div>
-    <div class="hint" id="resultHint"></div>
+    <div class="rw-cur" id="resultCur"></div>
+    <div class="rw-chars" id="resultChars"></div>
+    <div class="rw-items" id="resultItems"></div>
+    <div class="hint" id="resultHint" hidden></div>
     <div class="near" id="resultNear"></div>
     <div class="btnrow">
       <button class="outlinebtn" id="resultLog">📜 로그</button>
-      <button class="outlinebtn" id="toStrategy">작전 수정</button>
+      <button class="outlinebtn" id="toStrategy">🧠 작전</button>
+      <button class="outlinebtn" id="retrySame">⟳ 다시</button>
     </div>
     <div class="btnrow" style="margin-top:8px">
-      <button class="outlinebtn" id="retrySame">같은 변이로 다시</button>
       <button class="mainbtn" id="retryNew">▶ 다음 판</button>
     </div>
   </div>
@@ -763,10 +780,11 @@ button:disabled{cursor:default}
 
 <div class="modal" id="repeatModal" role="dialog" aria-modal="true" aria-labelledby="repeatTitle" hidden>
   <div class="modal-inner">
-    <h3 class="plain" id="repeatTitle">반복 전투 결과</h3>
-    <p class="sub" id="repeatSub" style="margin-top:6px"></p>
-    <div class="rep" id="repeatRows"></div>
-    <div class="loot" id="repeatLoot"></div>
+    <h3 class="plain" id="repeatTitle">반복 전투 ×5</h3>
+    <div class="rep" id="repeatRows" style="margin-top:10px"></div>
+    <div class="rw-cur" id="repeatCur"></div>
+    <div class="rw-chars" id="repeatChars"></div>
+    <div class="rw-items" id="repeatItems"></div>
     <div class="btnrow"><button class="mainbtn" id="repeatClose">확인</button></div>
   </div>
 </div>
@@ -798,26 +816,28 @@ button:disabled{cursor:default}
 
 <script>
 /*ENGINE*/
-const MAX_ROUND=15, STAR_ROUND=11, SP_MAX=100, SP_REGEN=10, SP_START=50;
-const BOSS_HP=3300, BOSS_SPD=100, SWIPE=80, WAVE=130, CHARGE=200;
-const HP_MUL=[1,1.25,1.5,1.8,2.1], DMG_MUL=[1.15,1.22,1.3,1.38,1.46];
-/* adventure map: one boss per stage. cycle = move order, pw = move power, star = boss-turn limit for the 3rd star */
-const GK={boss:'심연의 수문장',ic:'👹',talk:{start:'진정한 심연에 잘 왔다. 순순히 무기를 내려놓아라.',half:'껍질이 갈라진다… 이것이 심연의 힘이다!',die:'문이… 열린다… 너희라면…',win:'심연은 모든 것을 삼킨다.'},hp:BOSS_HP,spd:BOSS_SPD,cycle:['swipe','gaze','wave'],p2:['swipe','shell','gaze','br'],pw:{swipe:SWIPE,wave:WAVE,charge:CHARGE},star:STAR_ROUND,gk:1,hue:0};
+const MAX_ROUND=15, SP_MAX=100, SP_REGEN=10, SP_START=50;
+const BOSS_HP=1650, BOSS_SPD=120, SWIPE=170, WAVE=260, CHARGE=340;
+const HP_MUL=[1,1.25,1.5,1.8,2.1], DMG_MUL=[1,1.07,1.14,1.22,1.3];
+/* rows: the front row (next to the boss) hits harder and is the boss's usual target; the back row takes less damage */
+const FRONT_DMG=1.2, BACK_TAKEN=.8, FRONT_AIM=.65;
+/* adventure map: one boss per stage. cycle = move order, pw = move power */
+const GK={boss:'심연의 수문장',ic:'👹',talk:{start:'진정한 심연에 잘 왔다. 순순히 무기를 내려놓아라.',half:'껍질이 갈라진다… 이것이 심연의 힘이다!',die:'문이… 열린다… 너희라면…',win:'심연은 모든 것을 삼킨다.'},hp:BOSS_HP,spd:BOSS_SPD,cycle:['swipe','gaze','wave'],p2:['swipe','shell','gaze','br'],pw:{swipe:SWIPE,wave:WAVE,charge:CHARGE},gk:1,hue:0};
 const STAGES=[
-  {name:'숲 입구',boss:'말랑 슬라임',ic:'🟢',talk:{start:'말랑… 말랑…',half:'푸딩처럼 흔들려도 안 무너져!',die:'말랑… 녹는다…',win:'말랑말랑 승리~'},hp:200,spd:80,cycle:['swipe'],pw:{swipe:30},star:4,hue:100,
-    learn:'튜토리얼 ① 화면 보는 법만 익혀요. 금색 행동 게이지가 먼저 찬 쪽부터 움직이고, 내 차례가 오면 아래에서 스킬을 눌러요. 아주 약한 상대예요.'},
-  {name:'버섯 언덕',boss:'독버섯',ic:'🍄',mobs:[{name:'포자 덩어리',ic:'🟣',hp:140,spd:90,kind:'poke',pw:18}],talk:{start:'포자 냄새 좋지? 숨 한번 참아 봐!',half:'포자들아, 전부 터뜨려!',die:'버섯은… 다시 자라…',win:'숲의 거름이 되어라.'},hp:880,spd:85,cycle:['swipe','swipe','wave'],pw:{swipe:42,wave:70},star:8,hue:300,
-    learn:'튜토리얼 ② 이제 공격 스킬을 고른 뒤 보스와 졸개 중 누구를 때릴지 직접 골라요. 독버섯은 세 번째 차례마다 포자로 모두를 공격해요(🌊). 예고가 뜨면 버티기(🧱)로 대비하고, 다치면 응급 붕대(🩹)로 회복해요.'},
-  {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:150,spd:118,kind:'poke',pw:20},{name:'새끼 늑대',ic:'🐾',hp:150,spd:112,kind:'poke',pw:20}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:950,spd:126,cycle:['swipe'],pw:{swipe:50},star:10,hue:200,
-    learn:'튜토리얼 ③ 늑대 무리는 빨라요. 돌팔매(🪨)로 맞힌 적의 행동 게이지를 깎아 순서를 늦춰요. 여기를 깨면 자동 전투와 작전(패턴)이 열려요.'},
-  {name:'고블린 야영지',boss:'고블린 대장',ic:'👺',mobs:[{name:'고블린 주술사',ic:'🧪',hp:220,spd:92,kind:'heal',pw:110},{name:'고블린 병사',ic:'🪓',hp:260,spd:96,kind:'poke',pw:28}],talk:{start:'이 야영지는 우리 거다! 꺼져!',half:'주술사! 나 좀 고쳐!',die:'대장은… 도망 안 가… 꽥',win:'끌끌, 전리품 챙겨라!'},hp:2000,spd:95,cycle:['swipe','swipe','charge'],pw:{swipe:66,charge:270},star:8,hue:60,
-    learn:'자동 전투가 열렸어요. 고블린 주술사는 대장을 치료해요! 작전 탭의 공격 대상이 "졸개 먼저"면 주술사부터 노려요. 돌진(💥)은 예고되니 "보스 강공격 예정"에 방어 스킬을 걸어요.'},
-  {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:2700,spd:80,cycle:['swipe','shell','swipe'],pw:{swipe:96},star:6,hue:30,
-    learn:'골렘이 껍질을 닫으면(🐚) 받는 피해가 절반이에요. 마도사의 어둠 화염은 껍질을 무시하고, 창술사의 꿰뚫기는 방어를 약화시켜요.'},
-  {name:'마녀의 오두막',boss:'숲의 마녀',ic:'🧙',mobs:[{name:'검은 고양이',ic:'🐈‍⬛',hp:220,spd:108,kind:'buff'}],talk:{start:'어머, 귀여운 손님들이네. 차 한 잔 할래?',half:'이제 장난은 끝이야.',die:'내 오두막이… 엉망이 됐잖아…',win:'다음엔 두꺼비로 만들어 줄게.'},hp:3000,spd:100,cycle:['swipe','gaze','wave'],pw:{swipe:76,wave:150},star:9,hue:260,
-    learn:'검은 고양이는 마녀의 다음 공격을 강하게 만들어요. 마녀가 응시하면(👁️) 다음 차례에 큰 공격이 와요. 검사의 유인 외침이나 창술사의 돌진으로 끊으면 BREAK!'},
-  {name:'심연의 문',...GK,dmg:DMG_MUL[0],muts:1,learn:'지금까지 배운 걸 모두 써야 해요. 반쯤 깎으면 각성하고, 여기부터는 도전마다 변이 효과가 붙어요.'},
-  ...[2,3,4,5].map(n=>({name:`심연 ${n}층`,...GK,hp:Math.round(BOSS_HP*HP_MUL[n-1]),dmg:DMG_MUL[n-1],muts:2,learn:`수문장 강화 ${n}단계. 레벨과 장비, 스킬을 키워서 도전하세요.`}))
+  {name:'숲 입구',boss:'말랑 슬라임',ic:'🟢',talk:{start:'말랑… 말랑…',half:'푸딩처럼 흔들려도 안 무너져!',die:'말랑… 녹는다…',win:'말랑말랑 승리~'},hp:100,spd:80,cycle:['swipe'],pw:{swipe:24},hue:100,
+    learn:'스킬을 고르고, 공격할 적을 눌러요.'},
+  {name:'버섯 언덕',boss:'독버섯',ic:'🍄',mobs:[{name:'포자 덩어리',ic:'🟣',hp:70,spd:90,kind:'poke',pw:12}],talk:{start:'포자 냄새 좋지? 숨 한번 참아 봐!',half:'포자들아, 전부 터뜨려!',die:'버섯은… 다시 자라…',win:'숲의 거름이 되어라.'},hp:440,spd:85,cycle:['swipe','swipe','wave'],pw:{swipe:28,wave:40},hue:300,
+    learn:'🌊 광역 공격 예고엔 🧱 버티기!'},
+  {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:75,spd:118,kind:'poke',pw:14},{name:'새끼 늑대',ic:'🐾',hp:75,spd:112,kind:'poke',pw:14}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:475,spd:120,cycle:['swipe'],pw:{swipe:34},hue:200,
+    learn:'자동 전투 시작! 적을 누르면 집중 공격.'},
+  {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:1350,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:160,wave:180},hue:30,
+    learn:'👁️ 응시는 🪨 돌팔매로 끊어 BREAK! 🐚 껍질엔 피해 절반.'},
+  {name:'고블린 야영지',boss:'고블린 대장',ic:'👺',mobs:[{name:'고블린 주술사',ic:'🧪',hp:110,spd:92,kind:'heal',pw:80},{name:'고블린 병사',ic:'🪓',hp:130,spd:96,kind:'poke',pw:30}],talk:{start:'이 야영지는 우리 거다! 꺼져!',half:'주술사! 나 좀 고쳐!',die:'대장은… 도망 안 가… 꽥',win:'끌끌, 전리품 챙겨라!'},hp:1000,spd:110,cycle:['swipe','swipe','charge'],pw:{swipe:150,charge:320},hue:60,
+    learn:'주술사가 대장을 치료해요. 눌러서 먼저 잡아요.'},
+  {name:'마녀의 오두막',boss:'숲의 마녀',ic:'🧙',mobs:[{name:'검은 고양이',ic:'🐈‍⬛',hp:110,spd:108,kind:'buff'}],talk:{start:'어머, 귀여운 손님들이네. 차 한 잔 할래?',half:'이제 장난은 끝이야.',die:'내 오두막이… 엉망이 됐잖아…',win:'다음엔 두꺼비로 만들어 줄게.'},hp:1500,spd:115,cycle:['swipe','gaze','wave'],pw:{swipe:160,wave:250},hue:260,
+    learn:'🐈‍⬛ 고양이는 마녀의 다음 공격을 강하게 해요.'},
+  {name:'심연의 문',...GK,dmg:DMG_MUL[0],muts:1,learn:'반쯤 깎으면 각성해요. 변이 효과가 붙어요.'},
+  ...[2,3,4,5].map(n=>({name:`심연 ${n}층`,...GK,hp:Math.round(BOSS_HP*HP_MUL[n-1]),dmg:DMG_MUL[n-1],muts:2,learn:`수문장 강화 ${n}단계.`}))
 ];
 const BOSS_MOVES={swipe:'촉수 휘두르기',gaze:'심연 응시',wave:'심연 파동',charge:'심연 돌진',br:'파동 또는 돌진',shell:'껍질 닫기',stun:'기절'};
 const BOSS_ICON={swipe:'🐙',gaze:'👁️',wave:'🌊',charge:'💥',br:'❓',shell:'🐚',stun:'💫'};
@@ -829,68 +849,44 @@ const MUTS=[
   {id:'daze',ic:'💫',n:'빠른 회복',d:'BREAK 중 추가 피해 ×1.3 → ×1.15'},
   {id:'blight',ic:'🥀',n:'치유 억제',d:'모든 회복량 -50%'},
   {id:'rage',ic:'😡',n:'조기 각성',d:'HP 65%에서 2페이즈'},
-  {id:'lash',ic:'🐙',n:'촉수 연타',d:'촉수 휘두르기가 2번 때림 (45 × 2)'}
+  {id:'lash',ic:'🐙',n:'촉수 연타',d:'촉수 휘두르기가 2번 때림 (60% × 2)'}
 ];
 /* skills: lv = level needed to learn. ef keys: dmg hits aoe ignoreShell fire stunBonus execute delay breakGaze taunt guard brace ward heal healSelf healAll sp spGive spAll mark vuln poison inspire haste */
 const SKILLS={
-  w_punch:{n:'주먹질',pic:'👊',ty:'atk',cost:0,lv:1,ef:{dmg:42},tip:'적에게 피해 42'},
-  w_bandage:{n:'응급 붕대',pic:'🩹',ty:'heal',cost:15,lv:1,ef:{healSelf:80},tip:'자신 HP +80'},
-  w_stone:{n:'돌팔매',pic:'🪨',ty:'atk',cost:15,lv:1,ef:{dmg:48,delay:25},tip:'피해 48 + 맞은 적의 행동 게이지 -25%'},
-  w_brace:{n:'버티기',pic:'🧱',ty:'def',cost:12,lv:1,ef:{brace:1},tip:'내 다음 차례까지 받는 피해 50% 감소'},
+  w_punch:{n:'주먹질',pic:'👊',ty:'atk',cost:0,lv:1,ef:{dmg:42},tip:'피해 42'},
+  w_bandage:{n:'응급 붕대',pic:'🩹',ty:'heal',cost:15,lv:1,ef:{healSelf:80},tip:'내 HP +80'},
+  w_stone:{n:'돌팔매',pic:'🪨',ty:'atk',cost:15,lv:1,ef:{dmg:48,delay:10,breakGaze:1},tip:'피해 48 · 행동 게이지 -10% · 응시를 끊음'},
+  w_brace:{n:'버티기',pic:'🧱',ty:'def',cost:12,lv:1,ef:{brace:1},tip:'보스가 공격할 때까지 받는 피해 -50%'},
   w_cheer:{n:'응원',pic:'📯',ty:'sup',cost:15,lv:4,ef:{spGive:30},tip:'SP가 가장 적은 동료 SP +30'},
-  k_slash:{n:'견습 베기',pic:'⚔️',ty:'atk',cost:0,lv:5,ef:{dmg:40},tip:'적에게 피해 40'},
-  k_guard:{n:'가드 올리기',pic:'🛡️',ty:'def',cost:20,lv:5,ef:{guard:1},tip:'내 다음 차례까지 받는 피해 70% 감소, 단일 공격을 대신 맞음'},
-  k_taunt:{n:'유인 외침',pic:'📣',ty:'sup',cost:35,lv:6,ef:{breakGaze:1,taunt:1},tip:'응시를 끊어 BREAK(2페이즈는 표식 필요). 아니면 단일 공격을 대신 맞음'},
-  k_bash:{n:'방패 밀치기',pic:'🔰',ty:'atk',cost:25,lv:8,ef:{dmg:60,delay:35},tip:'피해 60 + 맞은 적의 행동 게이지 -35%'},
-  m_bolt:{n:'마력 화살',pic:'✨',ty:'atk',cost:0,lv:5,ef:{dmg:72},tip:'적에게 피해 72'},
-  m_fire:{n:'어둠 화염',pic:'🔥',ty:'atk',cost:35,lv:5,ef:{dmg:170,ignoreShell:1,fire:1},tip:'피해 170. 껍질을 무시'},
-  m_focus:{n:'마력 집중',pic:'💠',ty:'sup',cost:0,lv:6,ef:{sp:45},tip:'SP +45 (내 SP 70 이하일 때만)'},
+  k_slash:{n:'견습 베기',pic:'⚔️',ty:'atk',cost:0,lv:5,ef:{dmg:40},tip:'피해 40'},
+  k_guard:{n:'가드 올리기',pic:'🛡️',ty:'def',cost:20,lv:5,ef:{guard:1},tip:'보스가 공격할 때까지 받는 피해 -70% · 공격을 혼자 대신 맞음'},
+  k_taunt:{n:'유인 외침',pic:'📣',ty:'sup',cost:25,lv:6,ef:{breakGaze:1,taunt:1},tip:'응시를 끊어 BREAK · 아니면 보스 공격을 대신 맞음'},
+  k_bash:{n:'방패 밀치기',pic:'🔰',ty:'atk',cost:25,lv:8,ef:{dmg:60,delay:35},tip:'피해 60 · 행동 게이지 -35%'},
+  m_bolt:{n:'마력 화살',pic:'✨',ty:'atk',cost:0,lv:5,ef:{dmg:72},tip:'피해 72'},
+  m_fire:{n:'어둠 화염',pic:'🔥',ty:'atk',cost:35,lv:5,ef:{dmg:170,ignoreShell:1,fire:1},tip:'피해 170 · 껍질 무시'},
+  m_focus:{n:'마력 집중',pic:'💠',ty:'sup',cost:0,lv:6,ef:{sp:45},tip:'내 SP +45'},
   m_storm:{n:'화염 폭풍',pic:'🌋',ty:'atk',cost:40,lv:8,ef:{dmg:85,aoe:1,fire:1},tip:'모든 적에게 피해 85'},
-  h_smite:{n:'빛 타격',pic:'☀️',ty:'atk',cost:0,lv:5,ef:{dmg:30},tip:'적에게 피해 30'},
-  h_heal:{n:'단일 치유',pic:'💚',ty:'heal',cost:22,lv:5,ef:{heal:130},tip:'HP 비율이 가장 낮은 아군 HP +130'},
-  h_ward:{n:'견습 보호막',pic:'🌙',ty:'def',cost:30,lv:6,ef:{ward:'team'},tip:'아군 전원 보호막. 다음에 받는 피해 50% 감소'},
+  h_smite:{n:'빛 타격',pic:'☀️',ty:'atk',cost:0,lv:5,ef:{dmg:30},tip:'피해 30'},
+  h_heal:{n:'단일 치유',pic:'💚',ty:'heal',cost:22,lv:5,ef:{heal:130},tip:'HP가 가장 낮은 아군 HP +130'},
+  h_ward:{n:'견습 보호막',pic:'🌙',ty:'def',cost:30,lv:6,ef:{ward:'team'},tip:'아군 전원: 다음에 받는 피해 -50%'},
   h_rain:{n:'치유의 비',pic:'🌧️',ty:'heal',cost:35,lv:8,ef:{healAll:60},tip:'아군 전원 HP +60'},
-  a_shot:{n:'짧은 사격',pic:'🏹',ty:'atk',cost:0,lv:5,ef:{dmg:57},tip:'적에게 피해 57'},
-  a_rapid:{n:'연속 사격',pic:'🎯',ty:'atk',cost:28,lv:5,ef:{dmg:40,hits:3,stunBonus:1.6},tip:'40 × 3연타. 보스가 BREAK 중이면 1.6배'},
-  a_aim:{n:'집중 조준',pic:'🔍',ty:'sup',cost:18,lv:6,ef:{mark:1},tip:'보스에 약점 표식: 2턴간 받는 피해 +25%'},
-  a_volley:{n:'화살비',pic:'🌠',ty:'atk',cost:28,lv:8,ef:{dmg:55,aoe:1},tip:'모든 적에게 피해 55'},
-  l_thrust:{n:'찌르기',pic:'🔱',ty:'atk',cost:0,lv:5,ef:{dmg:50},tip:'적에게 피해 50'},
-  l_pierce:{n:'꿰뚫기',pic:'🗡️',ty:'atk',cost:25,lv:5,ef:{dmg:80,vuln:1},tip:'피해 80 + 보스 방어 약화: 2턴간 받는 피해 +20%'},
-  l_charge:{n:'돌진',pic:'🐎',ty:'sup',cost:40,lv:6,ef:{dmg:60,breakGaze:1},tip:'피해 60. 응시 중이면 끊어서 BREAK(2페이즈는 표식 필요)'},
-  l_trip:{n:'다리 걸기',pic:'🦵',ty:'atk',cost:25,lv:8,ef:{dmg:40,delay:45},tip:'피해 40 + 맞은 적의 행동 게이지 -45%'},
-  b_disc:{n:'불협화음',pic:'🎶',ty:'atk',cost:0,lv:5,ef:{dmg:30},tip:'적에게 피해 30'},
-  b_song:{n:'전투의 노래',pic:'🎺',ty:'sup',cost:25,lv:5,ef:{inspire:1},tip:'다른 아군 전원의 다음 공격 피해 +30%'},
-  b_beat:{n:'빠른 박자',pic:'🥁',ty:'sup',cost:30,lv:6,ef:{haste:1},tip:'다른 아군 전원 행동 게이지 +35%'},
-  b_rest:{n:'휴식의 선율',pic:'🎼',ty:'sup',cost:20,lv:8,ef:{spAll:20},tip:'다른 아군 전원 SP +20'},
-  p_axe:{n:'도끼 찍기',pic:'🪓',ty:'atk',cost:0,lv:5,ef:{dmg:40},tip:'적에게 피해 40'},
-  p_shield:{n:'신성 방패',pic:'✝️',ty:'def',cost:25,lv:5,ef:{ward:'low',heal:40},tip:'HP 비율이 가장 낮은 아군에게 보호막 + HP 40'},
-  p_judge:{n:'심판',pic:'⚖️',ty:'atk',cost:40,lv:6,ef:{dmg:140,stunBonus:1.5},tip:'피해 140. 보스가 BREAK 중이면 1.5배'},
-  p_bless:{n:'축복',pic:'🙏',ty:'heal',cost:30,lv:8,ef:{healAll:45,brace:1},tip:'아군 전원 HP +45, 나는 버티기'},
-  r_shot:{n:'속사',pic:'🔫',ty:'atk',cost:0,lv:5,ef:{dmg:45},tip:'적에게 피해 45'},
-  r_poison:{n:'독 바르기',pic:'🧪',ty:'sup',cost:20,lv:5,ef:{poison:45},tip:'보스에 독: 보스 차례마다 45 피해, 3번'},
-  r_shadow:{n:'그림자 일격',pic:'🌑',ty:'atk',cost:35,lv:6,ef:{dmg:120,execute:1},tip:'피해 120. 보스 HP 30% 이하면 2배'},
-  r_vital:{n:'급소 사격',pic:'💢',ty:'atk',cost:25,lv:8,ef:{dmg:75,delay:20},tip:'피해 75 + 맞은 적의 행동 게이지 -20%'}
+  a_shot:{n:'짧은 사격',pic:'🏹',ty:'atk',cost:0,lv:5,ef:{dmg:57},tip:'피해 57'},
+  a_rapid:{n:'연속 사격',pic:'🎯',ty:'atk',cost:28,lv:5,ef:{dmg:40,hits:3,stunBonus:1.6},tip:'40 × 3연타 · BREAK 중이면 1.6배'},
+  a_aim:{n:'집중 조준',pic:'🔍',ty:'sup',cost:18,lv:6,ef:{mark:1},tip:'보스 약점 표식: 2턴간 받는 피해 +25%'},
+  a_volley:{n:'화살비',pic:'🌠',ty:'atk',cost:28,lv:8,ef:{dmg:55,aoe:1},tip:'모든 적에게 피해 55'}
 };
-/* jobs: everyone starts as a wanderer and picks a job at Lv5. basic = free attack, skills = learnable list */
+/* jobs: everyone starts as a wanderer and picks one of four jobs at Lv5 (advanced jobs come later). basic = free attack, skills = learnable list */
 const HERO_DB={
   wanderer:{name:'방랑자',icon:'방',role:'모험가 · 만능',hp:290,spd:100,fx:'slash',color:'#c9b48a',spr:'fighter',basic:'w_punch',skills:['w_bandage','w_stone','w_brace','w_cheer'],
-    trait:'어떤 길이든 갈 수 있는 초보 모험가예요. 스스로 치료하고 버티며 기본기를 익혀요. 레벨 5가 되면 원하는 직업으로 전직해요.',tip:'방랑자 스킬은 전직 후에도 장착할 수 있어요.'},
-  knight:{name:'검사',icon:'검',role:'전방 · 보호',hp:360,spd:90,fx:'slash',color:'#9fc3ec',spr:'knight',basic:'k_slash',skills:['k_guard','k_taunt','k_bash'],
-    trait:'단단한 전방 수호자예요. 체력이 높지만 느려요. 가드로 동료를 지키고, 유인 외침으로 적의 응시를 끊어요.',tip:'추천: 보스가 응시 중 → 유인 외침 / 보스 강공격 예정 → 가드 올리기'},
-  mage:{name:'마도사',icon:'마',role:'후방 · 화력',hp:210,spd:104,fx:'orb',color:'#9a7bff',spr:'mage',basic:'m_bolt',skills:['m_fire','m_focus','m_storm'],
-    trait:'팀의 주력 화력이에요. 체력이 낮아요. 어둠 화염은 껍질도 뚫고, 화염 폭풍은 모든 적을 태워요.',tip:'추천: 졸개 2마리 이상 → 화염 폭풍 / 내 SP 25 이하 → 마력 집중'},
-  healer:{name:'치유사',icon:'치',role:'후방 · 회복',hp:235,spd:96,fx:'light',color:'#53c79a',spr:'healer',basic:'h_smite',skills:['h_heal','h_ward','h_rain'],
-    trait:'팀의 생명줄이에요. 다친 아군을 치료하고, 큰 공격 전에는 전원에게 보호막을 쳐요.',tip:'추천: 보스 강공격 예정 → 견습 보호막 / 아군 HP 30% 이하 → 단일 치유'},
-  archer:{name:'궁수',icon:'궁',role:'후방 · 화력',hp:255,spd:112,fx:'arrow',color:'#4dc7c4',spr:'archer',basic:'a_shot',skills:['a_rapid','a_aim','a_volley'],
-    trait:'빠른 사수예요. 연속 사격이 강하고, 적이 BREAK 중이면 1.6배! 화살비로 졸개를 한꺼번에 쓸어요.',tip:'추천: 보스 BREAK 중 → 연속 사격 / 졸개 2마리 이상 → 화살비'},
-  lancer:{name:'창술사',icon:'창',role:'전방 · 돌파',hp:320,spd:98,fx:'slash',color:'#e0a86a',spr:'lancer',basic:'l_thrust',skills:['l_pierce','l_charge','l_trip'],
-    trait:'전방 돌파형이에요. 꿰뚫기로 방어를 약화시키고, 돌진으로 응시를 끊고, 다리 걸기로 적을 늦춰요.',tip:'추천: 보스가 응시 중 → 돌진 / 보스에 약화 없음 → 꿰뚫기'},
-  bard:{name:'음유시인',icon:'음',role:'후방 · 지원',hp:230,spd:108,fx:'note',color:'#ff8ad6',spr:'bard',basic:'b_disc',skills:['b_song','b_beat','b_rest'],
-    trait:'직접 공격은 약하지만 팀을 강하게 만들어요. 노래로 다음 공격 +30%, 박자로 행동을 앞당기고, 선율로 SP를 채워요.',tip:'추천: 내 첫 행동 → 빠른 박자 / SP 25 이하 아군 있음 → 휴식의 선율'},
-  paladin:{name:'성기사',icon:'성',role:'전방 · 수호',hp:340,spd:92,fx:'light',color:'#f0d97a',spr:'paladin',basic:'p_axe',skills:['p_shield','p_judge','p_bless'],
-    trait:'단단한 지원형이에요. 신성 방패로 가장 약한 아군을 지키고, BREAK 중엔 심판이 1.5배예요.',tip:'추천: 아군 HP 30% 이하 → 신성 방패 / 보스 BREAK 중 → 심판'},
-  rogue:{name:'도적',icon:'도',role:'후방 · 암살',hp:240,spd:118,fx:'dagger',color:'#a8e06a',spr:'rogue',basic:'r_shot',skills:['r_poison','r_shadow','r_vital'],
-    trait:'가장 빠른 암살자예요. 독으로 꾸준히 깎고, 보스 HP가 30% 이하면 그림자 일격이 2배예요.',tip:'추천: 보스에 독 없음 → 독 바르기 / 보스 HP 30% 이하 → 그림자 일격'}
+    trait:'무엇이든 될 수 있는 초보 모험가. Lv5에 전직해요.',tip:'방랑자 스킬은 전직 후에도 쓸 수 있어요.'},
+  knight:{name:'검사',icon:'검',role:'전열 · 보호',hp:360,spd:90,fx:'slash',color:'#9fc3ec',spr:'knight',basic:'k_slash',skills:['k_guard','k_taunt','k_bash'],
+    trait:'단단하고 느려요. 가드로 동료 대신 맞아요.',tip:'보스 강공격 예정 → 가드 올리기'},
+  mage:{name:'마법사',icon:'마',role:'후열 · 화력',hp:210,spd:104,fx:'orb',color:'#9a7bff',spr:'mage',basic:'m_bolt',skills:['m_fire','m_focus','m_storm'],
+    trait:'팀의 주력 화력. 체력이 낮아요.',tip:'보스 껍질 닫힘 → 어둠 화염'},
+  healer:{name:'치유사',icon:'치',role:'후열 · 회복',hp:235,spd:96,fx:'light',color:'#53c79a',spr:'healer',basic:'h_smite',skills:['h_heal','h_ward','h_rain'],
+    trait:'다친 아군을 치료하고 보호막을 쳐요.',tip:'보스 강공격 예정 → 견습 보호막'},
+  archer:{name:'궁수',icon:'궁',role:'후열 · 화력',hp:255,spd:112,fx:'arrow',color:'#4dc7c4',spr:'archer',basic:'a_shot',skills:['a_rapid','a_aim','a_volley'],
+    trait:'빠른 사수. BREAK 중 연속 사격이 강해요.',tip:'보스 BREAK 중 → 연속 사격'}
 };
 const JOB_IDS=Object.keys(HERO_DB).filter(j=>j!=='wanderer');
 function has(b,m){ return b.muts.includes(m); }
@@ -899,9 +895,11 @@ function cycle(b){ const D=b.def; if(b.boss.p2&&D.p2) return D.p2.slice(); if(D.
 function fill(b){ if(!b.boss.queue.length) b.boss.queue=cycle(b); }
 function intent(b){ fill(b); return b.boss.queue[0]; }
 const isBig=m=>m==='wave'||m==='charge'||m==='br';
+const isHit=m=>m==='swipe'||m==='wave'||m==='charge';
 const CONDS=[
   {id:'always',label:'항상',test:()=>true},
   {id:'first',label:'내 첫 행동',test:(b,i)=>b.heroes[i].acts===0},
+  {id:'aimMe',label:'보스 공격이 나에게 옴',test:(b,i)=>{ if(b.boss.stun) return false; const t=intent(b); return t==='wave'||((t==='swipe'||isBig(t))&&aimOf(b).includes(i)); }},
   {id:'bossGaze',label:'보스가 응시 중',test:b=>!b.boss.stun&&intent(b)==='gaze'},
   {id:'bossBig',label:'보스 강공격 예정',test:b=>!b.boss.stun&&isBig(intent(b))},
   {id:'bossWave',label:'보스 광역 공격 예정',test:b=>!b.boss.stun&&intent(b)==='wave'},
@@ -920,8 +918,6 @@ const CONDS=[
   {id:'noWard',label:'보호막 없는 아군 있음',test:b=>b.heroes.some(h=>h.hp>0&&!h.ward)},
   {id:'allyLowSp',label:'SP 25 이하 동료 있음',test:(b,i)=>b.heroes.some((h,j)=>j!==i&&h.hp>0&&h.sp<=25)},
   {id:'unmarked',label:'보스에 표식 없음',test:b=>!b.boss.mark},
-  {id:'unvuln',label:'보스에 약화 없음',test:b=>!b.boss.vuln},
-  {id:'unpoison',label:'보스에 독 없음',test:b=>!b.boss.poison},
   {id:'mobAlive',label:'졸개가 남아 있음',test:b=>b.mobs.some(m=>m.hp>0)},
   {id:'mobs2',label:'졸개 2마리 이상',test:b=>b.mobs.filter(m=>m.hp>0).length>=2},
   {id:'noMob',label:'졸개가 없음',test:b=>!b.mobs.some(m=>m.hp>0)},
@@ -931,27 +927,31 @@ const CONDS=[
 ];
 const RULE_SLOTS=6;
 const DEFAULT_RULES={
-  wanderer:[['lowSelf','w_bandage'],['bossBig','w_brace'],['allyLowSp','w_cheer'],['spHigh','w_stone'],['always','w_punch'],['always','w_punch']],
-  knight:[['bossGaze','k_taunt'],['bossBig','k_guard'],['lowSelf30','w_bandage'],['spHigh','k_bash'],['always','k_slash'],['always','k_slash']],
+  wanderer:[['bossGaze','w_stone'],['lowSelf','w_bandage'],['bossBig','w_brace'],['spFull','w_stone'],['always','w_punch'],['always','w_punch']],
+  knight:[['bossGaze','k_taunt'],['bossGaze','w_stone'],['bossBig','k_guard'],['lowSelf30','w_bandage'],['spHigh','k_bash'],['always','k_slash']],
   mage:[['bossShell','m_fire'],['mobs2','m_storm'],['spLow','m_focus'],['spHigh','m_fire'],['always','m_bolt'],['always','m_bolt']],
   healer:[['bossBig','h_ward'],['lowAlly30','h_heal'],['lowAlly','h_rain'],['lowAlly','h_heal'],['always','h_smite'],['always','h_smite']],
-  archer:[['bossBreak','a_rapid'],['mobs2','a_volley'],['unmarked','a_aim'],['spHigh','a_rapid'],['always','a_shot'],['always','a_shot']],
-  lancer:[['bossGaze','l_charge'],['unvuln','l_pierce'],['spHigh','l_trip'],['always','l_thrust'],['always','l_thrust'],['always','l_thrust']],
-  bard:[['first','b_beat'],['allyLowSp','b_rest'],['spHigh','b_song'],['always','b_disc'],['always','b_disc'],['always','b_disc']],
-  paladin:[['lowAlly30','p_shield'],['bossBreak','p_judge'],['lowAlly','p_bless'],['spHigh','p_judge'],['always','p_axe'],['always','p_axe']],
-  rogue:[['unpoison','r_poison'],['bossLow30','r_shadow'],['spHigh','r_vital'],['always','r_shot'],['always','r_shot'],['always','r_shot']]
+  archer:[['bossBreak','a_rapid'],['mobs2','a_volley'],['unmarked','a_aim'],['spHigh','a_rapid'],['always','a_shot'],['always','a_shot']]
 };
-/* cfg: {party:[{uid,job,name,maxhp,dmg,spd,skills:[basic,...equipped]}], rules:[rules per slot], targets:['mob'|'boss'], stage, muts, seed} */
+/* cfg: {party:[{uid,job,name,maxhp,dmg,spd,row:'F'|'B',skills:[basic,...equipped]}], rules:[rules per slot], targets:['mob'|'boss'], stage, muts, seed} */
 function newBattle(cfg){
   const S=STAGES[cfg.stage-1], hide=cfg.muts.includes('hide')?1.2:1, max=Math.round(S.hp*hide);
-  const def={name:S.boss,ic:S.ic,cycle:S.cycle,p2:S.p2||null,pw:S.pw,star:S.star,gk:!!S.gk,hue:S.hue||0,talk:S.talk||null};
-  const b={muts:cfg.muts.slice(),stage:cfg.stage,def,seed:cfg.seed|0,rules:cfg.rules.map(r=>r.map(x=>[x[0],x[1]])),targets:(cfg.targets||[]).slice(),override:null,overrideTgt:null,round:0,actions:0,over:null,reason:'',
-    boss:{max,hp:max,spd:S.spd+(cfg.muts.includes('swift')?12:0),g:0,queue:[],stun:0,shell:false,mark:0,vuln:0,poison:null,p2:false,dmg:S.dmg||1,rage:0},
+  const def={name:S.boss,ic:S.ic,cycle:S.cycle,p2:S.p2||null,pw:S.pw,gk:!!S.gk,hue:S.hue||0,talk:S.talk||null};
+  const b={muts:cfg.muts.slice(),stage:cfg.stage,def,seed:cfg.seed|0,rules:cfg.rules.map(r=>r.map(x=>[x[0],x[1]])),targets:(cfg.targets||[]).slice(),override:null,overrideTgt:null,focus:null,round:0,actions:0,over:null,reason:'',
+    boss:{max,hp:max,spd:S.spd+(cfg.muts.includes('swift')?12:0),g:0,queue:[],stun:0,shell:false,mark:0,vuln:0,poison:null,p2:false,dmg:S.dmg||1,rage:0,row:'F'},
     mobs:(S.mobs||[]).map(m=>({name:m.name,ic:m.ic,kind:m.kind,pw:m.pw||0,max:m.hp,hp:m.hp,spd:m.spd,g:0})),
-    heroes:cfg.party.map(p=>({uid:p.uid,id:p.job,name:p.name,max:p.maxhp,hp:p.maxhp,dmg:p.dmg,spd:p.spd,g:0,sp:SP_START,ward:0,guard:false,brace:false,taunt:false,insp:false,acts:0,
+    heroes:cfg.party.map(p=>({uid:p.uid,id:p.job,name:p.name,max:p.maxhp,hp:p.maxhp,dmg:p.dmg,spd:p.spd,row:p.row==='B'?'B':'F',g:0,sp:SP_START,ward:0,guard:false,brace:false,taunt:false,insp:false,acts:0,
       sk:p.skills.map(id=>Object.assign({id},SKILLS[id]))})),
     stats:{dmg:0,breaks:0,resist:0,gazes:0,bigs:0,blocked:0,down:0,manual:0,dmgBy:cfg.party.map(()=>0),fired:cfg.party.map(()=>Array(RULE_SLOTS+2).fill(0))}};
-  fill(b); return b;
+  rollRow(b); fill(b); return b;
+}
+/* the row the boss's next single attack goes for, decided in advance so it can be shown */
+function rollRow(b){ b.boss.row=rng(b)<FRONT_AIM?'F':'B'; }
+/* heroes the boss's next swipe/charge will hit: a guarding or taunting hero covers alone, else the whole aimed row (the other row if that one is empty) */
+function aimOf(b){
+  const c=b.heroes.findIndex(h=>h.hp>0&&(h.guard||h.taunt)); if(c>=0) return [c];
+  const row=r=>b.heroes.map((h,j)=>h.hp>0&&h.row===r?j:-1).filter(j=>j>=0);
+  const a=row(b.boss.row); return a.length?a:row(b.boss.row==='F'?'B':'F');
 }
 /* actor keys: hero slot number, 'B' for the boss, 'M0'/'M1' for minions */
 function actors(b){
@@ -977,26 +977,37 @@ function lowest(b,skipWard){
   b.heroes.forEach((x,n)=>{ if(x.hp<=0||(skipWard&&x.ward)) return; if(j<0||x.hp/x.max<b.heroes[j].hp/b.heroes[j].max) j=n; });
   return j;
 }
-function targetOf(b){ const g=b.heroes.findIndex(h=>h.hp>0&&(h.guard||h.taunt)); return g>=0?g:lowest(b); }
+/* minions poke the weakest hero in the front row (a guard covers) */
+function mobTarget(b){
+  const c=b.heroes.findIndex(h=>h.hp>0&&(h.guard||h.taunt)); if(c>=0) return c;
+  let j=-1;
+  b.heroes.forEach((h,n)=>{ if(h.hp<=0) return; const x=j<0?null:b.heroes[j]; if(!x||(h.row==='F'&&x.row!=='F')||(h.row===x.row&&h.hp/h.max<x.hp/x.max)) j=n; });
+  return j;
+}
 function snap(b){
   const o=b.boss;
-  return {round:b.round,bhp:o.hp,bmax:o.max,bg:o.g,bspd:o.spd,stun:o.stun,shell:o.shell,mark:o.mark,vuln:o.vuln,poison:o.poison?o.poison.left:0,p2:o.p2,q:preview(b,3),tgt:targetOf(b),order:orderPreview(b,8),
+  return {round:b.round,bhp:o.hp,bmax:o.max,bg:o.g,bspd:o.spd,stun:o.stun,shell:o.shell,mark:o.mark,vuln:o.vuln,poison:o.poison?o.poison.left:0,p2:o.p2,q:preview(b,3),aim:aimOf(b),order:orderPreview(b,8),
     h:b.heroes.map(h=>({hp:h.hp,max:h.max,sp:h.sp,g:h.g,spd:h.spd,ward:h.ward,guard:h.guard,brace:h.brace,taunt:h.taunt,insp:h.insp})),
     mobs:b.mobs.map(m=>({hp:m.hp,max:m.max,g:m.g,spd:m.spd})),rage:o.rage};
 }
-/* who a hero's attack lands on: 'mob' preference hits the weakest living minion first, otherwise the boss */
+/* who a hero's attack lands on: manual pick → the enemy the player tapped to focus → 'mob' preference hits the weakest living minion first, otherwise the boss */
 function pickTarget(b,i){
   const o=b.overrideTgt; if(o==='B') return 'B'; if(o!=null&&b.mobs[o]&&b.mobs[o].hp>0) return o;
+  const f=b.focus; if(f==='B') return 'B'; if(f!=null&&b.mobs[f]&&b.mobs[f].hp>0) return f;
   if(b.targets[i]!=='boss'){ let j=-1; b.mobs.forEach((m,n)=>{ if(m.hp>0&&(j<0||m.hp<b.mobs[j].hp)) j=n; }); if(j>=0) return j; }
   return 'B';
 }
 function tgtName(b,t){ return t==='B'?b.def.name:b.mobs[t].name; }
+/* patterns skip skills that would do nothing right now; a manual pick only needs the SP */
 function valid(b,i,k){
   const h=b.heroes[i], ef=h.sk[k].ef, o=b.boss, others=b.heroes.filter((x,j)=>j!==i&&x.hp>0);
   if(ef.heal&&!ef.ward&&!b.heroes.some(x=>x.hp>0&&x.hp<x.max)) return false;
   if(ef.healAll&&!b.heroes.some(x=>x.hp>0&&x.hp<x.max)) return false;
   if(ef.healSelf&&h.hp>=h.max) return false;
   if(ef.ward&&!b.heroes.some(x=>x.hp>0&&!x.ward)) return false;
+  if(ef.brace&&!ef.healAll&&h.brace) return false;
+  if(ef.guard&&h.guard) return false;
+  if(ef.taunt&&h.taunt&&intent(b)!=='gaze') return false;
   if(ef.mark&&o.mark) return false;
   if(ef.vuln&&o.vuln&&!ef.dmg) return false;
   if(ef.poison&&o.poison) return false;
@@ -1010,7 +1021,7 @@ function usable(b,i,k){ const s=b.heroes[i].sk[k]; return !!s&&s.cost<=b.heroes[
 /* order: manual pick (-3) → pattern rules (0..5, skill must be equipped) → basic attack (-1) */
 function pickSkill(b,i){
   const h=b.heroes[i], list=b.rules[i]||[], skips=[];
-  if(b.override!=null){ if(usable(b,i,b.override)) return {k:b.override,rule:-3,cond:'직접 선택',skips}; }
+  if(b.override!=null){ const s=h.sk[b.override]; if(s&&s.cost<=h.sp) return {k:b.override,rule:-3,cond:'직접 선택',skips}; }
   for(let r=0;r<list.length;r++){
     const c=CONDS.find(x=>x.id===list[r][0]), k=h.sk.findIndex(s=>s.id===list[r][1]);
     if(!c||k<0||!c.test(b,i)) continue;
@@ -1039,11 +1050,11 @@ function hitMob(b,j,base,e){
   const m=b.mobs[j], d=Math.round(base);
   m.hp=Math.max(0,m.hp-d); b.stats.dmg+=d; b.stats.dmgBy[e.i]+=d;
   e.hits.push(d); e.tgts.push(j);
-  if(m.hp===0){ m.g=0; (e.kills=e.kills||[]).push(j); }
+  if(m.hp===0){ m.g=0; (e.kills=e.kills||[]).push(j); if(b.focus===j) b.focus=null; }
   return d;
 }
 function hurtHero(b,j,base){
-  const h=b.heroes[j]; let m=1, red='';
+  const h=b.heroes[j]; let m=h.row==='B'?BACK_TAKEN:1, red='';
   if(h.guard){ m*=.3; red='가드'; }
   else if(h.brace){ m*=.5; red='버티기'; }
   if(h.ward>0){ m*=.5; h.ward=0; red=red?red+'+보호막':'보호막'; }
@@ -1054,17 +1065,16 @@ function hurtHero(b,j,base){
 }
 function doHero(b,i){
   const h=b.heroes[i], o=b.boss;
-  h.guard=false; h.brace=false; h.taunt=false;
   const {k,rule,cond,skips}=pickSkill(b,i), s=h.sk[k], ef=s.ef;
   h.sp-=s.cost; b.stats.fired[i][firedIdx(rule)]++; if(rule===-3) b.stats.manual++;
   const e={t:'act',i,id:h.id,nm:h.name,k,sid:s.id,rule,cond,skips,hits:[],tgts:[],txt:''}, parts=[];
   const heal=v=>Math.round(v*h.dmg*(has(b,'blight')?.5:1));
   if(ef.dmg){
-    let base=ef.dmg*h.dmg;
+    let base=ef.dmg*h.dmg*(h.row==='F'?FRONT_DMG:1);
     if(h.insp){ base*=1.3; h.insp=false; e.insp=true; }
     const bossHit=()=>{ let bb=base; if(ef.stunBonus&&o.stun>0){ bb*=ef.stunBonus; e.combo=true; } if(ef.execute&&o.hp<=o.max*.3){ bb*=2; e.exec=true; } hitBoss(b,bb,e,ef.ignoreShell); };
     if(ef.aoe){ bossHit(); b.mobs.forEach((m,j)=>{ if(m.hp>0) hitMob(b,j,base,e); }); }
-    else for(let n=0;n<(ef.hits||1)&&o.hp>0;n++){ const t=pickTarget(b,i); if(t==='B') bossHit(); else hitMob(b,t,base,e); }
+    else{ const brk=ef.breakGaze&&!o.stun&&b.overrideTgt==null&&intent(b)==='gaze'; for(let n=0;n<(ef.hits||1)&&o.hp>0;n++){ const t=brk?'B':pickTarget(b,i); if(t==='B') bossHit(); else hitMob(b,t,base,e); } }
     if(ef.fire) e.fire=true;
     const names=[...new Set(e.tgts.map(t=>tgtName(b,t)))].join(', ');
     parts.push(`${ef.aoe?'모든 적':names}에게 <strong>${e.hits.reduce((a,c)=>a+c,0)}</strong> 피해${e.combo?' (BREAK 추격)':''}${e.exec?' (처형)':''}${e.kills?` · ${e.kills.map(j=>b.mobs[j].name).join(', ')} 처치!`:''}`);
@@ -1073,13 +1083,14 @@ function doHero(b,i){
       if(u.hp>0){ u.g=Math.max(-60,u.g-ef.delay); e.delay={t,v:ef.delay}; parts.push(`${tgtName(b,t)} 행동 게이지 -${ef.delay}%`); }
     }
   }
-  if(ef.breakGaze&&!o.stun&&o.hp>0&&intent(b)==='gaze'){
-    if(!o.p2||o.mark>0){ o.stun=1; o.queue=[]; o.shell=false; b.stats.breaks++; b.stats.gazes++; e.brk=true; parts.push('응시를 끊었다! <strong>BREAK</strong>'); }
+  /* breaking needs the hit to land on the boss (a stone thrown at a minion doesn't count) */
+  if(ef.breakGaze&&!o.stun&&o.hp>0&&intent(b)==='gaze'&&(!ef.dmg||e.tgts.includes('B'))){
+    if(!o.p2||o.mark>0){ o.stun=1; o.queue.shift(); if(isBig(o.queue[0])) o.queue.shift(); o.shell=false; b.stats.breaks++; b.stats.gazes++; e.brk=true; parts.push('응시를 끊었다! <strong>BREAK</strong>'); }
     else{ e.resist=true; b.stats.resist++; parts.push('각성한 수문장이 무시했다 · 표식 필요'); }
   }
   if(ef.taunt&&!e.brk){ h.taunt=true; e.taunt=true; if(!e.resist) parts.push('시선을 끈다'); }
   if(ef.guard){ h.guard=true; e.guard=true; parts.push('받는 피해 70% 감소'); }
-  if(ef.brace){ h.brace=true; e.brace=true; parts.push('버티기 (받는 피해 50% 감소)'); }
+  if(ef.brace){ h.brace=true; e.brace=true; parts.push('버티기 (보스 공격까지 받는 피해 50% 감소)'); }
   if(ef.ward==='team'){ b.heroes.forEach(x=>{ if(x.hp>0) x.ward=1; }); e.ward='team'; parts.push('아군 전원 보호막'); }
   if(ef.ward==='low'){ const j=lowest(b,true)>=0?lowest(b,true):lowest(b); b.heroes[j].ward=1; e.ward=j; parts.push(`${b.heroes[j].name} 보호막`); }
   if(ef.heal){
@@ -1089,7 +1100,7 @@ function doHero(b,i){
   }
   if(ef.healSelf){ const g=Math.min(heal(ef.healSelf),h.max-h.hp); h.hp+=g; e.heal={j:i,v:g}; parts.push(`HP <strong>+${g}</strong>`); }
   if(ef.healAll){ e.healAll=[]; b.heroes.forEach((x,j)=>{ if(x.hp>0){ const g=Math.min(heal(ef.healAll),x.max-x.hp); x.hp+=g; e.healAll.push({j,v:g}); } }); parts.push(`아군 전원 HP +${heal(ef.healAll)}`); }
-  if(ef.sp){ h.sp=Math.min(SP_MAX,h.sp+ef.sp); e.sp=ef.sp; parts.push(`SP +${ef.sp}`); }
+  if(ef.sp){ const g=Math.min(ef.sp,SP_MAX-h.sp); h.sp+=g; e.sp=g; parts.push(`SP +${g}`); }
   if(ef.spGive){ let j=-1; b.heroes.forEach((x,n)=>{ if(n!==i&&x.hp>0&&(j<0||x.sp<b.heroes[j].sp)) j=n; }); if(j>=0){ const t=b.heroes[j]; t.sp=Math.min(SP_MAX,t.sp+ef.spGive); e.spGive={j,v:ef.spGive}; parts.push(`${t.name} SP +${ef.spGive}`); } }
   if(ef.spAll){ b.heroes.forEach((x,j)=>{ if(j!==i&&x.hp>0) x.sp=Math.min(SP_MAX,x.sp+ef.spAll); }); e.spAll=ef.spAll; parts.push(`동료 전원 SP +${ef.spAll}`); }
   if(ef.mark){ o.mark=2; e.mark=true; parts.push('약점 표식 (받는 피해 +25%)'); }
@@ -1117,24 +1128,27 @@ function bossTurn(b){
   if(o.stun>0){ e.skip=true; e.m='stun'; o.stun--; }
   else{
     fill(b); const m=o.queue.shift(); e.m=m;
-    const r=(m==='swipe'||m==='wave'||m==='charge')&&o.rage?1.3:1; if(r>1){ o.rage=0; e.raged=true; }
-    if(m==='swipe'){
-      const j=targetOf(b);
-      if(j>=0){ if(has(b,'lash')){ e.hits.push(hurtHero(b,j,45*r)); if(b.heroes[j].hp>0) e.hits.push(hurtHero(b,j,45*r)); } else e.hits.push(hurtHero(b,j,b.def.pw.swipe*r)); }
+    const r=isHit(m)&&o.rage?1.3:1; if(r>1){ o.rage=0; e.raged=true; }
+    if(m==='swipe'||m==='charge'){
+      const tg=aimOf(b), pw=b.def.pw[m];
+      e.row=b.heroes[tg[0]]?b.heroes[tg[0]].row:o.row; e.cover=tg.length===1&&!!(b.heroes[tg[0]].guard||b.heroes[tg[0]].taunt);
+      if(m==='charge') b.stats.bigs++;
+      tg.forEach(j=>{ if(m==='swipe'&&has(b,'lash')){ e.hits.push(hurtHero(b,j,pw*.6*r)); if(b.heroes[j].hp>0) e.hits.push(hurtHero(b,j,pw*.6*r)); } else e.hits.push(hurtHero(b,j,pw*r)); });
+      if(m==='charge'&&e.hits.length&&e.hits.every(h=>h.red&&!h.down)){ e.perfect=true; b.stats.blocked++; }
+      rollRow(b);
     }else if(m==='wave'){
       b.stats.bigs++;
       const alive=b.heroes.map((h,j)=>h.hp>0?j:-1).filter(j=>j>=0);
       const covered=alive.every(j=>b.heroes[j].guard||b.heroes[j].brace||b.heroes[j].ward>0);
       alive.forEach(j=>e.hits.push(hurtHero(b,j,b.def.pw.wave*(has(b,'tide')?1.4:1)*r)));
       if(covered&&!e.hits.some(x=>x.down)){ e.perfect=true; b.stats.blocked++; }
-    }else if(m==='charge'){
-      b.stats.bigs++;
-      const j=targetOf(b); if(j>=0){ const h=hurtHero(b,j,b.def.pw.charge*r); e.hits.push(h); if(h.red&&!h.down){ e.perfect=true; b.stats.blocked++; } }
     }else if(m==='gaze'){
       b.stats.gazes++; fill(b);
       if(o.queue[0]==='br') o.queue[0]=rng(b)<.5?'wave':'charge';
       e.next=o.queue[0];
     }else if(m==='shell'){ o.shell=true; }
+    /* guard, brace and taunt hold until the boss actually attacks, however many turns the hero gets before that */
+    if(isHit(m)) b.heroes.forEach(h=>{ h.guard=false; h.brace=false; h.taunt=false; });
   }
   if(o.mark>0) o.mark--;
   if(o.vuln>0) o.vuln--;
@@ -1146,7 +1160,7 @@ function mobTurn(b,j){
   const m=b.mobs[j], o=b.boss, e={t:'mob',j,kind:m.kind,hits:[]};
   if(m.kind==='heal'){ const v=Math.min(m.pw,o.max-o.hp); o.hp+=v; e.heal=v; }
   else if(m.kind==='buff'){ o.rage=1; e.buff=true; }
-  else{ const t=targetOf(b); if(t>=0) e.hits.push(hurtHero(b,t,m.pw)); }
+  else{ const t=mobTarget(b); if(t>=0) e.hits.push(hurtHero(b,t,m.pw)); }
   return e;
 }
 function step(b,ov,tg){
@@ -1171,20 +1185,25 @@ function sprOf(job){ return SPRITES[HERO_DB[job].spr]; }
 
 /* ---------- profile & persistence ---------- */
 const $=s=>document.querySelector(s);
-const PROF_KEY='mallow-profile-v9', RULE_KEY='mallow-rules-v9', SET_KEY='mallow-settings-v7', LOG_KEY='mallow-lastlog-v9', TGT_KEY='mallow-target-v9';
-const MAX_LVL=20, JOB_LVL=5, TUTORIAL_STAGES=3, EQUIP_SLOTS=3;
+const PROF_KEY='mallow-profile-v10', RULE_KEY='mallow-rules-v10', SET_KEY='mallow-settings-v8', LOG_KEY='mallow-lastlog-v10', TGT_KEY='mallow-target-v10';
+/* stages 1-2 are hand-played tutorials; clearing stage 2 opens auto battle */
+const MAX_LVL=20, JOB_LVL=5, TUTORIAL_STAGES=2, EQUIP_SLOTS=3;
 /* a new wanderer joins after the first clear of these stages */
 const RECRUITS={1:'세오',2:'루카',4:'미르',6:'소담'};
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function load(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
 function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 function makeChar(uid,name){ return {uid,name,job:'wanderer',lvl:1,exp:0,learned:['w_bandage','w_stone','w_brace'],equip:['w_bandage','w_stone','w_brace'],gear:{wpn:null,arm:null,acc:null}}; }
-function defaultProfile(){ return {gold:0,stones:4,items:[],nextItem:1,nextUid:3,chars:[makeChar('c1','아린'),makeChar('c2','도윤')],party:['c1','c2'],stage:1,cleared:{},best:{},introSeen:false,autoOpen:false,jobNotified:{}}; }
+function defaultProfile(){ return {gold:0,stones:4,items:[],nextItem:1,nextUid:3,chars:[makeChar('c1','아린'),makeChar('c2','도윤')],party:['c1','c2'],rows:{c1:'F',c2:'B'},stage:1,cleared:{},tips:{},autoOpen:false,jobNotified:{}}; }
 function cloneRules(r){ return r.map(x=>[x[0],x[1]]); }
 function validRuleSet(r){ return Array.isArray(r)&&r.length===RULE_SLOTS&&r.every(x=>Array.isArray(x)&&CONDS.some(c=>c.id===x[0])&&SKILLS[x[1]]); }
 let prof=Object.assign(defaultProfile(),load(PROF_KEY)||{});
 if(!Array.isArray(prof.chars)||!prof.chars.length) prof=defaultProfile();
 prof.party=prof.party.filter(u=>prof.chars.some(c=>c.uid===u)); if(!prof.party.length) prof.party=[prof.chars[0].uid];
+/* front row (next to the boss) or back row; at most two of the party in each */
+function rowOf(uid){ return prof.rows[uid]==='B'?'B':'F'; }
+function fixRows(){ const n={F:0,B:0}; prof.party.forEach(u=>{ let r=rowOf(u); if(n[r]>=2) r=r==='F'?'B':'F'; prof.rows[u]=r; n[r]++; }); }
+fixRows();
 const rules=load(RULE_KEY)||{}, targets=load(TGT_KEY)||{};
 function ensureChar(c){ ['w_stone','w_brace'].forEach(id=>{ if(!c.learned.includes(id)){ c.learned.push(id); if(c.equip.length<EQUIP_SLOTS) c.equip.push(id); } }); if(!validRuleSet(rules[c.uid])) rules[c.uid]=cloneRules(DEFAULT_RULES[c.job]); if(targets[c.uid]!=='boss') targets[c.uid]='mob'; }
 prof.chars.forEach(ensureChar);
@@ -1201,19 +1220,20 @@ function charById(uid){ return prof.chars.find(c=>c.uid===uid); }
 function charStats(c){
   const hd=HERO_DB[c.job], lv=1+.06*(c.lvl-1);
   const g=s=>c.gear[s]?itemById(c.gear[s]):null, w=g('wpn'), a=g('arm'), x=g('acc');
-  return {uid:c.uid,job:c.job,name:c.name,maxhp:Math.round(hd.hp*lv*(1+(a?a.val:0)/100)),dmg:+(lv*(1+(w?w.val:0)/100)).toFixed(3),spd:hd.spd+(x?x.val:0),lvl:c.lvl,skills:[hd.basic,...c.equip]};
+  return {uid:c.uid,job:c.job,name:c.name,row:rowOf(c.uid),maxhp:Math.round(hd.hp*lv*(1+(a?a.val:0)/100)),dmg:+(lv*(1+(w?w.val:0)/100)).toFixed(3),spd:hd.spd+(x?x.val:0),lvl:c.lvl,skills:[hd.basic,...c.equip]};
 }
 function expNeed(l){ return 40*l; }
 /* skills a character can ever learn: wanderer skills + their current job's skills */
 function skillPool(c){ return c.job==='wanderer'?HERO_DB.wanderer.skills.slice():[...HERO_DB[c.job].skills,...HERO_DB.wanderer.skills]; }
 function learnCost(id){ const lv=SKILLS[id].lv; return lv<=4?2:lv<=6?4:6; }
-function rewardFor(stage,muts,stars,won){
+/* EXP is tuned so first clears of stages 1-4 bring the starting pair to Lv5 (job change) right after stage 4 */
+function rewardFor(stage,muts,won){
   const mul=1+.15*muts;
   if(!won) return {gold:Math.round(10+8*stage),stones:1,exp:Math.round(20+12*stage)};
-  return {gold:Math.round((30+25*stage)*mul)+stars*10,stones:Math.round((1+stage*.6)*mul)+stars,exp:Math.round((55+35*stage)*(1+.1*stars))};
+  return {gold:Math.round((30+25*stage)*mul),stones:Math.round((1+stage*.6)*mul)+1,exp:Math.round((40+30*stage)*mul)};
 }
-function rollItem(stage,stars,rand){
-  if(rand()>.45+stars*.1) return null;
+function rollItem(stage,rand){
+  if(rand()>.6) return null;
   const slot=['wpn','arm','acc'][Math.floor(rand()*3)], t=Math.max(0,stage-5);
   const r=rand(), tier=r<.04+t*.07?3:r<.25+t*.08?2:1;
   return {slot,tier,val:GEAR_VAL[slot][tier]};
@@ -1242,7 +1262,7 @@ function mutCount(stage){ return STAGES[stage-1].muts||0; }
 function maxStage(){ let n=1; while(n<STAGES.length&&prof.cleared[n]) n++; return n; }
 function bossShort(){ return battle.def.name.split(' ').pop(); }
 function isTutorial(){ return battle&&battle.stage<=TUTORIAL_STAGES; }
-function isManual(){ return settings.manual||isTutorial(); }
+function isManual(){ return settings.manual||isTutorial()||!prof.autoOpen; }
 const MOVE_NAME={swipe:'공격',gaze:'응시',wave:'광역 공격',charge:'돌진',br:'광역 또는 돌진',shell:'껍질 닫기',stun:'기절'};
 function moveName(m){ return battle&&battle.def.gk?BOSS_MOVES[m]:MOVE_NAME[m]; }
 function randMuts(){ const pool=MUTS.map(m=>m.id), want=mutCount(prof.stage); const out=[]; while(out.length<want){ const m=pool[Math.floor(Math.random()*pool.length)]; if(!out.includes(m)) out.push(m); } return out; }
@@ -1252,16 +1272,26 @@ function makeCfg(muts,seed){
 }
 
 /* ---------- stage rendering ---------- */
+/* party grid: left column = front row (next to the boss), right column = back row */
 function buildParty(){
-  $('#party').innerHTML=battle.heroes.map((h,i)=>{ const hd=HERO_DB[h.id], c=charById(h.uid);
-    return `<div class="unit" data-unit="${i}"><div class="unit-spr"><img class="spr" src="${sprOf(h.id)}" alt="${h.name}"><span class="lv">Lv${c?c.lvl:1}</span><span class="st"></span></div>
-    <div class="nm">${h.name}<small style="color:var(--muted-2);font-weight:700;margin-left:3px">${hd.name}</small></div><div class="bar hp"><div></div></div><div class="bar sp"><div></div></div>
+  const n={F:0,B:0};
+  $('#party').innerHTML='<span class="rowlab" style="grid-column:1">전열</span><span class="rowlab" style="grid-column:2">후열</span>'+battle.heroes.map((h,i)=>{ const c=charById(h.uid), col=h.row==='B'?2:1, r=2+n[h.row]++;
+    return `<div class="unit" data-unit="${i}" style="grid-column:${col};grid-row:${r}"><div class="unit-spr"><img class="spr" src="${sprOf(h.id)}" alt="${h.name}"><span class="lv">Lv${c?c.lvl:1}</span><span class="st"></span></div>
+    <div class="nm">${h.name}</div><div class="bar hp"><div></div></div><div class="bar sp"><div></div></div>
     <div class="bar atb" title="행동 게이지"><div></div></div>
-    <div class="nums mono"><span class="hpn"></span><span class="spn"></span><span class="spd" style="color:#a8914a">⚡${h.spd}</span></div></div>`; }).join('');
+    <div class="nums mono"><span class="hpn"></span><span class="spn"></span></div></div>`; }).join('');
   units.length=0; document.querySelectorAll('.unit').forEach(u=>units[+u.dataset.unit]=u);
 }
+/* heroes the boss's next move will hit, for the 🎯 marks */
+function aimedSet(s){
+  if(!battle||battle.over||s.stun>0) return new Set();
+  const t=s.q[0]; if(t==='wave') return new Set(s.h.map((h,j)=>h.hp>0?j:-1).filter(j=>j>=0));
+  return t==='swipe'||t==='charge'||t==='br'?new Set(s.aim):new Set();
+}
+function aimText(s){ const j=s.aim[0]; if(j==null) return '-'; const h=s.h[j]; return s.aim.length===1&&(h.guard||h.taunt)?hn(j):battle.heroes[j].row==='F'?'전열':'후열'; }
 function renderHeroes(s){
   lastSnap=s; queueMicrotask(renderSkillPanel);
+  const aimed=aimedSet(s);
   s.h.forEach((h,i)=>{
     const u=units[i]; if(!u) return; const r=h.hp/h.max;
     const hp=u.querySelector('.bar.hp'); hp.firstElementChild.style.width=r*100+'%'; hp.classList.toggle('low',r<=.35);
@@ -1270,17 +1300,18 @@ function renderHeroes(s){
     const ab=u.querySelector('.bar.atb'), af=ab.firstElementChild;
     af.style.transitionDuration=''; af.style.width=(h.hp>0?Math.min(100,Math.max(0,h.g)):0)+'%'; ab.classList.remove('ready'); u.classList.remove('turn');
     u.querySelector('.st').textContent=(h.guard?'🛡️':'')+(h.brace?'🧱':'')+(h.taunt?'📣':'')+(h.ward?'🌙':'')+(h.insp?'🎵':'');
-    u.classList.toggle('dead',h.hp<=0); u.classList.toggle('guarding',h.guard||h.taunt||h.brace); u.classList.toggle('warded',h.ward>0&&h.hp>0);
-    if(isTutorial()&&h.hp>0&&r<=.5) coach('low',`🧭 ${hn(i)}의 HP가 절반 아래예요. 응급 붕대(🩹)로 회복하거나 버티기(🧱)로 피해를 줄여요.`);
+    u.classList.toggle('dead',h.hp<=0); u.classList.toggle('guarding',h.guard||h.taunt||h.brace); u.classList.toggle('warded',h.ward>0&&h.hp>0); u.classList.toggle('aimed',aimed.has(i));
+    if(saidStart&&isManual()&&h.hp>0&&r<=.5) coach('low',`.unit[data-unit="${i}"]`,`${hn(i)}의 HP가 낮아요!\n🩹 붕대로 회복해요.`);
   });
 }
 function statusOf(s){
-  if(s.stun>0) return ['break','💫 BREAK · 다음 차례 쉼'];
+  if(s.stun>0) return ['break','💫 BREAK'];
   const t=s.q[0];
-  if(t==='gaze') return s.p2&&!s.mark?['alert','👁️ 각성 응시 · 표식 필요']:['chance','👁️ 응시 · 끊을 기회'];
-  if(t==='wave'||t==='charge'||t==='br') return ['alert',`${BOSS_ICON[t]} ${moveName(t)} 예고`];
-  if(t==='shell') return ['calm','🐚 껍질 닫기 예고'];
-  return ['calm',`🐙 ${moveName('swipe')} → ${s.tgt>=0?hn(s.tgt):'-'}`];
+  if(t==='gaze') return s.p2&&!s.mark?['alert','👁️ 응시 · 표식 필요']:['chance','👁️ 응시 · 끊을 기회'];
+  if(t==='wave') return ['alert',`🌊 ${moveName(t)} → 전원`];
+  if(t==='charge'||t==='br') return ['alert',`${BOSS_ICON[t]} ${moveName(t)} → ${aimText(s)}`];
+  if(t==='shell') return ['calm','🐚 껍질 닫기'];
+  return ['calm',`🐙 공격 → ${aimText(s)}`];
 }
 function renderBoss(s){
   $('#bossHPText').textContent=`${s.bhp} / ${s.bmax}`;
@@ -1294,17 +1325,33 @@ function renderBoss(s){
   const pill=$('#bossStatus'); pill.className='boss-status '+cls; pill.textContent=txt;
   $('#debuffs').innerHTML=(s.stun>0?'<span class="db stun">💫 기절</span>':'')+(s.shell?'<span class="db shell">🐚 껍질</span>':'')+(s.rage?'<span class="db vuln">😾 강화</span>':'')+(s.mark?`<span class="db mark">◎ 표식 ${s.mark}</span>`:'')+(s.vuln?`<span class="db vuln">🔻 약화 ${s.vuln}</span>`:'')+(s.poison?`<span class="db poison">☠ 독 ${s.poison}</span>`:'');
   const bf=$('#bossAtb>div'); bf.style.transitionDuration=''; bf.style.width=Math.min(100,Math.max(0,s.bg))+'%'; $('#bossAtb').classList.remove('ready');
-  $('#bossSpd').textContent=`⚡${s.bspd}`;
-  if(!$('#speed')){ $('#order').innerHTML='<span class="olab">BOSS STAGE</span><span class="sep"></span><button class="speed" id="logBtn" aria-label="전투 로그">📜</button><button class="speed" id="speed" aria-label="전투 속도">×'+speed+'</button>'; $('#speed').onclick=cycleSpeed; $('#logBtn').onclick=openLog; }
-  $('#roundInfo').innerHTML=`${STAGES[battle.stage-1].name} · 보스 <b class="mono">${s.round}</b>/${MAX_ROUND}턴<span class="best">${[0,1,2].map(n=>`<span class="${n<(prof.best[battle.stage]||0)?'on':''}">★</span>`).join('')}</span>`;
+  if(!$('#speed')){ $('#order').innerHTML='<span class="sep"></span><button class="speed" id="logBtn" aria-label="전투 로그">📜</button><button class="speed" id="speed" aria-label="전투 속도">×'+speed+'</button>'; $('#speed').onclick=cycleSpeed; $('#logBtn').onclick=openLog; }
+  $('#roundInfo').innerHTML=`${STAGES[battle.stage-1].name} · 턴 <b class="mono">${s.round}</b>/${MAX_ROUND}`;
   (s.mobs||[]).forEach((m,j)=>{
     const el=mobEl(j); if(!el) return;
     el.querySelector('.bar.mhp>div').style.width=m.hp/m.max*100+'%';
     const af=el.querySelector('.bar.atb>div'); af.style.transitionDuration=''; af.style.width=(m.hp>0?Math.min(100,Math.max(0,m.g)):0)+'%';
     el.classList.toggle('dead',m.hp<=0||battle.over==='win'); el.classList.remove('turn');
   });
+  renderFocus();
   if(!saidHalf&&battle.def.talk&&!battle.over&&s.bhp<=s.bmax/2&&s.bhp>0){ saidHalf=true; bossSay(battle.def.talk.half); }
-  if(isTutorial()&&!battle.over&&s.stun===0&&(t==='wave'||t==='charge')) coach('big',`🧭 보스 아래 예고를 보세요! ${BOSS_ICON[t]} ${moveName(t)}이 와요. 버티기(🧱)를 쓰면 피해가 절반이에요.`);
+  if(saidStart&&!battle.over){
+    if(s.stun>0) coach('break','#bossWrap','💫 BREAK!\n보스가 한 차례 쉬고\n받는 피해가 30% 늘어요.');
+    else if(t==='gaze') coach('gaze','#bossStatus','👁️ 보스가 응시하려 해요!\n다음엔 큰 공격이 와요.\n🪨 돌팔매로 맞히면 끊을 수 있어요.');
+    else if(t==='wave'||t==='charge') coach('big','#bossStatus',`큰 공격 예고!\n🧱 버티기는 보스가 공격할 때까지 유지돼요.`);
+    if(s.shell) coach('shell','#bossWrap','🐚 껍질을 닫았어요.\n다음 차례까지 받는 피해가 절반이에요.');
+  }
+}
+/* focus fire: tap an enemy during auto battle and every attack goes there first */
+function renderFocus(){
+  const f=battle&&!battle.over?battle.focus:null;
+  $('#bossWrap').classList.toggle('focus',f==='B');
+  document.querySelectorAll('#mobs .mob').forEach(el=>{ const j=+el.dataset.m; el.classList.toggle('focus',f===j&&battle.mobs[j].hp>0); });
+}
+function setFocus(t){
+  if(!inBattle()||isManual()) return;
+  battle.focus=battle.focus===t?null:t; renderFocus();
+  toast(battle.focus==null?'집중 공격 해제':`🎯 ${tgtName(battle,t)} 집중 공격`);
 }
 function mobEl(j){ return document.querySelector(`#mobs .mob[data-m="${j}"]`); }
 function buildMobs(){
@@ -1318,25 +1365,32 @@ function bossSay(t){
   fxEl.appendChild(d); setTimeout(()=>d.remove(),3100);
   addLog(`💬 <b>${battle.def.name}</b>: “${t}”`,'boss');
 }
-/* tutorial coach: one tip per kind per battle, only on tutorial stages.
-   Tips queue up and stay until closed, and the battle waits while one is open.
-   Turn tips (your turn / SP / pick a target) don't block and are replaced by the next tip. */
-const TURN_TIPS=['wait','sp','tgt'];
-let coachSeen={}, coachQ=[], coachCur=null;
-function coach(kind,text){
-  if(!isTutorial()||coachSeen[kind]) return;
-  coachSeen[kind]=true; coachQ.push({kind,text});
-  if(!coachCur||TURN_TIPS.includes(coachCur.kind)) nextCoach();
+/* tutorial spotlight: each tip shows once per profile. Everything but the named element is dimmed and
+   a tap anywhere moves on; the battle waits while a tip is open. Tips never start while another tab is open. */
+let coachQ=[], coachCur=null;
+function coach(kind,sel,text){
+  if(prof.tips[kind]||$('#screen-battle').hidden) return;
+  prof.tips[kind]=true; saveProf();
+  coachQ.push({sel,text}); if(!coachCur) nextCoach();
 }
 function nextCoach(){
-  const c=$('#coach'), it=coachQ.shift(); coachCur=it||null;
-  if(!it){ c.hidden=true; return; }
-  const turn=TURN_TIPS.includes(it.kind);
-  c.innerHTML=`<span>${it.text}</span>${turn?'<button aria-label="안내 닫기">✕</button>':'<button class="ok">알겠어요</button>'}`; c.classList.toggle('top',it.kind==='tgt'); c.hidden=false; retrigger(c,'show');
-  c.querySelector('button').onclick=nextCoach;
+  coachCur=coachQ.shift()||null;
+  $('#spot').hidden=!coachCur; if(coachCur) placeSpot();
 }
-function coachBlocking(){ return !!coachCur&&!TURN_TIPS.includes(coachCur.kind); }
-function clearCoach(){ coachQ=[]; coachCur=null; $('#coach').hidden=true; }
+function placeSpot(){
+  if(!coachCur) return;
+  const ph=$('.phone').getBoundingClientRect(), hole=$('#spotHole'), msg=$('#spotMsg'), el=coachCur.sel&&document.querySelector(coachCur.sel), r=el&&el.getBoundingClientRect();
+  msg.innerHTML=coachCur.text.replace(/\n/g,'<br>'); retrigger(msg,'show');
+  const on=!!(r&&r.width); hole.hidden=!on; $('#spot').classList.toggle('full',!on);
+  if(!on){ msg.style.top='38%'; msg.style.bottom=''; return; }
+  const pad=6; Object.assign(hole.style,{left:r.left-ph.left-pad+'px',top:r.top-ph.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
+  if(r.top-ph.top>ph.bottom-r.bottom){ msg.style.top=''; msg.style.bottom=(ph.bottom-r.top+pad+16)+'px'; }
+  else{ msg.style.bottom=''; msg.style.top=(r.bottom-ph.top+pad+16)+'px'; }
+}
+function coachBlocking(){ return !!coachCur; }
+function clearCoach(){ coachQ=[]; coachCur=null; $('#spot').hidden=true; }
+$('#spot').onclick=nextCoach;
+addEventListener('resize',placeSpot);
 /* gauges run at each unit's speed until the first one reaches 100%; that unit acts next */
 function animateFill(){
   const b=battle, us=actors(b);
@@ -1361,7 +1415,8 @@ function renderMuts(){
 }
 function renderWallet(){ $('#wGold').textContent=prof.gold; $('#wStone').textContent=prof.stones; }
 
-/* ---------- skill tabs: one tab per character; tap to read, and in manual mode use it on that character's turn ---------- */
+/* ---------- skill tabs: one tab per character. Tapping a skill shows what it does first; on that character's
+   manual turn an attack then asks for a target, anything else is used by tapping it again (or ✔ 사용) ---------- */
 let tgtPick=null, pendingTgt=null, skTab=0, skPick=null, waitHero=-1, lastSnap=null, flashState=null;
 function srcText(rule,cond){ return rule>=0?`패턴 ${rule+1} · ${cond}`:rule===-1?'기본 공격 · 맞는 패턴 없음':'직접 선택'; }
 function inBattle(){ return battle&&!(battle.over&&!evq.length); }
@@ -1374,13 +1429,12 @@ function renderSkillPanel(){
   const h=battle.heroes[skTab], sp=(hs[skTab]||h).sp, waiting=waitChoice&&waitHero===skTab;
   $('#mSkills').className='mskills'+(waiting?' choose':'');
   $('#mSkills').innerHTML=h.sk.map((s,k)=>{
-    const ok=h.hp>0&&s.cost<=sp&&valid(battle,skTab,k);
+    const ok=h.hp>0&&s.cost<=sp;
     const last=flashState&&flashState.i===skTab&&flashState.k===k&&Date.now()-flashState.t<900;
     return `<button class="sk t-${s.ty} ${ok?'':'dim'} ${skPick===k?'sel':''} ${last?'last':''}" data-k="${k}"><span class="ic">${s.pic}</span><span class="tx"><b>${s.n}</b><small>${s.cost?'SP '+s.cost:'기본'}</small></span></button>`; }).join('');
-  let d;
-  if(tgtPick!=null&&waiting&&h.sk[tgtPick]){ const s=h.sk[tgtPick]; d=`🎯 <b>${s.pic} ${s.n}</b> — 누구를 공격할까요? 위에서 보스나 졸개를 눌러요.`; }
-  else if(skPick!=null&&h.sk[skPick]){ const s=h.sk[skPick]; d=`${s.pic} <b>${s.n}</b> · ${s.cost?'SP '+s.cost:'기본'} — ${s.tip}`; }
-  else d=waiting?`✋ <b>${h.name}</b> 차례예요. 쓸 스킬을 누르세요.`:isTutorial()?'튜토리얼: 캐릭터 차례가 오면 스킬을 눌러 사용해요. 지금 누르면 설명이 나와요.':isManual()?'수동 모드: 캐릭터 차례가 오면 스킬을 눌러 사용해요. 지금 누르면 설명만 나와요.':'스킬을 누르면 설명이 나와요. 자동 전투는 작전 탭의 패턴대로 싸워요.';
+  let d='';
+  if(skPick!=null&&h.sk[skPick]){ const s=h.sk[skPick]; d=`${s.pic} <b>${s.n}</b> · ${s.cost?'SP '+s.cost:'기본'} — ${s.tip}${waiting?(tgtPick!=null?'<br><em>🎯 공격할 적을 눌러요</em>':'<br><em>👆 한 번 더 누르면 사용</em>'):''}`; }
+  else if(waiting) d=`✋ <b>${h.name}</b> 차례`;
   $('#skDesc').innerHTML=d;
 }
 function flashSkill(i,k){
@@ -1392,17 +1446,26 @@ function flashSkill(i,k){
 $('#ctabs').onclick=e=>{ const b=e.target.closest('[data-i]'); if(!b) return; skTab=+b.dataset.i; skPick=null; setTgtPick(null); renderSkillPanel(); };
 $('#mSkills').onclick=e=>{
   const b=e.target.closest('.sk'); if(!b) return;
-  const k=+b.dataset.k, i=skTab, h=battle.heroes[i], s=h.sk[k];
+  const k=+b.dataset.k, i=skTab, h=battle.heroes[i], s=h.sk[k], mine=isManual()&&inBattle()&&h.hp>0&&waitChoice&&waitHero===i;
+  if(mine&&skPick===k&&!needsTarget(s)){ useSkill(); return; }
   skPick=k; setTgtPick(null);
-  if(isManual()&&inBattle()&&h.hp>0&&waitChoice&&waitHero===i){
-    if(!usable(battle,i,k)){ toast(s.cost>h.sp?'SP가 부족해요 · 기본기는 SP 없이 쓸 수 있어요':'지금은 쓸 수 없어요'); renderSkillPanel(); return; }
-    if(needsTarget(s)){ setTgtPick(k); coach('tgt','🧭 누구를 공격할까요? 노란 점선으로 표시된 보스나 졸개를 눌러요. 다른 스킬을 누르면 바꿀 수 있어요.'); renderSkillPanel(); return; }
-    commitChoice(k,null); return;
+  if(mine){
+    if(s.cost>h.sp){ toast('SP가 모자라요 · 기본기는 SP 0'); renderSkillPanel(); setButtons(); return; }
+    if(needsTarget(s)) setTgtPick(k);
+    renderSkillPanel(); setButtons();
+    coach('desc','#skDesc','먼저 스킬 설명이 나와요.');
+    if(needsTarget(s)) coach('tgt','#bossWrap','공격할 적을 눌러요.'); else coach('use','#fightBtn','한 번 더 누르면 사용해요.');
+    return;
   }
   renderSkillPanel();
 };
-/* manual mode from stage 2: single-target attacks ask who to hit while minions are alive */
-function needsTarget(s){ return battle.stage>=2&&s.ef.dmg&&!s.ef.aoe&&battle.mobs.some(m=>m.hp>0); }
+/* single-target attacks ask who to hit (the boss is always a choice); aoe and self skills don't */
+function needsTarget(s){ return !!s.ef.dmg&&!s.ef.aoe; }
+function useSkill(){
+  if(!waitChoice||skPick==null) return;
+  const h=battle.heroes[waitHero], s=h.sk[skPick];
+  if(s&&s.cost<=h.sp&&!needsTarget(s)) commitChoice(skPick,null);
+}
 function setTgtPick(k){
   tgtPick=k;
   $('#bossAvatar').classList.toggle('tgtable',k!=null);
@@ -1410,17 +1473,11 @@ function setTgtPick(k){
 }
 function commitChoice(k,t){
   setTgtPick(null);
-  pendingChoice=k; pendingTgt=t; waitChoice=false; waitHero=-1; playing=true;
-  if(coachCur&&!coachBlocking()) nextCoach();
+  pendingChoice=k; pendingTgt=t; waitChoice=false; waitHero=-1; skPick=null; playing=true;
   setButtons(); renderSkillPanel(); if(!tid) pump();
 }
-$('#bossAvatar').addEventListener('click',()=>{ if(tgtPick!=null) commitChoice(tgtPick,'B'); });
-$('#mobs').addEventListener('click',e=>{ const m=e.target.closest('.mob'); if(!m||tgtPick==null) return; const j=+m.dataset.m; if(battle.mobs[j].hp>0) commitChoice(tgtPick,j); });
-function bossMoveDesc(m){
-  const d=battle.boss.dmg*(battle.boss.p2?1.2:1);
-  const pw=battle.def.pw;
-  return {swipe:has(battle,'lash')?`단일 피해 ${Math.round(45*d)} × 2`:`단일 피해 ${Math.round(pw.swipe*d)}`,gaze:'다음 차례 강공격 준비 · 끊을 수 있음',wave:`전원 피해 ${Math.round((pw.wave||0)*(has(battle,'tide')?1.4:1)*d)}`,charge:`단일 피해 ${Math.round((pw.charge||0)*d)}`,br:'응시가 끝나면 정해져요',shell:'다음 차례까지 받는 피해 절반',stun:'BREAK · 이번 차례 쉼'}[m];
-}
+$('#bossAvatar').addEventListener('click',()=>{ if(tgtPick!=null) commitChoice(tgtPick,'B'); else setFocus('B'); });
+$('#mobs').addEventListener('click',e=>{ const m=e.target.closest('.mob'); if(!m) return; const j=+m.dataset.m; if(battle.mobs[j].hp<=0) return; if(tgtPick!=null) commitChoice(tgtPick,j); else setFocus(j); });
 function showNext(){ renderSkillPanel(); }
 
 /* ---------- log: kept for the battle log sheet ---------- */
@@ -1621,7 +1678,7 @@ function playBoss(e){
       if(e.m==='charge'&&e.perfect) later(300,()=>banner('막아냈다!','perfect','돌진을 받아냈다'));
     });
     e.hits.forEach(h=>addLog(`${BOSS_ICON[e.m]} ${nm}: <strong>${hn(h.j)}</strong> ${h.v} 피해${h.red?` (${h.red})`:''}`,'boss'));
-    if(e.m==='charge'){ const h=e.hits[0]; addSum('💥',`돌진 → ${h?hn(h.j):'-'}`,h&&h.down?'✗ 쓰러짐':e.perfect?'✓ 막음':'△ 피해',h&&h.down?'bad':e.perfect?'ok':'mid'); }
+    if(e.m==='charge'){ const dn=e.hits.some(h=>h.down); addSum('💥',`돌진 → ${e.cover&&e.hits[0]?hn(e.hits[0].j):e.row==='B'?'후열':'전열'}`,dn?'✗ 쓰러짐':e.perfect?'✓ 막음':'△ 피해',dn?'bad':e.perfect?'ok':'mid'); }
     logDowns(e); return;
   }
   if(e.m==='wave'){
@@ -1656,10 +1713,8 @@ function pump(){
     if(heroTurn&&isManual()&&pendingChoice==null){
       playing=false; waitChoice=true; waitHero=nx; skTab=nx; skPick=null; setButtons(); renderSkillPanel();
       const h=battle.heroes[nx];
-      if(isTutorial()){
-        if(!coachSeen.wait) coach('wait',`🧭 지금 ${h.name} 차례예요! 아래에서 스킬을 누르면 바로 써요. 지금 쓸 수 없는 스킬(SP 부족, HP가 가득 찬데 회복 등)은 흐리게 보여요.`);
-        else if(h.sp<15) coach('sp',`🧭 ${h.name}의 SP가 부족해요. 기본기(${h.sk[0].pic} ${h.sk[0].n})는 SP 없이 쓸 수 있고, 차례가 끝날 때마다 SP가 10씩 차요.`);
-      }
+      coach('wait','#mSkills',`${h.name} 차례예요!\n아래 스킬을 눌러 보세요.`);
+      if(h.sp<15) coach('sp','#mSkills',`SP가 모자라요.\n기본기(${h.sk[0].pic})는 SP 없이 쓸 수 있어요.`);
       return;
     }
     filled=false;
@@ -1673,26 +1728,27 @@ function setButtons(){
   const b=$('#fightBtn');
   const idle=!battle||!$('#prep').hidden;
   b.disabled=idle;
-  if(waitChoice) b.textContent='스킬 선택 대기';
+  if(waitChoice){ const s=skPick!=null&&battle.heroes[waitHero].sk[skPick], ready=!!s&&!needsTarget(s); b.textContent=ready?'✔ 사용':s?'🎯 적을 눌러요':'스킬을 골라요'; b.disabled=!ready; }
   else if(playing&&stepTarget===null) b.textContent='Ⅱ 정지';
   else if(battle&&battle.over&&!evq.length) b.textContent='결과 보기';
   else b.textContent=battle&&battle.actions>0?'▶ 계속':'▶ 진행';
   const m=$('#modeBtn'), tut=isTutorial()||!prof.autoOpen;
-  m.textContent=tut?'✋ 수동 (튜토리얼)':settings.manual?'✋ 수동':'🤖 자동'; m.classList.toggle('on',isManual()); m.disabled=tut;
+  m.textContent=tut?'✋ 수동':settings.manual?'✋ 수동':'🤖 자동'; m.classList.toggle('on',isManual()); m.disabled=tut;
 }
 function pause(){ playing=false; clearTimeout(tid); tid=null; setButtons(); }
 function start(){
   if(!battle) return;
   if(battle.over&&!evq.length){ finish(); return; }
-  if(waitChoice){ toast('아래에서 스킬을 골라 주세요'); return; }
+  if(waitChoice){ useSkill(); return; }
   stepTarget=null; playing=true; setButtons();
   if(!saidStart&&battle.actions===0){
     saidStart=true;
     if(battle.def.talk) bossSay(battle.def.talk.start);
-    const tips={1:['🧭 왼쪽 위가 보스, 오른쪽이 우리 파티예요. 빨간 줄은 체력, 파란 줄은 SP(스킬에 쓰는 힘), 금색 줄은 행동 게이지예요.','🧭 금색 게이지가 먼저 꽉 찬 쪽부터 움직여요. 속도(⚡)가 빠를수록 빨리 차요. 이번 상대는 아주 약하니 편하게 눌러 보세요.'],
-      2:['🧭 보스 옆 작은 카드는 졸개예요. 졸개도 자기 행동 게이지로 움직이며 공격해요.','🧭 이제 공격 스킬을 고르면 누구를 때릴지 고를 수 있어요. 스킬을 누른 뒤 보스나 졸개를 눌러요.'],
-      3:['🧭 늑대들은 빨라서 자주 움직여요. 돌팔매(🪨)로 맞힌 적의 행동 게이지를 깎아 순서를 늦출 수 있어요.']};
-    (tips[battle.stage]||[]).forEach((t,n)=>coach('start'+n,t));
+    const tips={1:[['boss','#bossWrap','이게 적이에요.\n빨간 줄이 체력이에요.'],['party','#party','우리 파티예요.\n초록 줄은 HP, 파란 줄은 SP예요.'],['gauge','#bossAtb','금색 게이지가 먼저 꽉 찬 쪽부터\n움직여요.'],
+        ['aim','#party','🎯 표시는 보스가 노리는 줄이에요.\n전열: 주는 피해 +20%\n후열: 받는 피해 -20%']],
+      2:[['mobs','#mobs','졸개예요.\n보스와 따로 움직이며 공격해요.']],
+      3:[['auto','#modeBtn','이제 자동 전투!\n작전 탭의 패턴대로 알아서 싸워요.'],['focus','#bossWrap','싸우는 중에 적을 누르면\n모두 그 적부터 공격해요.'],['tabs','#nav','전투 중에 다른 탭을 봐도\n전투는 계속돼요.']]};
+    (tips[battle.stage]||[]).forEach(t=>coach(...t));
     clearTimeout(tid); tid=setTimeout(pump,dur(battle.def.talk?1400:300)); return;
   }
   if(!tid) pump();
@@ -1704,7 +1760,7 @@ function clearStage(){
 }
 function setupBattle(muts,seed){
   pause(); clearStage(); evq=[]; waitChoice=false; pendingChoice=null; stepTarget=null; sumList=[]; filled=false;
-  waitHero=-1; skPick=null; skTab=0; lastSnap=null; flashState=null; saidHalf=false; saidStart=false; coachSeen={};
+  waitHero=-1; skPick=null; skTab=0; lastSnap=null; flashState=null; saidHalf=false; saidStart=false;
   if(!prof.party.length) prof.party=[prof.chars[0].uid];
   cfg=makeCfg(muts||randMuts(),seed);
   battle=newBattle(cfg); lastBhp=battle.boss.max; loggedRound=0;
@@ -1717,18 +1773,18 @@ function setupBattle(muts,seed){
 function openPrep(){ $('#prep').hidden=false; renderPrep(); setButtons(); }
 function renderPrep(){
   const st=prof.stage, maxSt=maxStage(), S=STAGES[st-1];
-  $('#mapProg').textContent=`${Object.keys(prof.cleared).filter(k=>prof.cleared[k]).length} / ${STAGES.length} 클리어`;
-  $('#mapList').innerHTML=STAGES.map((x,i)=>{ const n=i+1, open=n<=maxSt, best=prof.best[n]||0, join=RECRUITS[n]&&!prof.cleared[n]?` · 클리어 시 ${RECRUITS[n]} 합류`:'', tut=n<=TUTORIAL_STAGES?' · 튜토리얼':'';
-    return `<button class="node ${n===st?'sel':''}" data-st="${n}"${open?'':' disabled'}><span class="nic">${open?x.ic:'🔒'}</span><span><b>${n}. ${x.name}</b><small>${open?x.boss+tut+join:'앞 스테이지를 깨면 열려요'}</small></span><span class="nst">${prof.cleared[n]?'★'.repeat(best)+'☆'.repeat(3-best):''}</span></button>`; }).join('');
+  $('#mapProg').textContent=`${Object.keys(prof.cleared).filter(k=>prof.cleared[k]).length} / ${STAGES.length}`;
+  $('#mapList').innerHTML=STAGES.map((x,i)=>{ const n=i+1, open=n<=maxSt, join=RECRUITS[n]&&!prof.cleared[n]?` · 🎁 ${RECRUITS[n]}`:'', tut=n<=TUTORIAL_STAGES?' · 튜토리얼':'';
+    return `<button class="node ${n===st?'sel':''}" data-st="${n}"${open?'':' disabled'}><span class="nic">${open?x.ic:'🔒'}</span><span><b>${n}. ${x.name}</b><small>${open?x.boss+tut+join:''}</small></span><span class="nst">${prof.cleared[n]?'✓':''}</span></button>`; }).join('');
   const sel=$('#mapList .node.sel'); if(sel) sel.scrollIntoView({block:'nearest'});
-  $('#learnTip').innerHTML=`<b>${S.ic} ${S.boss}</b> · 별 3개: 보스 ${S.star}턴 안에, 아무도 쓰러지지 않고<br>📘 ${S.learn}`;
+  $('#learnTip').innerHTML=`📘 ${S.learn}`;
   $('#mutWrap').hidden=!cfg.muts.length;
   $('#mutList').innerHTML=cfg.muts.map(id=>{ const m=MUTS.find(x=>x.id===id); return `<div class="mutrow">${m.ic} <b>${m.n}</b><span>${m.d}</span></div>`; }).join('');
   $('#partyLine').innerHTML=battle.heroes.map(h=>{ const c=charById(h.uid); return `<span><img class="thumb" src="${sprOf(h.id)}" alt="${h.name}"><i>Lv${c?c.lvl:1}</i></span>`; }).join('');
-  const r=rewardFor(st,cfg.muts.length,0,true);
-  $('#rewardInfo').innerHTML=`승리 보상 🪙 <b>${r.gold}+</b> · 💎 <b>${r.stones}+</b> · EXP <b>${r.exp}+</b> · 보스 HP ${battle.boss.max}`;
+  const r=rewardFor(st,cfg.muts.length,true);
+  $('#rewardInfo').innerHTML=`보상 🪙 <b>${r.gold}</b> · 💎 <b>${r.stones}</b> · EXP <b>${r.exp}</b>`;
   $('#reroll').disabled=prof.gold<20;
-  const can=!!prof.cleared[st]&&prof.autoOpen; $('#repeatBtn').disabled=!can; $('#repeatBtn').title=can?'':'자동 전투가 열리고, 한 번 깬 스테이지만 반복할 수 있어요';
+  const can=!!prof.cleared[st]&&prof.autoOpen&&st>TUTORIAL_STAGES; $('#repeatBtn').disabled=!can; $('#repeatBtn').title=can?'':'자동 전투가 열리고, 한 번 깬 스테이지만 반복할 수 있어요';
 }
 $('#mapList').onclick=e=>{ const b=e.target.closest('[data-st]'); if(!b||b.disabled) return; prof.stage=+b.dataset.st; saveProf(); setupBattle(); renderPrep(); };
 $('#reroll').onclick=()=>{ if(prof.gold<20) return; prof.gold-=20; saveProf(); setupBattle(); renderPrep(); };
@@ -1738,111 +1794,91 @@ $('#repeatBtn').onclick=repeatRun;
 
 /* ---------- result, rewards, growth ---------- */
 function applyExp(exp){
-  const lines=[];
+  const ready=[];
   prof.party.map(charById).filter(Boolean).forEach(c=>{
-    const ups=gainExp(c,exp);
-    if(ups.length) lines.push(`${c.name} Lv${c.lvl}!`);
-    if(c.job==='wanderer'&&c.lvl>=JOB_LVL&&!prof.jobNotified[c.uid]){ prof.jobNotified[c.uid]=true; introQueue.push({title:'🎓 전직할 수 있어요!',body:jobReadyCard(c)}); }
+    gainExp(c,exp);
+    if(c.job==='wanderer'&&c.lvl>=JOB_LVL&&!prof.jobNotified[c.uid]){ prof.jobNotified[c.uid]=true; ready.push(c); }
   });
-  return lines;
+  if(ready.length) introQueue.push({title:'🎓 전직할 수 있어요!',body:jobReadyCard(ready)});
+}
+function expSnap(){ return prof.party.map(charById).filter(Boolean).map(c=>({uid:c.uid,lvl:c.lvl,exp:c.exp})); }
+function expPct(c){ return c.lvl>=MAX_LVL?100:c.exp/expNeed(c.lvl)*100; }
+/* currency, then one row per character with the EXP they got and their bar filling up, then item drops */
+function fillRewards(p,rw,before,drops){
+  $(`#${p}Cur`).innerHTML=`<span>🪙 +${rw.gold}</span><span>💎 +${rw.stones}</span>`;
+  $(`#${p}Chars`).innerHTML=before.map(x=>{ const c=charById(x.uid); if(!c) return ''; const up=c.lvl>x.lvl, job=c.job==='wanderer'&&c.lvl>=JOB_LVL;
+    return `<div class="rw-char ${up?'up':''}"><img class="thumb" src="${sprOf(c.job)}" alt=""><div><b>${c.name}</b> <small>Lv${c.lvl}</small>${up?'<span class="lvup">LEVEL UP</span>':''}${job?'<span class="lvup job">전직 가능</span>':''}<div class="expbar"><div style="width:${up?0:expPct(x)}%" data-to="${expPct(c)}"></div></div></div><span class="gain">+${rw.exp}<small>EXP</small></span></div>`; }).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(`#${p}Chars [data-to]`).forEach(d=>{ d.style.width=d.dataset.to+'%'; })));
+  $(`#${p}Items`).innerHTML=drops.map(it=>`<div class="item r${it.tier}"><span class="ii">${SLOT[it.slot].ic}</span><span class="it"><b class="tier${it.tier}">${itemName(it)}</b><small>${itemStat(it)}</small></span><span class="new">NEW</span></div>`).join('');
+}
+let resultPending=false;
+/* a battle that ends while another tab is open waits for the player to come back to the battle tab */
+function showResult(){
+  const nb=document.querySelector('[data-screen="battle"]');
+  if($('#screen-battle').hidden){ resultPending=true; nb.classList.add('badge'); return; }
+  resultPending=false; nb.classList.remove('badge');
+  $('#resultModal').hidden=false; $('#retryNew').focus();
+  if(introQueue.length) later(900,nextIntro);
 }
 function finish(){
-  playing=false; setButtons(); if(!battle||battle.done) { if(battle&&battle.done) $('#resultModal').hidden=false; return; }
+  playing=false; setButtons(); if(!battle) return; if(battle.done){ showResult(); return; }
   battle.done=true;
   const b=battle, won=b.over==='win';
   lastFired={party:b.heroes.map(h=>h.uid),fired:b.stats.fired.map(a=>a.slice())};
-  const stars=[won,won&&b.stats.down===0,won&&b.round<=b.def.star], n=stars.filter(Boolean).length;
-  const rw=rewardFor(b.stage,b.muts.length,n,won);
+  const rw=rewardFor(b.stage,b.muts.length,won), before=expSnap();
   prof.gold+=rw.gold; prof.stones+=rw.stones;
-  const levelLines=applyExp(rw.exp);
-  const loot=[`🪙 ${rw.gold}`,`💎 ${rw.stones}`,`EXP ${rw.exp}`]; let drop=null;
-  if(won){ const it=rollItem(b.stage,n,Math.random); if(it){ drop=addItem(it); } }
-  let newBest=false, joined=null, autoJustOpened=false;
+  applyExp(rw.exp);
+  const drops=[]; if(won){ const it=rollItem(b.stage,Math.random); if(it) drops.push(addItem(it)); }
+  let joined=null, autoJustOpened=false;
   const firstClear=won&&!prof.cleared[b.stage];
-  if(won){ prof.cleared[b.stage]=true; if(n>(prof.best[b.stage]||0)){ prof.best[b.stage]=n; newBest=true; } }
+  if(won) prof.cleared[b.stage]=true;
   if(firstClear){
     const name=RECRUITS[b.stage];
-    if(name){ const c=makeChar('c'+(prof.nextUid++),name); c.lvl=Math.max(1,Math.min(...prof.chars.map(x=>x.lvl))); prof.chars.push(c); ensureChar(c); saveRules(); if(prof.party.length<4) prof.party.push(c.uid); joined=c; introQueue.unshift({title:'🎉 새 동료 합류!',body:recruitCard(c)}); }
-    if(b.stage===TUTORIAL_STAGES&&!prof.autoOpen){ prof.autoOpen=true; settings.manual=false; save(SET_KEY,settings); autoJustOpened=true; introQueue.push({title:'🤖 자동 전투가 열렸어요',body:autoOpenCard()}); }
+    if(name){ const c=makeChar('c'+(prof.nextUid++),name); c.lvl=Math.max(1,Math.min(...prof.chars.map(x=>x.lvl))); prof.chars.push(c); ensureChar(c); saveRules(); if(prof.party.length<4){ prof.party.push(c.uid); fixRows(); } joined=c; }
+    if(b.stage===TUTORIAL_STAGES&&!prof.autoOpen){ prof.autoOpen=true; settings.manual=false; save(SET_KEY,settings); autoJustOpened=true; }
     if(b.stage<STAGES.length) prof.stage=b.stage+1;
   }
   saveProf();
   const stName=STAGES[b.stage-1].name;
   if(b.def.talk) later(won?600:300,()=>bossSay(won?b.def.talk.die:b.def.talk.win));
-  save(LOG_KEY,{cap:`${stName} · ${won?`승리 · 보스 ${b.round}턴 · 별 ${n}개`:(b.reason==='wipe'?'파티 전멸':'시간 초과')}`,sum:sumList,text:$('#logStore').innerHTML});
+  save(LOG_KEY,{cap:`${stName} · ${won?`승리 · 보스 ${b.round}턴`:(b.reason==='wipe'?'파티 전멸':'시간 초과')}`,sum:sumList,text:$('#logStore').innerHTML});
   showNext();
   if(!won) banner(b.reason==='wipe'?'전멸':'시간 초과','lose');
   later(won?300:1100,()=>{
-    const t=$('#resultTitle'); t.textContent=won?(n===3?'완벽한 작전!':'보스 격파!'):(b.reason==='wipe'?'파티 전멸':'시간 초과'); t.className=won?'win':'lose';
-    const st=$('#resultStars').children; [...st].forEach(x=>x.classList.remove('on'));
-    stars.forEach((ok,k)=>{ if(ok) setTimeout(()=>st[k].classList.add('on'),350+k*280); });
-    $('#resultGoals').innerHTML=[['격파',stars[0]],['전원 생존',stars[1]],[`보스 ${b.def.star}턴 이내`,stars[2]]].map(([l,ok])=>`<span class="${ok?'ok':''}">${l}</span>`).join('');
-    $('#resultLoot').innerHTML=loot.map(x=>`<span>${x}</span>`).join('')+levelLines.map(x=>`<span class="item2">⬆ ${x}</span>`).join('')+(drop?`<span class="item${drop.tier}">${SLOT[drop.slot].ic} ${itemName(drop)} · ${itemStat(drop)}</span>`:'');
-    const S=b.stats, cls=ok=>ok?'ok':'bad';
-    $('#resultRep').innerHTML=[
-      ['응시 끊기',`${S.breaks} / ${S.gazes}`,S.gazes===0||S.breaks===S.gazes],
-      ['강공격 막기',`${S.blocked} / ${S.bigs}`,S.bigs===0||S.blocked===S.bigs],
-      ['쓰러진 아군',`${S.down}명`,S.down===0],
-      ['보스 턴',`${b.round} / ${MAX_ROUND}`,won&&b.round<=b.def.star]
-    ].filter(([l])=>!(l==='응시 끊기'&&!S.gazes)&&!(l==='강공격 막기'&&!S.bigs)).map(([l,v,ok])=>`<div><span>${l}</span><b class="${cls(ok)}">${v}</b></div>`).join('');
-    const tot=Math.max(1,sum(S.dmgBy));
-    $('#resultShare').innerHTML=b.heroes.map((h,i)=>`<span style="width:${S.dmgBy[i]/tot*100}%;background:${HERO_DB[h.id].color}"></span>`).join('');
-    $('#resultLeg').innerHTML=`<span>가한 피해 ${S.dmg}</span>`+b.heroes.map((h,i)=>`<span><i style="background:${HERO_DB[h.id].color}"></i>${h.name} ${Math.round(S.dmgBy[i]/tot*100)}%</span>`).join('');
-    $('#resultHint').innerHTML='💡 '+hintFor(b,won,stars);
-    const near=$('#resultNear');
-    near.className='near';
-    near.textContent=joined?`🎉 새 동료 ${joined.name} 합류!`:autoJustOpened?'🤖 자동 전투와 작전이 열렸어요!':firstClear&&b.stage<STAGES.length?`다음 스테이지 "${STAGES[b.stage].name}"가 열렸어요`:newBest?`${stName} 최고 기록 갱신!`:(!won&&b.boss.hp<=b.boss.max*.25?`아깝다! 보스 HP ${b.boss.hp} 남음`:'');
+    const t=$('#resultTitle'); t.textContent=won?'승리!':(b.reason==='wipe'?'파티 전멸':'시간 초과'); t.className=won?'win':'lose';
+    fillRewards('result',rw,before,drops);
+    const hint=$('#resultHint'); hint.hidden=won; hint.innerHTML=won?'':'💡 '+hintFor(b);
+    $('#resultNear').textContent=joined?`🎉 새 동료 ${joined.name} 합류!`:autoJustOpened?'🤖 자동 전투가 열렸어요!':firstClear&&b.stage<STAGES.length?`🗺️ ${STAGES[b.stage].name} 열림`:(!won&&b.boss.hp<=b.boss.max*.25?`아깝다! 보스 HP ${b.boss.hp} 남음`:'');
     $('#retryNew').textContent=firstClear&&b.stage<STAGES.length?'▶ 다음 스테이지':'▶ 지도로';
-    $('#resultModal').hidden=false; $('#retryNew').focus();
-    if(introQueue.length) later(900,nextIntro);
+    showResult();
   });
 }
-function hintFor(b,won,stars){
-  const ids=b.heroes.map(h=>h.id), breaker=ids.includes('knight')?'검사의 <b>유인 외침</b>':ids.includes('lancer')?'창술사의 <b>돌진</b>':null;
-  if(b.stage<=TUTORIAL_STAGES){
-    if(!won) return STAGES[b.stage-1].learn+' 다시 하면서 경험치를 모아도 돼요.';
-    const learnable=prof.chars.some(c=>skillPool(c).some(id=>!c.learned.includes(id)&&c.lvl>=SKILLS[id].lv&&prof.stones>=learnCost(id)));
-    if(learnable) return '레벨이 올라 새 스킬을 배울 수 있어요! <b>캐릭터 탭</b>에서 강화석(💎)으로 배우면 바로 장착돼요.';
-    if(!stars[1]) return '쓰러진 동료가 있었어요. HP가 절반 아래면 응급 붕대(🩹), 큰 공격 예고엔 버티기(🧱)를 써 보세요.';
-    if(!stars[2]) return 'SP가 넉넉할 땐 돌팔매(🪨)처럼 센 스킬을 쓰면 더 빨리 끝나요.';
-    return '별 3개! 다음 스테이지로 가 보세요.';
-  }
-  if(!b.def.gk){
-    if(won&&stars.every(Boolean)) return '별 3개! 다음 스테이지로 가 보세요.';
-    if(!won) return STAGES[b.stage-1].learn+' 레벨을 올리고 스킬을 배워서 다시 도전해도 돼요.';
-    return STAGES[b.stage-1].learn;
-  }
-  if(!won){
-    if(b.stats.breaks===0&&breaker) return `<b>보스가 응시 중</b> 조건에 ${breaker}을 넣어 보세요. 응시를 끊으면 BREAK! 강공격이 취소되고 보스가 한 차례 쉬어요.`;
-    if(b.stats.breaks===0) return '응시를 끊을 동료(검사나 창술사)가 없어요. 누군가를 검사나 창술사로 전직시키면 응시를 끊을 수 있어요.';
-    if(b.stats.resist>0) return '2페이즈에선 <b>약점 표식</b>이 있어야 응시를 끊을 수 있어요. 궁수에게 <b>보스 껍질 닫힘 → 집중 조준</b>을 넣어 보세요.';
-    if(b.reason==='wipe') return '<b>보스 강공격 예정</b> 조건에 가드, 버티기, 견습 보호막을 걸어 보세요.';
-    return '레벨이나 장비가 부족할 수 있어요. 낮은 스테이지를 반복해서 경험치와 장비를 모아 보세요.';
-  }
-  if(!stars[1]) return '쓰러진 아군이 있었어요. <b>보스 강공격 예정</b>에 보호막이나 버티기를 걸어 보세요.';
-  if(!stars[2]) return '<b>보스 BREAK 중</b>에 연속 사격(1.6배)이나 심판(1.5배)을 몰아 보세요.';
-  return '별 3개! 다음 단계에 도전하거나, 반복해서 장비를 모아 보세요.';
+function hintFor(b){
+  if(b.stats.resist>0) return '각성한 보스는 ◎ 약점 표식이 있어야 응시가 끊겨요.';
+  if(b.stats.gazes>b.stats.breaks) return '👁️ 응시 예고엔 🪨 돌팔매나 📣 유인 외침으로 끊어요.';
+  if(b.reason==='time') return '시간 초과! 더 센 스킬로 빨리 깎아요.';
+  if(b.stage<=TUTORIAL_STAGES) return '다치면 🩹 붕대, 큰 공격 예고엔 🧱 버티기!';
+  return '큰 공격 예고에 🧱 버티기·🛡️ 가드를 걸거나, 레벨을 올려 보세요.';
 }
 $('#retrySame').onclick=()=>{ setupBattle(cfg.muts,cfg.seed); $('#prep').hidden=true; setButtons(); start(); };
 $('#retryNew').onclick=()=>{ setupBattle(); openPrep(); };
 $('#toStrategy').onclick=()=>{ $('#resultModal').hidden=true; goto('strategy'); };
 function repeatRun(){
-  const N=5; let wins=0, gold=0, stones=0, exp=0, starSum=0; const drops=[];
+  const N=5; let wins=0, gold=0, stones=0, exp=0; const drops=[];
   for(let n=0;n<N;n++){
     const c=makeCfg(randMuts()); const b=simulate(c), won=b.over==='win';
-    const stars=[won,won&&b.stats.down===0,won&&b.round<=b.def.star].filter(Boolean).length;
-    const rw=rewardFor(c.stage,c.muts.length,stars,won); gold+=rw.gold; stones+=rw.stones; exp+=rw.exp;
-    if(won){ wins++; starSum+=stars; const it=rollItem(c.stage,stars,Math.random); if(it) drops.push(addItem(it)); }
+    const rw=rewardFor(c.stage,c.muts.length,won); gold+=rw.gold; stones+=rw.stones; exp+=rw.exp;
+    if(won){ wins++; const it=rollItem(c.stage,Math.random); if(it) drops.push(addItem(it)); }
   }
-  prof.gold+=gold; prof.stones+=stones; const lv=applyExp(exp); saveProf();
-  $('#repeatSub').textContent=`${STAGES[prof.stage-1].name} · 지금 작전과 파티로 ${N}판을 빠르게 돌렸어요.${mutCount(prof.stage)?' 변이는 판마다 무작위예요.':''}`;
-  $('#repeatRows').innerHTML=`<div><span>승리</span><b class="${wins===N?'ok':wins?'':'bad'}">${wins} / ${N}</b></div><div><span>평균 별</span><b>${wins?(starSum/wins).toFixed(1):'-'}</b></div>`;
-  $('#repeatLoot').innerHTML=`<span>🪙 ${gold}</span><span>💎 ${stones}</span><span>EXP ${exp}</span>`+lv.map(x=>`<span class="item2">⬆ ${x}</span>`).join('')+drops.map(d=>`<span class="item${d.tier}">${SLOT[d.slot].ic} ${itemName(d)} · ${itemStat(d)}</span>`).join('');
+  const before=expSnap();
+  prof.gold+=gold; prof.stones+=stones; applyExp(exp); saveProf();
+  $('#repeatRows').innerHTML=`<div><span>${STAGES[prof.stage-1].name} 승리</span><b class="${wins===N?'ok':wins?'':'bad'}">${wins} / ${N}</b></div>`;
+  fillRewards('repeat',{gold,stones,exp},before,drops);
   $('#repeatModal').hidden=false;
 }
 $('#repeatClose').onclick=()=>{ $('#repeatModal').hidden=true; renderPrep(); if(introQueue.length) nextIntro(); };
 
-/* ---------- intro cards: welcome, recruits, job change ---------- */
+/* ---------- intro cards: job change ---------- */
 function skillLine(id,extra){ const s=SKILLS[id]; return `<div><dt>${s.pic} ${s.n}<small>${extra||''}${s.cost?'SP '+s.cost:'SP 0'}</small></dt><dd>${s.tip}</dd></div>`; }
 function jobCard(job,c){
   const hd=HERO_DB[job], lv=c?c.lvl:1, hp=Math.round(hd.hp*(1+.06*(lv-1)));
@@ -1850,30 +1886,23 @@ function jobCard(job,c){
     <dl class="tips">${skillLine(hd.basic,'기본기 · ')}${hd.skills.map(id=>skillLine(id,`Lv${SKILLS[id].lv} · `)).join('')}</dl>
     <div class="hint" style="margin-top:10px">💡 ${hd.tip}</div>`;
 }
-function recruitCard(c){ return jobCard('wanderer',c)+`<p class="sub" style="margin:10px 0 0">${c.name}도 방랑자로 시작해요. 레벨 ${JOB_LVL}이 되면 원하는 직업으로 전직할 수 있어요.</p>`; }
-function jobReadyCard(c){ return `<div class="intro"><img class="intro-spr" src="${sprOf('wanderer')}" alt=""><div><b>${c.name} · Lv${c.lvl}</b><p>${c.name}이(가) 레벨 ${JOB_LVL}이 됐어요! 캐릭터 탭에서 <b>전직하기</b>를 눌러 8개 직업 중 하나를 고를 수 있어요.</p></div></div><p class="sub" style="margin:0">직업마다 스킬이 달라요. 파티에 어떤 역할이 필요한지 생각해 보고 골라 보세요. 같은 직업을 여러 명이 골라도 돼요.</p>`; }
-function autoOpenCard(){ return `<ol class="steps"><li><b>🤖 자동 / ✋ 수동</b> 버튼으로 전투 방식을 바꿀 수 있어요</li><li><b>작전 탭</b>에서 캐릭터마다 "이럴 때 이 스킬" 규칙을 6개까지 정해요</li><li>자동 전투는 위 규칙부터 확인해서, 조건이 맞고 SP가 충분한 스킬을 써요</li></ol><p class="sub" style="margin:0">처음엔 기본 패턴이 들어 있어요. 스킬을 새로 배우면 패턴에 넣어 보세요.</p>`; }
+function jobReadyCard(cs){ return `<div class="intro"><img class="intro-spr" src="${sprOf('wanderer')}" alt=""><div><b>${cs.map(c=>c.name).join(', ')} · Lv${JOB_LVL}</b><p>캐릭터 탭에서 <b>전직하기</b>를 눌러 검사 · 마법사 · 치유사 · 궁수 중 하나를 골라요.</p></div></div>`; }
 let introQueue=[];
 function openIntro(title,body){ $('#introTitle').textContent=title; $('#introBody').innerHTML=body; $('#introModal').hidden=false; $('#introClose').hidden=false; $('#introClose').focus(); }
 function nextIntro(){ const it=introQueue.shift(); if(it) openIntro(it.title,it.body); }
-function showWelcome(){
-  openIntro('말랑 작전실에 온 걸 환영해요',`<ol class="steps"><li><b>직접 싸우며 익히기</b> · 처음 세 스테이지는 내 손으로 스킬을 골라 싸워요</li><li><b>전직과 스킬</b> · 모두 방랑자로 시작해서, 레벨 ${JOB_LVL}에 원하는 직업으로 전직하고 강화석(💎)으로 스킬을 배워요</li><li><b>패턴과 자동 전투</b> · 3스테이지를 깨면 작전 탭에서 패턴을 짜고 자동으로 싸울 수 있어요</li></ol><p class="sub" style="margin:0">첫 동료 두 명을 소개할게요.</p>`);
-  introQueue=prof.chars.slice(0,2).map(c=>({title:`첫 동료 · ${c.name}`,body:jobCard('wanderer',c)}));
-}
 function resetIntroBtn(){ $('#introClose').textContent='확인'; $('#introClose').className='mainbtn'; }
 $('#introClose').onclick=()=>{
   resetIntroBtn();
   if(introQueue.length){ nextIntro(); return; }
   $('#introModal').hidden=true;
-  if(!prof.introSeen){ prof.introSeen=true; saveProf(); }
 };
 /* job change picker lives in the intro modal */
 function openJobPicker(c,picked){
   const list=JOB_IDS.map(j=>{ const hd=HERO_DB[j]; return `<button class="jobpick ${picked===j?'sel':''}" data-job="${j}"><img class="thumb" src="${sprOf(j)}" alt=""><span><b>${hd.name}</b><small>${hd.role}</small></span></button>`; }).join('');
-  openIntro(`${c.name}의 전직`,`<p class="sub" style="margin:0 0 8px">직업을 눌러 자세히 보고, 마음에 들면 전직을 확정하세요. 방랑자 때 배운 스킬은 그대로 쓸 수 있어요.</p><div class="jobgrid">${list}</div>${picked?jobCard(picked,c)+`<div class="btnrow"><button class="mainbtn" id="jobConfirm">${HERO_DB[picked].name}(으)로 전직 확정</button></div>`:''}`);
+  openIntro(`${c.name}의 전직`,`<div class="jobgrid">${list}</div>${picked?jobCard(picked,c)+`<div class="btnrow"><button class="mainbtn" id="jobConfirm">${HERO_DB[picked].name}(으)로 전직</button></div>`:''}`);
   $('#introClose').textContent='닫기'; $('#introClose').className='outlinebtn';
   document.querySelectorAll('.jobpick').forEach(b=>b.onclick=()=>openJobPicker(c,b.dataset.job));
-  const ok=$('#jobConfirm'); if(ok) ok.onclick=()=>{ changeJob(c,picked); $('#introModal').hidden=true; resetIntroBtn(); renderCharacters(); toast(`${c.name}: ${HERO_DB[picked].name}(으)로 전직했어요! 작전 탭 패턴도 새 직업에 맞게 바꿨어요`); };
+  const ok=$('#jobConfirm'); if(ok) ok.onclick=()=>{ changeJob(c,picked); $('#introModal').hidden=true; resetIntroBtn(); renderCharacters(); toast(`${c.name}: ${HERO_DB[picked].name}(으)로 전직!`); };
 }
 function changeJob(c,job){
   const hd=HERO_DB[job], first=hd.skills[0];
@@ -1905,10 +1934,10 @@ $('#logClose').onclick=()=>{ $('#logModal').hidden=true; };
 function renderCharacters(){
   if(!charById(detailHero)) detailHero=prof.chars[0].uid;
   $('#partyCount').textContent=`${prof.party.length} / 4`;
-  $('#partySlots').innerHTML=[0,1,2,3].map(n=>{ const c=charById(prof.party[n]);
-    return c?`<button class="slot filled" data-id="${c.uid}"><img class="thumb" src="${sprOf(c.job)}" alt="">${c.name}<span style="color:var(--muted-2)">${HERO_DB[c.job].name} Lv${c.lvl}</span></button>`:'<div class="slot"><b>+</b>빈 자리</div>'; }).join('');
+  $('#partySlots').innerHTML=[0,1,2,3].map(n=>{ const c=charById(prof.party[n]), r=c&&rowOf(c.uid);
+    return c?`<div class="slot filled"><button class="slotpick" data-id="${c.uid}"><img class="thumb" src="${sprOf(c.job)}" alt="">${c.name}<span>${HERO_DB[c.job].name} Lv${c.lvl}</span></button><button class="rowbtn ${r}" data-row="${c.uid}" aria-label="전열/후열 바꾸기">${r==='F'?'전열':'후열'}</button></div>`:'<div class="slot"><b>+</b>빈 자리</div>'; }).join('');
   $('#roster').innerHTML=prof.chars.map(c=>`<button class="rh ${c.uid===detailHero?'sel':''}" data-id="${c.uid}">${prof.party.includes(c.uid)?'<span class="inp">출전</span>':''}${c.job==='wanderer'&&c.lvl>=JOB_LVL?'<span class="inp" style="left:4px;right:auto;color:var(--gold)">전직!</span>':''}<img class="thumb" src="${sprOf(c.job)}" alt="">${c.name}<small>Lv${c.lvl} · ${HERO_DB[c.job].name}</small></button>`).join('')
-    +Object.entries(RECRUITS).filter(([s])=>!prof.cleared[s]).map(([s,name])=>`<div class="rh locked"><b>🔒</b>${name}<small>${s}번 스테이지 클리어</small></div>`).join('');
+    +Object.entries(RECRUITS).filter(([s])=>!prof.cleared[s]).map(([s,name])=>`<div class="rh locked"><b>🔒</b>${name}<small>${s}스테이지</small></div>`).join('');
   renderDetail();
 }
 function renderDetail(){
@@ -1920,7 +1949,7 @@ function renderDetail(){
     return `<div class="skrow ${lock?'locked':''} ${eq?'eq':''}"><span class="ic t-${s.ty}">${s.pic}</span><span class="tx"><b>${s.n}</b><small>${s.cost?'SP '+s.cost:'SP 0'} · ${s.tip}</small></span>${btn}</div>`; };
   $('#heroDetail').innerHTML=`<div class="section-title"><span>${c.name} · ${hd.name} (${hd.role})</span><span>Lv ${c.lvl} / ${MAX_LVL}</span></div>
     <div class="expbar"><div style="width:${c.lvl>=MAX_LVL?100:c.exp/need*100}%"></div></div>
-    <div class="desc" style="margin-top:3px">EXP ${c.lvl>=MAX_LVL?'MAX':`${c.exp} / ${need}`}${c.job==='wanderer'?` · 레벨 ${JOB_LVL}에 전직`:''}</div>
+    <div class="desc" style="margin-top:3px">EXP ${c.lvl>=MAX_LVL?'MAX':`${c.exp} / ${need}`}</div>
     <div class="statgrid"><div>체력<b>${st.maxhp}</b></div><div>피해 배율<b>×${st.dmg.toFixed(2)}</b></div><div>속도<b>${st.spd}</b></div></div>
     <div class="rowbtns">
       <button class="outlinebtn" id="dParty">${inParty?'출전 해제':'출전시키기'}</button>
@@ -1928,10 +1957,9 @@ function renderDetail(){
     </div>
     <div class="section-title" style="margin-top:12px"><span>스킬 (장착 ${c.equip.length}/${EQUIP_SLOTS})</span><span>💎 ${prof.stones}</span></div>
     <div class="sklist">
-      <div class="skrow eq"><span class="ic t-atk">${SKILLS[hd.basic].pic}</span><span class="tx"><b>${SKILLS[hd.basic].n}</b><small>기본기 · 항상 사용 · ${SKILLS[hd.basic].tip}</small></span><span class="lock">기본</span></div>
+      <div class="skrow eq"><span class="ic t-atk">${SKILLS[hd.basic].pic}</span><span class="tx"><b>${SKILLS[hd.basic].n}</b><small>기본기 · ${SKILLS[hd.basic].tip}</small></span><span class="lock">기본</span></div>
       ${pool.map(skRow).join('')}
     </div>
-    ${c.job==='wanderer'?`<p class="sub" style="margin:6px 0 0">전직하면 직업 스킬 3개가 여기에 추가돼요.</p>`:''}
     <div class="section-title" style="margin-top:12px"><span>장비</span></div>
     <div class="gear">${['wpn','arm','acc'].map(s=>{ const it=c.gear[s]&&itemById(c.gear[s]);
       return `<button class="gslot ${gearOpen===s?'open':''}" data-slot="${s}">${SLOT[s].ic} ${SLOT[s].n}<b>${it?itemName(it):'비어 있음'}</b>${it?itemStat(it):'눌러서 장착'}</button>`; }).join('')}</div>
@@ -1939,7 +1967,7 @@ function renderDetail(){
   $('#dParty').onclick=()=>{
     if(inParty){ if(prof.party.length<=1){ alertLine('최소 1명은 출전해야 해요'); return; } prof.party=prof.party.filter(x=>x!==c.uid); }
     else{ if(prof.party.length>=4){ alertLine('파티는 4명까지예요. 먼저 한 명을 빼 주세요'); return; } prof.party.push(c.uid); }
-    saveProf(); partyDirty=true; renderCharacters();
+    fixRows(); saveProf(); partyDirty=true; renderCharacters();
   };
   const dj=$('#dJob'); if(dj) dj.onclick=()=>{ if(canJob) openJobPicker(c,null); };
   document.querySelectorAll('#heroDetail [data-learn]').forEach(b=>b.onclick=()=>{ const id=b.dataset.learn, cost=learnCost(id); if(prof.stones<cost) return; prof.stones-=cost; c.learned.push(id); if(c.equip.length<EQUIP_SLOTS) c.equip.push(id); saveProf(); partyDirty=true; renderCharacters(); });
@@ -1961,7 +1989,13 @@ function renderDetail(){
 let partyDirty=false;
 function alertLine(t){ const d=$('#heroDetail'); const n=document.createElement('p'); n.className='sub'; n.style.color='var(--gold)'; n.style.margin='8px 0 0'; n.textContent=t; d.prepend(n); setTimeout(()=>n.remove(),2200); }
 $('#roster').onclick=e=>{ const b=e.target.closest('[data-id]'); if(!b) return; detailHero=b.dataset.id; gearOpen=null; renderCharacters(); };
-$('#partySlots').onclick=e=>{ const b=e.target.closest('[data-id]'); if(!b) return; detailHero=b.dataset.id; gearOpen=null; renderCharacters(); };
+$('#partySlots').onclick=e=>{
+  const rb=e.target.closest('[data-row]');
+  if(rb){ const u=rb.dataset.row, want=rowOf(u)==='F'?'B':'F';
+    if(prof.party.filter(x=>x!==u&&rowOf(x)===want).length>=2){ alertLine(`${want==='F'?'전열':'후열'}은 2명까지예요`); return; }
+    prof.rows[u]=want; saveProf(); partyDirty=true; renderCharacters(); return; }
+  const b=e.target.closest('[data-id]'); if(!b) return; detailHero=b.dataset.id; gearOpen=null; renderCharacters();
+};
 
 /* ---------- inventory ---------- */
 function renderInventory(){
@@ -1979,7 +2013,7 @@ function renderStrategy(){
   const order=[...prof.party,...prof.chars.map(c=>c.uid).filter(u=>!prof.party.includes(u))];
   if(!order.includes(editing)) editing=order[0];
   const c=charById(editing), hd=HERO_DB[c.job], list=rules[c.uid];
-  $('#stratNote').innerHTML=prof.autoOpen?'자동 전투에서 캐릭터 차례가 오면 위쪽 규칙부터 확인해서, 조건이 맞고 SP가 충분한 첫 번째 스킬을 써요. 장착하지 않은 스킬은 건너뛰어요.':'🔒 지금은 튜토리얼이라 수동 전투만 해요. <b>3스테이지를 깨면</b> 여기서 짠 패턴으로 자동 전투를 할 수 있어요. 미리 짜 둬도 괜찮아요.';
+  $('#stratNote').innerHTML=prof.autoOpen?'위 규칙부터 확인해서 조건이 맞는 첫 스킬을 써요.':`🔒 ${TUTORIAL_STAGES}스테이지를 깨면 자동 전투에 쓰여요.`;
   $('#tabs').innerHTML=order.map(u=>{ const x=charById(u); return `<button class="tab ${prof.party.includes(u)?'party':''}" data-edit="${u}" aria-pressed="${u===editing}">${HERO_DB[x.job].icon} ${x.name}${prof.party.includes(u)?'':' ·대기'}</button>`; }).join('');
   const opts=[hd.basic,...c.equip];
   const fi=lastFired?lastFired.party.indexOf(editing):-1, f=fi>=0?lastFired.fired[fi]:null;
@@ -1993,7 +2027,7 @@ function renderStrategy(){
     <div class="mv"><button data-mv="-1" data-r="${r}" aria-label="${r+1}순위 위로"${r===0?' disabled':''}>▲</button><button data-mv="1" data-r="${r}" aria-label="${r+1}순위 아래로"${r===list.length-1?' disabled':''}>▼</button></div>
     ${f?`<span></span><div class="fired">지난 전투 ${f[r]?`<b>${f[r]}회 발동</b>`:'발동 안 함'}</div>`:''}
   </div>`; }).join('');
-  $('#ruleNote').textContent=f?`✓ 자동 저장됨 · 지난 전투 기본 공격 ${f[RULE_SLOTS]}회`:'✓ 변경 내용은 이 브라우저에 자동 저장됩니다. 다음 판부터 적용돼요.';
+  $('#ruleNote').textContent=f?`✓ 자동 저장 · 지난 전투 기본 공격 ${f[RULE_SLOTS]}회`:'✓ 자동 저장 · 다음 판부터 적용';
   $('#tgtRow').innerHTML=`<span>공격 대상</span><div class="seg2"><button data-tgt="mob" aria-pressed="${targets[editing]!=='boss'}">졸개 먼저</button><button data-tgt="boss" aria-pressed="${targets[editing]==='boss'}">보스 먼저</button></div>`;
   $('#heroSpd').textContent=`${hd.name} · 속도 ${charStats(c).spd}`;
   $('#skillTips').innerHTML=opts.map(id=>skillLine(id,id===hd.basic?'기본기 · ':'')).join('')+(c.learned.filter(id=>!c.equip.includes(id)).length?`<p class="sub" style="margin:6px 0 0">배웠지만 장착하지 않은 스킬: ${c.learned.filter(id=>!c.equip.includes(id)).map(id=>SKILLS[id].n).join(', ')}</p>`:'');
@@ -2024,14 +2058,13 @@ function renderBestiary(){
     <div class="section-title"><span>${S.ic} ${i+1}. ${S.boss}</span><span>HP ${S.hp} · 속도 ${S.spd}</span></div>
     <div class="cycle">${S.cycle.map(m=>`<span class="qchip">${MOVE_SHORT[m]}</span>`).join('<span class="arrow">→</span>')}</div>
     ${S.p2?`<div class="section-title" style="margin-top:8px"><span>HP 50% 이하 각성</span></div><div class="cycle">${S.p2.map(m=>`<span class="qchip">${MOVE_SHORT[m]}</span>`).join('<span class="arrow">→</span>')}</div>`:''}
-    ${S.mobs?`<div class="section-title" style="margin-top:8px"><span>졸개</span></div><div class="cycle">${S.mobs.map(m=>`<span class="qchip">${m.ic} ${m.name} · HP ${m.hp} · ${{poke:'공격 '+m.pw,heal:'보스 회복 '+m.pw,buff:'보스 다음 공격 +30%'}[m.kind]}</span>`).join('')}</div>`:''}
-    ${S.talk?`<p class="sub" style="margin:6px 0 0">💬 “${S.talk.start}”</p>`:''}
-    <p class="sub" style="margin:6px 0 0">📘 ${S.learn}</p></div>`).join('')+(seen<7?'<p class="sub">더 나아가면 새로운 적을 만나요.</p>':'');
+    ${S.mobs?`<div class="section-title" style="margin-top:8px"><span>졸개</span></div><div class="cycle">${S.mobs.map(m=>`<span class="qchip">${m.ic} ${m.name} · HP ${m.hp} · ${{poke:'공격 '+m.pw,heal:'보스 회복 '+m.pw,buff:'보스 공격 강화'}[m.kind]}</span>`).join('')}</div>`:''}
+    <p class="sub" style="margin:6px 0 0">📘 ${S.learn}</p></div>`).join('');
 }
 
 /* ---------- navigation + settings ---------- */
+/* leaving the battle tab doesn't pause: an auto battle keeps running and its result waits for the player */
 function goto(id){
-  if(id!=='battle') pause();
   if(id==='battle'&&partyDirty){
     partyDirty=false;
     if(!battle||battle.actions===0||battle.over){ setupBattle(cfg?cfg.muts:null); openPrep(); }
@@ -2043,6 +2076,7 @@ function goto(id){
   if(id==='boss') renderBestiary();
   if(id==='characters') renderCharacters();
   if(id==='inventory') renderInventory();
+  if(id==='battle'&&resultPending) showResult();
   window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>goto(b.dataset.screen));
@@ -2066,10 +2100,10 @@ $('#setWipe').onclick=()=>{
   settings.manual=false; save(SET_KEY,settings);
   try{ localStorage.removeItem(LOG_KEY); }catch(e){}
   lastFired=null; editing=prof.party[0]; detailHero=prof.party[0];
-  $('#settingsModal').hidden=true; setupBattle(); openPrep(); goto('battle'); showWelcome();
+  $('#settingsModal').hidden=true; setupBattle(); openPrep(); goto('battle'); firstTips();
 };
 $('#setClose').onclick=()=>{ $('#settingsModal').hidden=true; };
 
-renderWallet(); setupBattle(); openPrep();
-if(!prof.introSeen) showWelcome();
+function firstTips(){ coach('map','#mapList','모험 지도예요.\n스테이지를 깨면 다음이 열려요.'); coach('start','#startBtn','눌러서 전투 시작!'); }
+renderWallet(); setupBattle(); openPrep(); firstTips();
 </script>
