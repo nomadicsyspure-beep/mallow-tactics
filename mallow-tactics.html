@@ -933,11 +933,11 @@ const STAGES=[
     learn:'🌊 광역 공격 예고엔 🧱 버티기!'},
   {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:40,spd:118,kind:'poke',pw:14},{name:'새끼 늑대',ic:'🐾',hp:40,spd:112,kind:'poke',pw:14}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:200,spd:120,cycle:['swipe'],pw:{swipe:30},hue:200,
     learn:'자동 전투 시작! 적을 누르면 집중 공격.'},
-  {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:1200,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:160,wave:180},hue:30,
+  {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:1100,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:110,wave:130},hue:30,
     learn:'👁️ 응시는 🪨 돌팔매로 끊어 BREAK! 🐚 껍질엔 피해 절반.'},
   {name:'고블린 야영지',boss:'고블린 대장',ic:'👺',mobs:[{name:'고블린 주술사',ic:'🧪',hp:80,spd:92,kind:'heal',pw:50},{name:'고블린 병사',ic:'🪓',hp:90,spd:96,kind:'poke',pw:22}],talk:{start:'이 야영지는 우리 거다! 꺼져!',half:'주술사! 나 좀 고쳐!',die:'대장은… 도망 안 가… 꽥',win:'끌끌, 전리품 챙겨라!'},hp:650,spd:110,cycle:['swipe','swipe','charge'],pw:{swipe:80,charge:110},hue:60,
     learn:'주술사가 대장을 치료해요. 눌러서 먼저 잡아요.'},
-  {name:'마녀의 오두막',boss:'숲의 마녀',ic:'🧙',mobs:[{name:'검은 고양이',ic:'🐈‍⬛',hp:110,spd:108,kind:'buff'}],talk:{start:'어머, 귀여운 손님들이네. 차 한 잔 할래?',half:'이제 장난은 끝이야.',die:'내 오두막이… 엉망이 됐잖아…',win:'다음엔 두꺼비로 만들어 줄게.'},hp:1500,spd:115,cycle:['swipe','gaze','wave'],pw:{swipe:160,wave:250},hue:260,
+  {name:'마녀의 오두막',boss:'숲의 마녀',ic:'🧙',mobs:[{name:'검은 고양이',ic:'🐈‍⬛',hp:110,spd:108,kind:'buff'}],talk:{start:'어머, 귀여운 손님들이네. 차 한 잔 할래?',half:'이제 장난은 끝이야.',die:'내 오두막이… 엉망이 됐잖아…',win:'다음엔 두꺼비로 만들어 줄게.'},hp:1250,spd:115,cycle:['swipe','gaze','wave'],pw:{swipe:125,wave:200},hue:260,
     learn:'🐈‍⬛ 고양이는 마녀의 다음 공격을 강하게 해요.'},
   {name:'심연의 문',...GK,dmg:DMG_MUL[0],muts:1,learn:'반쯤 깎으면 각성해요. 변이 효과가 붙어요.'},
   ...[2,3,4,5].map(n=>({name:`심연 ${n}층`,...GK,hp:Math.round(BOSS_HP*HP_MUL[n-1]),dmg:DMG_MUL[n-1],muts:2,learn:`수문장 강화 ${n}단계.`}))
@@ -2034,7 +2034,7 @@ let preFight=false;
 function battleTips(){
   const tips={1:[['boss','#bossWrap','이게 적이에요.'],['bossHp','.hp-track','빨간 줄이 체력이에요.'],['party','.unit[data-unit="0"]','내 캐릭터예요.'],['hpBar','.unit[data-unit="0"] .bar.hp','빨간 줄은 HP예요.'],['spBar','.unit[data-unit="0"] .bar.sp','파란 줄은 SP예요.\n스킬을 쓰면 줄어요.'],
       ['gauge','#bossAtb','금색 게이지가 먼저 꽉 찬 쪽부터\n움직여요.'],['aim','#party','아군은 전열과 후열에 설 수 있어요.'],['aimRed','.lane.danger','배경이 빨갛게 물든 열을\n보스가 노려요.'],
-      ['front','.lane[data-lane="F"]','전열: 피해를 더 줘요.'],['back','.lane[data-lane="B"]','후열: 받는 피해가 감소해요.']],
+      ['front','.lane[data-lane="F"]','전열: 상대에게 주는 피해가 증가해요.'],['back','.lane[data-lane="B"]','후열: 상대로부터 받는 피해가 감소해요.']],
     2:[['mobs','#mobs','보스 옆의 몬스터는 졸개예요.\n보스와 따로 움직이며 공격해요.']],
     3:[['inspect','#bossAvatar','싸우기 전에 보스를 눌러 봐요!\n어떤 스킬을 쓰는지 볼 수 있어요.','battle',true,false,2400],['inspectMob','#mobs .mob','졸개도 눌러 봐요!\n어떤 공격을 하는지 볼 수 있어요.','battle',true,false,2400],['inspectAlly','.unit[data-unit="0"]','아군을 누르면\n지금 상태를 볼 수 있어요.','battle',true,false,2400],['auto','#fightBtn','이제 자동 전투!\n정해진 패턴대로 싸워요.\n멈추면 바로 직접 조작해요.']],
     [BG_STAGE]:[['hard','#bossWrap','여기부터는 진짜 전략 싸움!\n전직 · 스킬 · 배치를 잘 골라야 이겨요.'],['tabs','#nav','이제 자동 전투 중에\n다른 탭을 봐도 전투가 계속돼요.']]};
