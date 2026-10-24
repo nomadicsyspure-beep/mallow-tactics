@@ -2552,6 +2552,8 @@ function guideSel(){
   if(!guideOn()) return null;
   if(coachCur) return coachCur.fn?{dim:[]}:null;
   const vis=id=>!$(id).hidden, wait=(t,ms)=>Date.now()-t<ms;
+  /* settings (and the log opened from it) work freely */
+  if(vis('#settingsModal')||vis('#logModal')) return null;
   if(vis('#makeModal')) return {dim:['#makeModal .modal-inner']};
   if(vis('#introModal')) return {dim:[jobTutOn()?'#introModal .modal-inner':'#introClose']};
   if(vis('#resultModal')) return {dim:wait(resultAt,SHOW_RESULT_MS)?[]:['#retryNew']};
@@ -2585,6 +2587,8 @@ function guideSel(){
 function guideOk(t){
   const g=guideSel(); if(!g||!t.closest) return true;
   if(t.closest('#spot')) return true;
+  /* nothing dimmed right now: the ☰ settings button can be opened */
+  if(!g.dim.length&&!coachCur&&t.closest('#menuBtn')) return true;
   return g.dim.some(sel=>[...document.querySelectorAll(sel)].some(el=>el.contains(t)));
 }
 ['pointerdown','click'].forEach(ev=>document.addEventListener(ev,e=>{ if(!guideOk(e.target)){ e.stopImmediatePropagation(); e.preventDefault(); } },true));
