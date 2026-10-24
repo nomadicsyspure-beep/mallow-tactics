@@ -4,6 +4,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>말랑 작전실</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#05070b">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
 <style>
 /* Layout: one handheld column sized to the screen. The battle stage is the main area (turn order strip, boss vs 2x2 party, skill pop-ups, cut-ins); under it a slim skill bar for whoever acts now, the action row and the bottom nav. */
@@ -30,13 +34,14 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%}
+body{height:100dvh}
 body{margin:0;background:radial-gradient(circle at top,#101722 0%,var(--bg) 70%) var(--bg);font-family:var(--font-body);color:var(--ink);-webkit-tap-highlight-color:transparent}
 button,select{font:inherit;color:inherit}
 button{cursor:pointer}
 button:disabled{cursor:default}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .mono{font-variant-numeric:tabular-nums}
-.phone{width:min(100%,460px);height:100%;min-height:600px;margin:auto;background:var(--panel);box-shadow:0 12px 80px #000a;display:flex;flex-direction:column;border-left:1px solid #0f1822;border-right:1px solid #0f1822;position:relative}
+.phone{width:min(100%,460px);height:100%;min-height:560px;margin:auto;background:var(--panel);box-shadow:0 12px 80px #000a;display:flex;flex-direction:column;border-left:1px solid #0f1822;border-right:1px solid #0f1822;position:relative}
 .pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .topbar{height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0c1219,#0a0f15)}
 .brand{font-family:var(--font-display);letter-spacing:.2px;font-size:17px;color:var(--ink)}
@@ -590,7 +595,7 @@ button:disabled{cursor:default}
   <div class="topbar pad">
     <button class="btn-icon" id="menuBtn" aria-label="설정 열기">☰</button>
     <div class="brand">MALLOW<span> / TACTICS</span></div>
-    <div class="wallet"><span title="골드">🪙 <b id="wGold" class="mono">0</b></span><span title="강화석">💎 <b id="wStone" class="mono">0</b></span></div>
+    <div class="wallet"><button class="btn-icon" id="fsBtn" aria-label="전체 화면" hidden style="font-size:17px;padding:0 4px">⛶</button><span title="골드">🪙 <b id="wGold" class="mono">0</b></span><span title="강화석">💎 <b id="wStone" class="mono">0</b></span></div>
   </div>
 
   <!-- 전투 -->
@@ -2104,6 +2109,16 @@ $('#setWipe').onclick=()=>{
   lastFired=null; editing=prof.party[0]; detailHero=prof.party[0];
   $('#settingsModal').hidden=true; setupBattle(); openPrep(); goto('battle'); firstTips();
 };
+/* full screen hides the mobile browser bars; iPhone Safari has no API for it, so there the button stays hidden (add to home screen instead) */
+(function(){
+  const el=document.documentElement, req=el.requestFullscreen||el.webkitRequestFullscreen, btn=$('#fsBtn');
+  if(!req) return;
+  const isFs=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  btn.hidden=false;
+  btn.onclick=()=>{ if(isFs()) (document.exitFullscreen||document.webkitExitFullscreen).call(document); else{ const p=req.call(el); if(p&&p.catch) p.catch(()=>{}); } };
+  const sync=()=>{ btn.textContent=isFs()?'🗗':'⛶'; btn.setAttribute('aria-label',isFs()?'전체 화면 끄기':'전체 화면'); };
+  document.addEventListener('fullscreenchange',sync); document.addEventListener('webkitfullscreenchange',sync);
+})();
 $('#setClose').onclick=()=>{ $('#settingsModal').hidden=true; };
 
 function firstTips(){ coach('map','#mapList','모험 지도예요.\n스테이지를 깨면 다음이 열려요.'); coach('start','#startBtn','눌러서 전투 시작!'); }
