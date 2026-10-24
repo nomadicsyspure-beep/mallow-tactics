@@ -41,7 +41,7 @@ body{height:100dvh}
 body{margin:0;background:radial-gradient(circle at top,#101722 0%,var(--bg) 70%) var(--bg);font-family:var(--font-body);color:var(--ink);-webkit-tap-highlight-color:transparent}
 button,select{font:inherit;color:inherit}
 button{cursor:pointer}
-button:disabled{cursor:default}
+button:disabled,button[aria-disabled="true"]{cursor:default}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .mono{font-variant-numeric:tabular-nums}
 .phone{width:min(100%,460px);height:100%;min-height:560px;margin:auto;background:var(--panel);box-shadow:0 12px 80px #000a;display:flex;flex-direction:column;border-left:1px solid #0f1822;border-right:1px solid #0f1822;position:relative}
@@ -81,7 +81,7 @@ button:disabled{cursor:default}
 .bar.atb>div{background:linear-gradient(90deg,#8a6a1e,#f2c25b);transition:width .25s linear}
 .bar.atb.ready{box-shadow:0 0 0 1px #f2c25b,0 0 10px #f2c25b}
 .bar.atb.ready>div{background:linear-gradient(90deg,#f2c25b,#fff2c4)}
-.boss-atb{width:100%;height:6px;margin-top:3px}
+.bar.boss-atb{width:100%;height:6px;margin-top:3px}
 .speed{flex-shrink:0;border:1px solid #314052;background:#0f1722;border-radius:9px;padding:5px 9px;font-weight:900;font-size:12px;color:#cad7e7}
 
 .arena{position:absolute;z-index:2;top:52px;bottom:34px;left:3%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -238,6 +238,8 @@ button:disabled{cursor:default}
 .banner.win b{color:#fff2c4;text-shadow:0 0 24px #f2c25b,0 3px 0 #5a3200;font-size:54px}
 .banner.lose b{color:#9fb0c2;text-shadow:0 3px 0 #000}
 @keyframes bannerIn{0%{opacity:0;transform:translateY(-50%) scale(2.2)}14%{opacity:1;transform:translateY(-50%) scale(.94)}22%{transform:translateY(-50%) scale(1)}80%{opacity:1;transform:translateY(-50%) scale(1.03)}100%{opacity:0;transform:translateY(-50%) scale(1.1)}}
+.whytip{position:fixed;z-index:40;width:max-content;transform:translate(-50%,-100%);background:#1a1430f2;border:1px solid #8a6bff;color:#e5d9ff;font-size:11px;font-weight:900;padding:5px 10px;border-radius:10px;max-width:84vw;text-align:center;white-space:pre-line;pointer-events:none;animation:whyIn .2s ease}
+@keyframes whyIn{from{opacity:0}}
 .toast{position:absolute;top:48px;left:50%;transform:translateX(-50%);z-index:8;background:#1a1430f0;border:1px solid #8a6bff;color:#e5d9ff;font-size:11px;font-weight:900;padding:5px 12px;border-radius:999px;white-space:nowrap;animation:toastIn .3s ease;max-width:92%;overflow:hidden;text-overflow:ellipsis}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-6px)}}
 
@@ -407,7 +409,7 @@ button:disabled{cursor:default}
 .node small{display:block;color:var(--muted-2);font-size:10px}
 .node .nst{color:var(--gold);font-size:11px;letter-spacing:1px;white-space:nowrap}
 .node.sel{border-color:var(--accent);background:#1a1636}
-.node:disabled{opacity:.38}
+.node:disabled,.node[aria-disabled="true"]{opacity:.38}
 .learn{font-size:11.5px;line-height:1.55;color:#c3cfdd;background:#18142c;border:1px solid #3a2f6a;border-radius:10px;padding:8px 10px}
 .learn b{color:#d9ceff}
 .modal.intro-modal{z-index:30}
@@ -435,8 +437,12 @@ button:disabled{cursor:default}
 .fslot small{font-size:10px;color:var(--muted);font-weight:700}
 .fslot.empty{border-style:dashed;color:var(--muted-2);font-size:20px}
 .fslot.sel{border-color:var(--gold);box-shadow:0 0 0 2px #f2c25b,0 0 16px #f2c25b66}
-.formation.moving .fslot:not(.sel){border-color:#c79a2c;animation:choose 1.2s ease-in-out infinite}
-.rh.sel.moving{box-shadow:0 0 0 2px #f2c25b}
+.fslot[data-id],.rh{touch-action:none;-webkit-user-select:none;user-select:none}
+.fslot img,.rh img{-webkit-user-drag:none}
+.fslot.dragging,.rh.dragging{opacity:.35}
+.fslot.over,#benchCard.over{border-color:var(--gold);box-shadow:0 0 0 2px #f2c25b}
+.dragghost{position:fixed;z-index:45;transform:translate(-50%,-60%);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 10px;border-radius:12px;background:#101926ee;border:1px solid var(--gold);box-shadow:0 8px 20px #000a;font-size:11px;font-weight:900;color:var(--ink)}
+.dragghost img{height:54px;width:auto;transform:scaleX(-1)}
 /* item drops: icons only, tap one for its details */
 .rw-tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .rw-tile{position:relative;width:64px;height:64px;display:grid;place-items:center;font-size:30px;border-radius:14px;border:2px solid #6a5a26;background:linear-gradient(135deg,#2a2210,#141008);box-shadow:0 0 18px #f2c25b44;overflow:hidden;animation:itemIn .6s cubic-bezier(.2,1.5,.4,1) .5s both}
@@ -491,10 +497,10 @@ button:disabled{cursor:default}
 .actionrow{flex-shrink:0;display:flex;gap:7px;padding-block:8px;background:#0d131a}
 .mainbtn{flex:1;border:0;border-radius:12px;background:linear-gradient(180deg,#6751d8,#4c399b);color:#fff;font-weight:900;padding:11px;font-size:13px;box-shadow:0 6px 20px #4c399b55;white-space:nowrap}
 .mainbtn:active{transform:translateY(1px)}
-.mainbtn:disabled{opacity:.45}
+.mainbtn:disabled,.mainbtn[aria-disabled="true"]{opacity:.45}
 .mainbtn.manual{background:linear-gradient(180deg,#2f8a63,#1f5d43);box-shadow:0 6px 20px #1f5d4355}
 .outlinebtn{border:1px solid #2a3747;background:#121a24;color:#c7d3e1;border-radius:12px;padding:9px 12px;font-weight:900;font-size:12px;white-space:nowrap}
-.outlinebtn:disabled{opacity:.35}
+.outlinebtn:disabled,.outlinebtn[aria-disabled="true"]{opacity:.35}
 .outlinebtn.on{border-color:#c79a2c;color:#ffe7a8;background:#2a210a}
 .iconbtn{flex-shrink:0;width:42px;border:1px solid #2a3747;background:#121a24;color:#c7d3e1;border-radius:12px;font-size:16px;font-weight:900}
 
@@ -548,7 +554,8 @@ button:disabled{cursor:default}
 .rule-row .fired b{color:var(--heal)}
 .mv{display:flex;flex-direction:column;gap:3px}
 .mv button{width:30px;height:20px;border:1px solid var(--line-2);background:#141d28;border-radius:6px;font-size:10px;line-height:1;padding:0;color:#c7d3e1}
-.mv button:disabled{opacity:.25}
+.mv button:disabled,.mv button[aria-disabled="true"]{opacity:.25}
+.textbtn[aria-disabled="true"]{opacity:.4}
 .textbtn{border:0;background:none;color:var(--muted);font-size:11px;font-weight:900;padding:2px 4px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .panel-note{padding:10px 12px;background:#101924;border:1px solid #1c2b3a;border-radius:9px;font-size:11.5px;color:#93a4b8;line-height:1.6}
@@ -709,7 +716,7 @@ button:disabled{cursor:default}
             <div class="prep-row" style="margin-bottom:6px"><span class="lab">이번 변이</span><button class="textbtn" id="reroll">🎲 다시 뽑기 · 🪙20</button></div>
             <div class="mutlist" id="mutList"></div>
           </div>
-          <div class="prep-row"><span class="lab">출전 파티</span><button class="textbtn" id="toRoster">편성 바꾸기 ›</button><button class="outlinebtn" id="prepRecruit" style="padding:5px 10px;font-size:11px"></button></div>
+          <div class="prep-row"><span class="lab">출전 파티</span><button class="textbtn" id="toRoster">편성 바꾸기 ›</button></div>
           <div class="partyline" id="partyLine"></div>
           <div class="reward" id="rewardInfo"></div>
           <div class="btnrow" style="margin-top:2px">
@@ -740,7 +747,7 @@ button:disabled{cursor:default}
       <div class="section-title"><span>출전 파티</span><span id="partyCount"></span></div>
       <div class="formation" id="formation"></div>
     </div>
-    <div class="card">
+    <div class="card" id="benchCard">
       <div class="section-title"><span>대기 파티</span></div>
       <div class="roster" id="roster"></div>
       <button class="mainbtn recruit" id="recruitBtn"></button>
@@ -886,6 +893,7 @@ button:disabled{cursor:default}
 </div>
 
 <div id="logStore" hidden></div>
+<div class="whytip" id="whyTip" hidden></div>
 
 <script>
 /*ENGINE*/
@@ -899,9 +907,9 @@ const GK={boss:'심연의 수문장',ic:'👹',talk:{start:'진정한 심연에 
 const STAGES=[
   {name:'숲 입구',boss:'말랑 슬라임',ic:'🟢',talk:{start:'말랑… 말랑…',half:'푸딩처럼 흔들려도 안 무너져!',die:'말랑… 녹는다…',win:'말랑말랑 승리~'},hp:100,spd:80,cycle:['swipe'],pw:{swipe:24},hue:100,
     learn:'스킬을 고르고, 공격할 적을 눌러요.'},
-  {name:'버섯 언덕',boss:'독버섯',ic:'🍄',mobs:[{name:'포자 덩어리',ic:'🟣',hp:70,spd:90,kind:'poke',pw:12}],talk:{start:'포자 냄새 좋지? 숨 한번 참아 봐!',half:'포자들아, 전부 터뜨려!',die:'버섯은… 다시 자라…',win:'숲의 거름이 되어라.'},hp:340,spd:85,cycle:['swipe','swipe','wave'],pw:{swipe:28,wave:40},hue:300,
+  {name:'버섯 언덕',boss:'독버섯',ic:'🍄',mobs:[{name:'포자 덩어리',ic:'🟣',hp:70,spd:90,kind:'poke',pw:12}],talk:{start:'포자 냄새 좋지? 숨 한번 참아 봐!',half:'포자들아, 전부 터뜨려!',die:'버섯은… 다시 자라…',win:'숲의 거름이 되어라.'},hp:300,spd:85,cycle:['swipe','swipe','wave'],pw:{swipe:28,wave:40},hue:300,
     learn:'🌊 광역 공격 예고엔 🧱 버티기!'},
-  {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:75,spd:118,kind:'poke',pw:14},{name:'새끼 늑대',ic:'🐾',hp:75,spd:112,kind:'poke',pw:14}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:475,spd:120,cycle:['swipe'],pw:{swipe:34},hue:200,
+  {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:60,spd:118,kind:'poke',pw:14},{name:'새끼 늑대',ic:'🐾',hp:60,spd:112,kind:'poke',pw:14}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:300,spd:120,cycle:['swipe'],pw:{swipe:30},hue:200,
     learn:'자동 전투 시작! 적을 누르면 집중 공격.'},
   {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:1350,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:160,wave:180},hue:30,
     learn:'👁️ 응시는 🪨 돌팔매로 끊어 BREAK! 🐚 껍질엔 피해 절반.'},
@@ -1620,8 +1628,9 @@ function addLog(msg,cls=''){
   const box=$('#logStore');
   box.insertAdjacentHTML('beforeend',`<div class="entry ${cls}"><span class="turn">B${String(battle?battle.round:0).padStart(2,'0')}</span>${msg}</div>`);
   while(box.children.length>300) box.firstChild.remove();
+  liveLog();
 }
-function addSum(ic,txt,v,c){ sumList.push({r:battle.round,ic,txt,v,c}); }
+function addSum(ic,txt,v,c){ sumList.push({r:battle.round,ic,txt,v,c}); liveLog(); }
 
 /* ---------- fx primitives ---------- */
 function popNum(p,text,cls,size){
@@ -1846,9 +1855,13 @@ function pump(){
     if(!filled){ filled=true; const ms=animateFill(); tid=setTimeout(pump,dur(ms)+60); return; }
     const nx=nextActor(battle,true), heroTurn=typeof nx==='number';
     if(heroTurn&&isManual()&&pendingChoice==null){
-      playing=false; waitChoice=true; waitHero=nx; skTab=nx; skPick=null; setTgtPick(null); setButtons(); renderSkillPanel(); if(lastSnap) renderHeroes(lastSnap);
-      const h=battle.heroes[nx];
+      /* a skill pop-up opened for this hero while the enemy moved stays open and becomes usable */
+      const keep=skTab===nx&&skPick!=null?skPick:null, h=battle.heroes[nx];
+      playing=false; waitChoice=true; waitHero=nx; skTab=nx; skPick=keep; setTgtPick(null);
+      const aim=keep!=null&&ready(battle,nx,keep)&&needsTarget(h.sk[keep]); if(aim) setTgtPick(keep);
+      setButtons(); renderSkillPanel(); if(lastSnap) renderHeroes(lastSnap);
       coach('wait',`.unit[data-unit="${nx}"]`,`${h.name} 차례예요!\n금색으로 빛나는 캐릭터가 지금 움직여요.`);
+      if(keep!=null){ if(aim) coach('tgt','#bossWrap','공격할 적을 눌러요.'); else if(ready(battle,nx,keep)) coach('use','#skPop .sp-use','✔ 사용을 누르면 써요.'); }
       coach('cats','#mSkills','스킬 색은 종류예요.\n🟥 공격 · 🟦 방어 · 🟩 회복 · 🟨 특수\n숫자가 덮인 스킬은 쿨타임 중이에요.');
       if(h.sp<15) coach('sp','#mSkills',`SP가 모자라요.\n기본기(${h.sk[0].pic})는 SP 없이 쓸 수 있어요.`);
       return;
@@ -1864,10 +1877,10 @@ function setButtons(){
   const b=$('#fightBtn');
   const idle=!battle||!$('#prep').hidden;
   $('#screen-battle').classList.toggle('prepping',!$('#prep').hidden); renderNav();
-  b.disabled=idle;
+  setWhy(b,idle?'전투를 시작하면 쓸 수 있어요':'');
   /* one button: auto ⇄ manual. Stopping the auto battle drops straight into manual picks */
   if(battle&&battle.over&&!evq.length) b.textContent='결과 보기';
-  else if(!canAuto()){ b.textContent='✋ 수동 전투'; b.disabled=true; }
+  else if(!canAuto()){ b.textContent='✋ 수동 전투'; setWhy(b,idle?'전투를 시작하면 쓸 수 있어요':prof.autoOpen?`${TUTORIAL_STAGES}스테이지까지는 직접 조작해요`:`자동 전투는 ${TUTORIAL_STAGES}스테이지를 깨면 열려요\n지금은 차례마다 스킬을 골라요`); }
   else if(autoMode) b.textContent='⏸ 멈추고 직접 조작';
   else b.textContent='🤖 자동 전투';
   b.classList.toggle('manual',!!battle&&!autoMode&&canAuto());
@@ -1914,28 +1927,45 @@ function openPrep(){ $('#prep').hidden=false; renderPrep(); setButtons(); }
 /* other tabs open after the tutorial (stage 4 cleared); until then the battle tab is the whole game */
 const TUTORIAL_END=4;
 function tabsOpen(){ return !!prof.cleared[TUTORIAL_END]; }
-function renderNav(){ document.querySelectorAll('[data-screen]').forEach(b=>b.classList.toggle('locked',b.dataset.screen!=='battle'&&!tabsOpen())); }
+/* the characters tab opens one stage early (after RECRUIT_STAGE) so companions are brought in before stage 4 */
+const RECRUIT_STAGE=3;
+function tabOpen(id){ return id==='battle'||(id==='characters'?!!prof.cleared[RECRUIT_STAGE]:tabsOpen()); }
+function tabLockWhy(id){ return `🔒 ${id==='characters'?RECRUIT_STAGE:TUTORIAL_END}스테이지를 깨면 열려요`; }
+/* stage 4 is a party fight: its first try needs a full party of 4 */
+function needRecruit(){ return prof.stage===TUTORIAL_END&&!prof.cleared[TUTORIAL_END]&&prof.party.length<4; }
+function renderNav(){ document.querySelectorAll('[data-screen]').forEach(b=>b.classList.toggle('locked',!tabOpen(b.dataset.screen))); }
+/* disabled buttons say why: aria-disabled keeps them tappable, and a tap shows the reason instead of acting */
+function setWhy(b,why){ b.disabled=false; if(why){ b.setAttribute('aria-disabled','true'); b.dataset.why=why; } else { b.removeAttribute('aria-disabled'); delete b.dataset.why; } }
+const whyAttr=w=>w?` aria-disabled="true" data-why="${w}"`:'';
+function whyTip(b){
+  const t=$('#whyTip'), r=b.getBoundingClientRect(); t.textContent=b.dataset.why; t.hidden=false;
+  const w=t.offsetWidth, h=t.offsetHeight;
+  t.style.left=Math.min(innerWidth-w/2-8,Math.max(w/2+8,r.left+r.width/2))+'px';
+  t.style.top=(r.top-6>=h+6?r.top-6:r.bottom+6+h)+'px';
+  clearTimeout(whyTip.t); whyTip.t=setTimeout(()=>{ t.hidden=true; },2200);
+}
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[aria-disabled="true"]'); if(!b) return; e.stopImmediatePropagation(); e.preventDefault(); if(b.dataset.why) whyTip(b); },true);
 function renderPrep(){
   const st=prof.stage, maxSt=maxStage(), S=STAGES[st-1];
   $('#mapProg').textContent=`${Object.keys(prof.cleared).filter(k=>prof.cleared[k]).length} / ${STAGES.length}`;
   $('#mapList').innerHTML=STAGES.map((x,i)=>{ const n=i+1, open=n<=maxSt, tut='';
-    return `<button class="node ${n===st?'sel':''}" data-st="${n}"${open?'':' disabled'}><span class="nic">${open?x.ic:'🔒'}</span><span><b>${n}. ${x.name}</b><small>${open?x.boss+tut:''}</small></span><span class="nst">${prof.cleared[n]?'✓':''}</span></button>`; }).join('');
+    return `<button class="node ${n===st?'sel':''}" data-st="${n}"${open?'':whyAttr('앞 스테이지를 깨면 열려요')}><span class="nic">${open?x.ic:'🔒'}</span><span><b>${n}. ${x.name}</b><small>${open?x.boss+tut:''}</small></span><span class="nst">${prof.cleared[n]?'✓':''}</span></button>`; }).join('');
   const sel=$('#mapList .node.sel'); if(sel) sel.scrollIntoView({block:'nearest'});
   $('#mutWrap').hidden=!cfg.muts.length;
   $('#mutList').innerHTML=cfg.muts.map(id=>{ const m=MUTS.find(x=>x.id===id); return `<div class="mutrow">${m.ic} <b>${m.n}</b><span>${m.d}</span></div>`; }).join('');
   $('#partyLine').innerHTML=battle.heroes.map(h=>{ const c=charById(h.uid); return `<span><img class="thumb" ${spr(h.id,h.look)} alt="${h.name}"><i>Lv${c?c.lvl:1}</i></span>`; }).join('');
   const r=rewardFor(st,cfg.muts.length,true);
   $('#rewardInfo').innerHTML=`보상 🪙 <b>${r.gold}</b> · EXP <b>${r.exp}</b>`;
-  $('#reroll').disabled=prof.gold<20;
-  $('#toRoster').hidden=!tabsOpen();
-  const pr=$('#prepRecruit'), cost=recruitCost(); pr.hidden=prof.chars.length>=MAX_CHARS||(tabsOpen()&&prof.party.length>=4); pr.textContent=`＋ 동료 🪙${cost}`; pr.disabled=prof.gold<cost;
-  const can=!!prof.cleared[st]&&prof.autoOpen&&st>TUTORIAL_STAGES; $('#repeatBtn').disabled=!can; $('#repeatBtn').title=can?'':'자동 전투가 열리고, 한 번 깬 스테이지만 반복할 수 있어요';
+  setWhy($('#reroll'),prof.gold<20?'🪙 골드가 모자라요 (20 필요)':'');
+  $('#toRoster').hidden=!tabOpen('characters');
+  setWhy($('#repeatBtn'),!prof.autoOpen||st<=TUTORIAL_STAGES?'자동 전투가 열린 스테이지만 반복할 수 있어요':!prof.cleared[st]?'한 번 깬 스테이지만 반복할 수 있어요':'');
+  const nr=needRecruit(), sb=$('#startBtn'); sb.textContent=nr?`👥 동료 4명 필요 (${prof.party.length}/4)`:'▶ 전투 시작';
+  setWhy(sb,nr?(prof.chars.length<4?'캐릭터 탭에서 동료를 데려와 4명을 채워요\n골드가 모자라면 앞 스테이지를 다시 깨요':'캐릭터 탭에서 4명을 출전시켜요'):'');
 }
-$('#mapList').onclick=e=>{ const b=e.target.closest('[data-st]'); if(!b||b.disabled) return; prof.stage=+b.dataset.st; saveProf(); setupBattle(); renderPrep(); };
+$('#mapList').onclick=e=>{ const b=e.target.closest('[data-st]'); if(!b||b.getAttribute('aria-disabled')) return; prof.stage=+b.dataset.st; saveProf(); setupBattle(); renderPrep(); };
 $('#reroll').onclick=()=>{ if(prof.gold<20) return; prof.gold-=20; saveProf(); setupBattle(); renderPrep(); };
 $('#toRoster').onclick=()=>goto('characters');
-$('#prepRecruit').onclick=()=>{ if(prof.chars.length<MAX_CHARS&&prof.gold>=recruitCost()) openMaker(false); };
-$('#startBtn').onclick=()=>{ $('#prep').hidden=true; setButtons(); start(); };
+$('#startBtn').onclick=()=>{ if(needRecruit()) return; $('#prep').hidden=true; setButtons(); start(); };
 $('#repeatBtn').onclick=repeatRun;
 
 /* ---------- result, rewards, growth ---------- */
@@ -1992,13 +2022,13 @@ function finish(){
   const stName=STAGES[b.stage-1].name;
   if(b.def.talk) later(won?600:300,()=>bossSay(won?b.def.talk.die:b.def.talk.win));
   save(LOG_KEY,{cap:`${stName} · ${won?`승리 · 보스 ${b.round}턴`:'파티 전멸'}`,sum:sumList,text:$('#logStore').innerHTML});
-  showNext();
+  liveLog(); showNext();
   if(!won) banner('전멸','lose');
   later(won?300:1100,()=>{
     const t=$('#resultTitle'); t.textContent=won?'승리!':'파티 전멸'; t.className=won?'win':'lose';
     fillRewards('result',rw,before,drops);
     const hint=$('#resultHint'); hint.hidden=won; hint.innerHTML=won?'':'💡 '+hintFor(b);
-    $('#resultNear').textContent=won&&prof.chars.length<4&&prof.gold>=recruitCost()?`👥 🪙${recruitCost()}로 새 동료를 데려올 수 있어요!`:autoJustOpened?'🤖 자동 전투가 열렸어요!':firstClear&&b.stage===TUTORIAL_END?'🔓 캐릭터 · 작전 · 가방 · 보스 탭이 열렸어요!':firstClear&&b.stage<STAGES.length?`🗺️ ${STAGES[b.stage].name} 열림`:(!won&&b.boss.hp<=b.boss.max*.25?`아깝다! 보스 HP ${b.boss.hp} 남음`:'');
+    $('#resultNear').textContent=firstClear&&b.stage===RECRUIT_STAGE?'🔓 캐릭터 탭이 열렸어요! 동료를 데려와요':autoJustOpened?'🤖 자동 전투가 열렸어요!':firstClear&&b.stage===TUTORIAL_END?'🔓 작전 · 가방 · 보스 탭이 열렸어요!':firstClear&&b.stage<STAGES.length?`🗺️ ${STAGES[b.stage].name} 열림`:(!won&&b.boss.hp<=b.boss.max*.25?`아깝다! 보스 HP ${b.boss.hp} 남음`:'');
     $('#retryNew').textContent=firstClear&&b.stage<STAGES.length?'▶ 다음 스테이지':'▶ 지도로';
     $('#toStrategy').hidden=!tabsOpen();
     showResult();
@@ -2011,7 +2041,7 @@ function hintFor(b){
   return '큰 공격 예고에 🧱 버티기·🛡️ 가드를 걸거나, 레벨을 올려 보세요.';
 }
 $('#retrySame').onclick=()=>{ setupBattle(cfg.muts,cfg.seed); $('#prep').hidden=true; setButtons(); start(); };
-$('#retryNew').onclick=()=>{ setupBattle(); openPrep(); if(prof.chars.length<4&&prof.gold>=recruitCost()) coach('recruit','#prepRecruit','🪙 골드로 새 동료를 데려올 수 있어요!\n이름과 모습을 정해서 데려와요.'); };
+$('#retryNew').onclick=()=>{ setupBattle(); openPrep(); if(needRecruit()) coach('recruitTab','[data-screen="characters"]','캐릭터 탭이 열렸어요!\n여기서 동료를 데려와\n4명을 채워야 다음 스테이지로 가요.'); };
 $('#toStrategy').onclick=()=>{ $('#resultModal').hidden=true; goto('strategy'); };
 function repeatRun(){
   const N=5; let wins=0, gold=0, exp=0; const drops=[];
@@ -2071,11 +2101,19 @@ function renderLog(){
   $('#logSum').innerHTML=src.sum.length?src.sum.map(x=>`<div class="sumrow"><span class="r">B${String(x.r).padStart(2,'0')}</span><span>${x.ic}</span><span>${x.txt}</span><span class="v v-${x.c||'mid'}">${x.v}</span></div>`).join(''):'<div class="pempty">보스 턴이 지나면 응시·강공격 대응 결과가 쌓여요.</div>';
   $('#logText').innerHTML=src.text||'<div class="pempty">기록이 없어요.</div>';
 }
-function openLog(){ $('#logModal').hidden=false; renderLog(); }
+function openLog(){ $('#logModal').hidden=false; renderLog(); ['#logSum','#logText'].forEach(id=>{ const b=$(id); b.scrollTop=b.scrollHeight; }); }
+/* an open log follows the battle live; it stays at the bottom unless the player scrolled up to read */
+function liveLog(){
+  if($('#logModal').hidden||liveLog.q) return;
+  liveLog.q=requestAnimationFrame(()=>{ liveLog.q=0; if($('#logModal').hidden) return;
+    const bs=[$('#logSum'),$('#logText')], end=bs.map(b=>b.scrollHeight-b.scrollTop-b.clientHeight<40);
+    renderLog(); bs.forEach((b,i)=>{ if(end[i]) b.scrollTop=b.scrollHeight; }); });
+}
 document.querySelector('.log-tabs').onclick=e=>{
   const b=e.target.closest('[data-ltab]'); if(!b) return; ltab=b.dataset.ltab;
   document.querySelectorAll('[data-ltab]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
   $('#logSum').hidden=ltab!=='sum'; $('#logText').hidden=ltab!=='text';
+  const v=$(ltab==='sum'?'#logSum':'#logText'); v.scrollTop=v.scrollHeight;
 };
 $('#resultLog').onclick=openLog; $('#setLog').onclick=()=>{ $('#settingsModal').hidden=true; openLog(); };
 $('#logClose').onclick=()=>{ $('#logModal').hidden=true; };
@@ -2085,12 +2123,11 @@ function renderCharacters(){
   if(!charById(detailHero)) detailHero=prof.chars[0].uid;
   $('#partyCount').textContent=`${prof.party.length} / 4`;
   const fcard=(c,r)=>c?`<button class="fslot ${c.uid===detailHero?'sel':''}" data-row="${r}" data-id="${c.uid}"><img ${spr(c.job,c.look)} alt="">${c.name}<small>${HERO_DB[c.job].name} · Lv${c.lvl}</small></button>`:`<button class="fslot empty" data-row="${r}" aria-label="빈 자리">＋</button>`;
-  $('#formation').className='formation'+(moveUid?' moving':'');
   $('#formation').innerHTML=['F','B'].map(r=>{ const m=prof.party.filter(u=>rowOf(u)===r).map(charById); return `<div class="fcol"><b>${r==='F'?'전열':'후열'}</b>${fcard(m[0],r)}${fcard(m[1],r)}</div>`; }).join('');
   const bench=prof.chars.filter(c=>!prof.party.includes(c.uid));
-  $('#roster').innerHTML=bench.map(c=>`<button class="rh ${c.uid===detailHero?'sel':''} ${c.uid===moveUid?'moving':''}" data-id="${c.uid}">${c.job==='wanderer'&&c.lvl>=JOB_LVL?'<span class="inp" style="color:var(--gold)">전직!</span>':''}<img class="thumb" ${spr(c.job,c.look)} alt="">${c.name}<small>Lv${c.lvl} · ${HERO_DB[c.job].name}</small></button>`).join('');
+  $('#roster').innerHTML=bench.map(c=>`<button class="rh ${c.uid===detailHero?'sel':''}" data-id="${c.uid}">${c.job==='wanderer'&&c.lvl>=JOB_LVL?'<span class="inp" style="color:var(--gold)">전직!</span>':''}<img class="thumb" ${spr(c.job,c.look)} alt="">${c.name}<small>Lv${c.lvl} · ${HERO_DB[c.job].name}</small></button>`).join('');
   const cost=recruitCost(), rb=$('#recruitBtn'), full=prof.chars.length>=MAX_CHARS;
-  rb.textContent=full?'동료가 가득 찼어요':`＋ 새 동료 데려오기 · 🪙${cost}`; rb.disabled=full||prof.gold<cost;
+  rb.textContent=full?'동료가 가득 찼어요':`＋ 새 동료 데려오기 · 🪙${cost}`; setWhy(rb,full?`동료는 ${MAX_CHARS}명까지예요`:prof.gold<cost?`🪙 골드가 모자라요 (${cost} 필요)\n스테이지를 깨서 모아요`:'');
   coach('recruit2','#recruitBtn','여기서 🪙로 새 동료를 데려와요.\n이름과 모습을 정할 수 있어요.','characters');
   renderDetail();
 }
@@ -2099,7 +2136,7 @@ function renderDetail(){
   const need=expNeed(c.lvl), canJob=c.job==='wanderer'&&c.lvl>=JOB_LVL;
   const pool=skillPool(c);
   const skRow=id=>{ const s=SKILLS[id], learned=c.learned.includes(id), eq=c.equip.includes(id), lock=c.lvl<s.lv, cost=learnCost(id);
-    const btn=lock?`<span class="lock">Lv${s.lv} 필요</span>`:!learned?`<button class="outlinebtn" data-learn="${id}"${prof.gold<cost?' disabled':''}>배우기 🪙${cost}</button>`:eq?`<button class="outlinebtn on" data-unequip="${id}">장착 해제</button>`:`<button class="outlinebtn" data-equip="${id}"${c.equip.length>=EQUIP_SLOTS?' disabled':''}>장착</button>`;
+    const btn=lock?`<span class="lock">Lv${s.lv} 필요</span>`:!learned?`<button class="outlinebtn" data-learn="${id}"${whyAttr(prof.gold<cost?`🪙 골드가 모자라요 (${cost} 필요)`:'')}>배우기 🪙${cost}</button>`:eq?`<button class="outlinebtn on" data-unequip="${id}">장착 해제</button>`:`<button class="outlinebtn" data-equip="${id}"${whyAttr(c.equip.length>=EQUIP_SLOTS?`장착 칸(${EQUIP_SLOTS})이 가득 찼어요\n먼저 하나를 해제해요`:'')}>장착</button>`;
     return `<div class="skrow ${lock?'locked':''} ${eq?'eq':''}"><span class="ic t-${s.ty}">${s.pic}</span><span class="tx"><b>${s.n}</b><small>${s.cost?'SP '+s.cost:'SP 0'}${s.cd?` · 쿨 ${s.cd}`:''} · ${s.tip}</small></span>${btn}</div>`; };
   $('#heroDetail').innerHTML=`<div class="section-title"><span>${c.name} · ${hd.name} (${hd.role})</span><span>Lv ${c.lvl} / ${MAX_LVL}</span></div>
     <div class="expbar"><div style="width:${c.lvl>=MAX_LVL?100:c.exp/need*100}%"></div></div>
@@ -2107,7 +2144,7 @@ function renderDetail(){
     <div class="statgrid"><div>체력<b>${st.maxhp}</b></div><div>피해 배율<b>×${st.dmg.toFixed(2)}</b></div><div>속도<b>${spdWord(st.spd)}</b></div></div>
     <div class="rowbtns">
       <button class="outlinebtn" id="dParty">${inParty?'출전 해제':'출전시키기'}</button>
-      ${c.job==='wanderer'?`<button class="mainbtn" id="dJob"${canJob?'':' disabled'}>${canJob?'🎓 전직하기':`전직은 Lv${JOB_LVL}부터`}</button>`:''}
+      ${c.job==='wanderer'?`<button class="mainbtn" id="dJob"${whyAttr(canJob?'':`Lv${JOB_LVL}가 되면 전직할 수 있어요`)}>${canJob?'🎓 전직하기':`전직은 Lv${JOB_LVL}부터`}</button>`:''}
     </div>
     <div class="section-title" style="margin-top:12px"><span>스킬 (장착 ${c.equip.length}/${EQUIP_SLOTS})</span><span>🪙 ${prof.gold}</span></div>
     <div class="sklist">
@@ -2142,9 +2179,8 @@ function renderDetail(){
 }
 let partyDirty=false;
 function alertLine(t){ const d=$('#heroDetail'); const n=document.createElement('p'); n.className='sub'; n.style.color='var(--gold)'; n.style.margin='8px 0 0'; n.textContent=t; d.prepend(n); setTimeout(()=>n.remove(),2200); }
-/* formation: tap a hero to pick it (its details show below), then tap another place to move it there.
-   Tapping a party member swaps the two; tapping a waiting hero brings them in and benches the other */
-let moveUid=null;
+/* formation: drag a hero onto another place to move them. Dropping on a party member swaps the two, a waiting
+   hero takes the spot and benches whoever was there, and dropping on 대기 파티 benches. A tap shows the hero's details */
 function placeAt(uid,row,occ){
   const inP=prof.party.includes(uid);
   if(occ){
@@ -2156,18 +2192,43 @@ function placeAt(uid,row,occ){
   }
   fixRows(); saveProf(); partyDirty=true;
 }
-$('#formation').onclick=e=>{
-  const b=e.target.closest('.fslot'); if(!b) return; const uid=b.dataset.id||null, row=b.dataset.row;
-  if(moveUid&&moveUid!==uid){ placeAt(moveUid,row,uid); moveUid=null; }
-  else if(uid){ moveUid=moveUid===uid?null:uid; detailHero=uid; gearOpen=null; }
-  renderCharacters();
-};
-$('#roster').onclick=e=>{
-  const b=e.target.closest('[data-id]'); if(!b) return; const uid=b.dataset.id;
-  if(moveUid&&moveUid!==uid&&prof.party.includes(moveUid)){ const occ=moveUid; moveUid=null; placeAt(uid,rowOf(occ),occ); detailHero=uid; }
-  else{ moveUid=moveUid===uid?null:uid; detailHero=uid; gearOpen=null; }
-  renderCharacters();
-};
+let drag=null, dragDone=0;
+function dropAt(uid,over){
+  if(!over) return;
+  if(over.classList.contains('fslot')){ const occ=over.dataset.id||null; if(occ!==uid) placeAt(uid,over.dataset.row,occ); detailHero=uid; renderCharacters(); return; }
+  if(!prof.party.includes(uid)) return;
+  if(prof.party.length<=1){ alertLine('최소 1명은 출전해야 해요'); return; }
+  prof.party=prof.party.filter(x=>x!==uid); fixRows(); saveProf(); partyDirty=true; renderCharacters();
+}
+function dragOver(x,y){ const t=document.elementFromPoint(x,y); return t&&(t.closest('#formation .fslot')||t.closest('#benchCard')); }
+function dragStop(e,drop){
+  const d=drag; drag=null; if(!d||!d.on) return;
+  d.ghost.remove(); d.src.classList.remove('dragging'); if(d.over) d.over.classList.remove('over');
+  dragDone=Date.now(); if(drop) dropAt(d.uid,dragOver(e.clientX,e.clientY));
+}
+['#formation','#roster'].forEach(id=>$(id).addEventListener('pointerdown',e=>{
+  const b=e.target.closest('[data-id]'); if(!b||e.button>0) return;
+  if(e.pointerType==='mouse') e.preventDefault();
+  drag={uid:b.dataset.id,src:b,x:e.clientX,y:e.clientY,on:false,ghost:null,over:null};
+}));
+document.addEventListener('pointermove',e=>{
+  if(!drag) return;
+  if(!drag.on){
+    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8) return;
+    const c=charById(drag.uid); if(!c){ drag=null; return; }
+    drag.on=true; drag.src.classList.add('dragging');
+    const g=drag.ghost=document.createElement('div'); g.className='dragghost'; g.innerHTML=`<img ${spr(c.job,c.look)} alt="">${c.name}`; document.body.appendChild(g);
+  }
+  drag.ghost.style.left=e.clientX+'px'; drag.ghost.style.top=e.clientY+'px';
+  const over=dragOver(e.clientX,e.clientY);
+  if(over!==drag.over){ if(drag.over) drag.over.classList.remove('over'); drag.over=over; if(over) over.classList.add('over'); }
+});
+document.addEventListener('pointerup',e=>dragStop(e,true));
+document.addEventListener('pointercancel',e=>dragStop(e,false));
+['#formation','#roster'].forEach(id=>$(id).addEventListener('click',e=>{
+  const b=e.target.closest('[data-id]'); if(!b||Date.now()-dragDone<300) return;
+  detailHero=b.dataset.id; gearOpen=null; renderCharacters();
+}));
 
 /* ---------- inventory ---------- */
 function renderInventory(){
@@ -2195,7 +2256,7 @@ function renderStrategy(){
     <select id="c${r}" data-r="${r}" data-t="c">${CONDS.map(x=>`<option value="${x.id}"${x.id===cd?' selected':''}>${x.label}</option>`).join('')}</select>
     <label class="sr" for="s${r}">${r+1}순위 스킬</label>
     <select id="s${r}" data-r="${r}" data-t="s">${o.map(id=>{ const s=SKILLS[id]; return `<option value="${id}"${id===sid?' selected':''}>${s.pic} ${s.n}${opts.includes(id)?(s.cost?' · SP '+s.cost:''):' (미장착)'}</option>`; }).join('')}</select>
-    <div class="mv"><button data-mv="-1" data-r="${r}" aria-label="${r+1}순위 위로"${r===0?' disabled':''}>▲</button><button data-mv="1" data-r="${r}" aria-label="${r+1}순위 아래로"${r===list.length-1?' disabled':''}>▼</button></div>
+    <div class="mv"><button data-mv="-1" data-r="${r}" aria-label="${r+1}순위 위로"${whyAttr(r===0?'이미 1순위예요':'')}>▲</button><button data-mv="1" data-r="${r}" aria-label="${r+1}순위 아래로"${whyAttr(r===list.length-1?'이미 맨 아래예요':'')}>▼</button></div>
     ${f?`<span></span><div class="fired">지난 전투 ${f[r]?`<b>${f[r]}회 발동</b>`:'발동 안 함'}</div>`:''}
   </div>`; }).join('');
   $('#ruleNote').hidden=!f; if(f) $('#ruleNote').textContent=`지난 전투 기본 공격 ${f[RULE_SLOTS]}회`;
@@ -2252,8 +2313,8 @@ function goto(id){
   if(TAB_TIPS[id]) coach('tab-'+id,TAB_TIPS[id][0],TAB_TIPS[id][1],id);
   window.scrollTo(0,0);
 }
-document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{ const id=b.dataset.screen; if(id!=='battle'&&!tabsOpen()){ goto('battle'); toast(`🔒 튜토리얼(${TUTORIAL_END}스테이지)을 깨면 쓸 수 있어요`); return; } goto(id); });
-const TAB_TIPS={characters:['#formation','출전 파티예요.\n캐릭터를 누르고 다른 칸을 누르면\n자리를 옮겨요.'],strategy:['#ruleRows','캐릭터마다 "이럴 때 → 이 스킬"을 정해요.\n위 규칙부터 확인해서\n맞는 첫 스킬을 써요.'],inventory:['#itemList','얻은 장비예요.\n캐릭터 탭에서 장착해요.'],boss:['#bestiary','만난 적의 행동 순서예요.\n작전을 짜기 전에 확인해요.']};
+document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{ const id=b.dataset.screen; if(!tabOpen(id)){ goto('battle'); toast(tabLockWhy(id)); return; } goto(id); });
+const TAB_TIPS={characters:['#formation','출전 파티예요.\n캐릭터를 끌어다 놓으면\n자리를 옮겨요.'],strategy:['#ruleRows','캐릭터마다 "이럴 때 → 이 스킬"을 정해요.\n위 규칙부터 확인해서\n맞는 첫 스킬을 써요.'],inventory:['#itemList','얻은 장비예요.\n캐릭터 탭에서 장착해요.'],boss:['#bestiary','만난 적의 행동 순서예요.\n작전을 짜기 전에 확인해요.']};
 $('#fightBtn').onclick=()=>{
   if(!battle) return;
   if(battle.over&&!evq.length){ finish(); return; }
@@ -2304,7 +2365,7 @@ function renderMaker(){
   $('#mkSex').innerHTML=[['m','남'],['f','여']].map(([v,n])=>`<button data-sex="${v}" aria-pressed="${L.sex===v}">${n}</button>`).join('');
   $('#mkHair').innerHTML=HAIRS.map((h,i)=>`<button class="sw" data-hair="${i}" aria-pressed="${L.hair===i}" aria-label="${h.n}" style="background:${swatch(h,.5)}"></button>`).join('');
   $('#mkSkin').innerHTML=SKINS.map((h,i)=>`<button class="sw" data-skin="${i}" aria-pressed="${L.skin===i}" aria-label="${h.n}" style="background:${swatch(h,.95)}"></button>`).join('');
-  const ok=$('#mkOk'); ok.textContent=mk.first?'▶ 모험 시작':`🪙${cost} 데려오기`; ok.disabled=!$('#mkName').value.trim()||(!mk.first&&prof.gold<cost);
+  const ok=$('#mkOk'); ok.textContent=mk.first?'▶ 모험 시작':`🪙${cost} 데려오기`; setWhy(ok,!$('#mkName').value.trim()?'닉네임을 설정하세요.':!mk.first&&prof.gold<cost?`🪙 골드가 모자라요 (${cost} 필요)`:'');
 }
 $('#makeModal').addEventListener('click',e=>{
   const b=e.target.closest('[data-sex],[data-hair],[data-skin]'); if(!b||!mk) return;
