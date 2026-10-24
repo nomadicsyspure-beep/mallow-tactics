@@ -467,6 +467,9 @@ body:not(.guiding) .mskills.choose .sk:not(:disabled){border-color:#c79a2c;anima
 .spot{position:absolute;inset:0;z-index:15;cursor:pointer;overflow:hidden;overflow:clip}
 .spot.full{background:#02040ad0}
 .spot.top{z-index:33}
+.spot.tapTop .spot-tap{bottom:auto;top:58px}
+[data-screen].spotGlow{animation:navGlow .9s ease-in-out infinite;color:#fff2c4}
+@keyframes navGlow{50%{transform:scale(1.14);filter:brightness(1.8) drop-shadow(0 0 12px #f2c25b)}}
 .spot.bright.full{background:none}
 .spot.bright .spot-hole{box-shadow:0 0 0 3px var(--gold),0 0 26px 6px #f2c25b88;animation:ringPulse 1.4s ease-in-out infinite}
 @keyframes ringPulse{50%{box-shadow:0 0 0 3px #fff2c4,0 0 36px 10px #f2c25baa}}
@@ -573,6 +576,13 @@ body:not(.guiding) .mskills.choose .sk:not(:disabled){border-color:#c79a2c;anima
 .panel-note{padding:10px 12px;background:#101924;border:1px solid #1c2b3a;border-radius:9px;font-size:11.5px;color:#93a4b8;line-height:1.6}
 .panel-note b{color:var(--ink)}
 .saveinfo{font-size:11px;color:#7db397;margin-top:8px}
+.jsk-row{display:flex;justify-content:center;gap:10px;margin:8px 0}
+.jsk{width:54px;height:54px;border-radius:15px;font-size:27px;background:#121a24;border:2px solid color-mix(in srgb,var(--tc) 55%,#1b2633);box-shadow:inset 0 -3px 0 #0006}
+.jsk.on{border-color:var(--tc);background:color-mix(in srgb,var(--tc) 22%,#121a24);box-shadow:0 0 14px color-mix(in srgb,var(--tc) 50%,transparent)}
+.jsk-desc{min-height:64px;padding:9px 12px;border-radius:12px;background:#101823;border:1px solid #223042;text-align:center;font-size:13px;font-weight:800;color:var(--muted)}
+.jsk-desc b{display:block;font-size:15px;color:var(--tc)}
+.jsk-desc small{display:block;font-size:11px;color:var(--steel)}
+.jsk-desc p{margin:4px 0 0;color:var(--ink)}
 .tips{display:flex;flex-direction:column;gap:7px;margin:0}
 .tips div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px;font-size:12px;line-height:1.5}
 .tips dt{font-weight:900;color:var(--tc,var(--ink))}
@@ -810,7 +820,7 @@ body:not(.guiding) .mskills.choose .sk:not(:disabled){border-color:#c79a2c;anima
         <tr><td>💥 돌진</td><td>예고된 줄에 강한 피해.</td></tr>
         <tr><td>🐚 껍질 닫기</td><td>다음 차례까지 받는 피해 절반. 어둠 화염은 무시해요.</td></tr>
         <tr><td>👁️ 응시</td><td>다음 차례 강공격. 돌팔매나 유인 외침으로 끊으면 BREAK.</td></tr>
-        <tr><td>전열 / 후열</td><td>보스는 주로 전열을 노려요. 전열: 피해를 더 줘요 · 후열: 받는 피해가 감소해요</td></tr>
+        <tr><td>전열 / 후열</td><td>보스는 주로 전열을 노려요. 전열: 주는 피해 +20% · 후열: 받는 피해 -20%</td></tr>
       </tbody></table>
     </div>
     <div class="card">
@@ -925,7 +935,7 @@ const STAGES=[
     learn:'자동 전투 시작! 적을 누르면 집중 공격.'},
   {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:1200,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:160,wave:180},hue:30,
     learn:'👁️ 응시는 🪨 돌팔매로 끊어 BREAK! 🐚 껍질엔 피해 절반.'},
-  {name:'고블린 야영지',boss:'고블린 대장',ic:'👺',mobs:[{name:'고블린 주술사',ic:'🧪',hp:80,spd:92,kind:'heal',pw:50},{name:'고블린 병사',ic:'🪓',hp:90,spd:96,kind:'poke',pw:22}],talk:{start:'이 야영지는 우리 거다! 꺼져!',half:'주술사! 나 좀 고쳐!',die:'대장은… 도망 안 가… 꽥',win:'끌끌, 전리품 챙겨라!'},hp:650,spd:110,cycle:['swipe','swipe','charge'],pw:{swipe:80,charge:140},hue:60,
+  {name:'고블린 야영지',boss:'고블린 대장',ic:'👺',mobs:[{name:'고블린 주술사',ic:'🧪',hp:80,spd:92,kind:'heal',pw:50},{name:'고블린 병사',ic:'🪓',hp:90,spd:96,kind:'poke',pw:22}],talk:{start:'이 야영지는 우리 거다! 꺼져!',half:'주술사! 나 좀 고쳐!',die:'대장은… 도망 안 가… 꽥',win:'끌끌, 전리품 챙겨라!'},hp:650,spd:110,cycle:['swipe','swipe','charge'],pw:{swipe:80,charge:110},hue:60,
     learn:'주술사가 대장을 치료해요. 눌러서 먼저 잡아요.'},
   {name:'마녀의 오두막',boss:'숲의 마녀',ic:'🧙',mobs:[{name:'검은 고양이',ic:'🐈‍⬛',hp:110,spd:108,kind:'buff'}],talk:{start:'어머, 귀여운 손님들이네. 차 한 잔 할래?',half:'이제 장난은 끝이야.',die:'내 오두막이… 엉망이 됐잖아…',win:'다음엔 두꺼비로 만들어 줄게.'},hp:1500,spd:115,cycle:['swipe','gaze','wave'],pw:{swipe:160,wave:250},hue:260,
     learn:'🐈‍⬛ 고양이는 마녀의 다음 공격을 강하게 해요.'},
@@ -1100,6 +1110,7 @@ function valid(b,i,k){
   if(ef.healSelf&&h.hp>=h.max) return false;
   if(ef.ward&&!b.heroes.some(x=>x.hp>0&&!x.ward)) return false;
   if(ef.brace&&!ef.healAll&&h.brace) return false;
+  if(ef.brace&&!ef.healAll&&intent(b)==='charge'&&!aimOf(b).includes(i)) return false;
   if(ef.guard&&h.guard) return false;
   if(ef.taunt&&h.taunt&&intent(b)!=='gaze') return false;
   if(ef.mark&&o.mark) return false;
@@ -1383,7 +1394,7 @@ function rewardFor(stage,muts,won){
   return {gold:Math.round((40+35*stage)*mul),exp:Math.round((40+30*stage)*mul)};
 }
 /* no gear drops before DROP_FROM */
-const DROP_FROM=8;
+const DROP_FROM=7;
 function rollItem(stage,rand){
   if(stage<DROP_FROM||rand()>.6) return null;
   const slot=['wpn','arm','acc'][Math.floor(rand()*3)], t=Math.max(0,stage-5);
@@ -1506,7 +1517,7 @@ function renderBoss(s){
   renderFocus();
   if(!saidHalf&&battle.def.talk&&!battle.over&&s.bhp<=s.bmax/2&&s.bhp>0){ saidHalf=true; bossSay(battle.def.talk.half); }
   if(saidStart&&!battle.over){
-    if(s.stun>0) coach('break','#bossWrap','💫 BREAK!\n큰 공격을 쓰기 전의 보스 행동을\n끊어냈을 때 나오는 상태예요.\n보스가 한 차례 쉬고\n받는 피해가 30% 늘어요.');
+    if(s.stun>0) { coach('break','#bossWrap','💫 BREAK!\n큰 공격을 쓰기 전의 보스 행동을\n끊어냈을 때 나오는 상태예요.'); coach('break2','#bossWrap','보스가 한 차례 쉬고\n받는 피해가 30% 늘어요.'); }
     else if(t==='gaze'){ coach('gaze','#bossStatus','👁️ 보스가 아군을 \'응시\'하려 해요!\n이 다음엔 큰 공격이 올 거예요.'); const k=battle.heroes[skTab].sk.findIndex(x=>x.breakGaze||x.ef.breakGaze); coach('gaze2',k>=0?`#mSkills .sk[data-k="${k}"]`:'#mSkills','🪨 돌팔매로 맞히면\n\'응시\'를 끊어낼 수 있어요.'); }
     else if((t==='wave'||t==='charge')&&battle.stage>TUTORIAL_STAGES) coach('big','#bossStatus',`큰 공격 예고!\n🧱 버티기는 보스가 공격할 때까지 유지돼요.`);
     if(s.shell) coach('shell','#bossWrap','🐚 껍질을 닫았어요.\n다음 차례까지 받는 피해가 절반이에요.');
@@ -1539,11 +1550,12 @@ function bossSay(t){
    a tap anywhere moves on; the battle waits while a tip is open. A tip only starts while its own screen is showing. */
 let coachQ=[], coachCur=null;
 /* press=true: the tip points at something to press, and tapping the lit spot presses it right away (taps elsewhere do nothing) */
-/* bright=true: nothing is dimmed, the spot is only ringed (the screen itself is the point) */
-function coach(kind,sel,text,screen='battle',press=false,bright=false){
+/* bright=true: nothing is dimmed, the spot is only ringed (the screen itself is the point).
+   hold=ms: after the press, wait that long (an info bubble stays readable) before the next tip */
+function coach(kind,sel,text,screen='battle',press=false,bright=false,hold=0){
   if(prof.tips[kind]||$('#screen-'+screen).hidden) return;
   prof.tips[kind]=true; saveProf();
-  coachQ.push({sel,text,press,bright}); if(!coachCur) nextCoach();
+  coachQ.push({sel,text,press,bright,hold}); if(!coachCur) nextCoach();
 }
 /* a scripted demo in the tip queue: fn(done) runs with taps blocked, the next tip follows when it calls done */
 function coachDo(kind,fn,screen){
@@ -1551,7 +1563,11 @@ function coachDo(kind,fn,screen){
   prof.tips[kind]=true; saveProf();
   coachQ.push({fn}); if(!coachCur) nextCoach();
 }
+/* a tab button the tip points at sparkles */
+let glowEl=null;
+function glow(el){ if(glowEl&&glowEl!==el) glowEl.classList.remove('spotGlow'); glowEl=el&&el.matches('[data-screen]')?el:null; if(glowEl) glowEl.classList.add('spotGlow'); }
 function nextCoach(){
+  glow(null);
   const c=coachCur=coachQ.shift()||null;
   if(c&&c.fn){ $('#spot').hidden=true; c.fn(()=>{ if(coachCur===c) nextCoach(); }); return; }
   $('#spot').hidden=!c; if(c) placeSpot();
@@ -1560,25 +1576,30 @@ function placeSpot(){
   if(!coachCur||coachCur.fn) return;
   const ph=$('.phone').getBoundingClientRect(), hole=$('#spotHole'), msg=$('#spotMsg'), el=coachCur.sel&&document.querySelector(coachCur.sel);
   if(el&&el.closest('#mapList')) el.scrollIntoView({block:'nearest'});
-  const r=el&&el.getBoundingClientRect();
+  else if(el) scrollToSee(el);
+  const r=el&&el.getBoundingClientRect(); glow(el);
   /* tips on a pop-up window sit above it */
   $('#spot').classList.toggle('top',!!(el&&el.closest('.modal'))); $('#spot').classList.toggle('bright',!!coachCur.bright);
   msg.innerHTML=coachCur.text.replace(/\n/g,'<br>'); retrigger(msg,'show');
   $('#spot .spot-tap').textContent=coachCur.press?'빛나는 곳을 눌러요':'화면을 터치하면 넘어가요';
   const on=!!(r&&r.width); hole.hidden=!on; $('#spot').classList.toggle('full',!on);
   if(!on){ msg.style.top='38%'; msg.style.bottom=''; return; }
+  $('#spot').classList.toggle('tapTop',r.bottom>ph.bottom-90);
   const pad=6; Object.assign(hole.style,{left:r.left-ph.left-pad+'px',top:r.top-ph.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
   const extra=el.querySelector('.sp-float')?38:0;
   if(r.top-ph.top>ph.bottom-r.bottom){ msg.style.top=''; msg.style.bottom=(ph.bottom-r.top+pad+16+extra)+'px'; }
   else{ msg.style.bottom=''; msg.style.top=(r.bottom-ph.top+pad+16)+'px'; }
 }
 function coachBlocking(){ return !!coachCur; }
-function clearCoach(){ coachQ=[]; coachCur=null; $('#spot').hidden=true; }
+function clearCoach(){ coachQ=[]; coachCur=null; $('#spot').hidden=true; glow(null); }
+/* a target below or above the visible part of a screen is scrolled to the middle first */
+function scrollToSee(el){ const r=el.getBoundingClientRect(); if(r.width&&(r.bottom>innerHeight-70||r.top<50)&&el.closest('.screen,.modal-inner')) el.scrollIntoView({block:'center'}); }
 $('#spot').onclick=e=>{
   const c=coachCur; if(!c||!c.press){ nextCoach(); return; }
   const el=c.sel&&document.querySelector(c.sel), r=el&&el.getBoundingClientRect();
   if(!r||!r.width){ nextCoach(); return; }
   if(e.clientX<r.left-6||e.clientX>r.right+6||e.clientY<r.top-6||e.clientY>r.bottom+6) return;
+  if(c.hold){ const w={fn:1}; coachCur=w; $('#spot').hidden=true; glow(null); el.click(); setTimeout(()=>{ if(coachCur===w) nextCoach(); },c.hold); return; }
   nextCoach(); el.click();
 };
 addEventListener('resize',placeSpot);
@@ -1663,7 +1684,7 @@ $('#mSkills').onclick=e=>{
 function atkTips(){
   coach('tgt','#skPop','설명 창을 한 번 더 누르면 공격해요.');
   coach('tgt2','#bossWrap','적을 직접 눌러\n때릴 적을 고를 수도 있어요.');
-  if(battle.mobs.some(m=>m.hp>0)) coach('tgtMob','#mobs','공격 스킬은 타겟을 선택하지 않으면\n체력이 가장 낮은 졸개부터 때려요.');
+  if(battle.mobs.some(m=>m.hp>0)) coach('tgtMob','#skPop','공격 스킬은 타겟을 선택하지 않으면\n체력이 가장 낮은 졸개부터 때려요.\n설명 창을 한 번 더 눌러 봐요!','battle',true);
 }
 /* single-target attacks ask who to hit (the boss is always a choice); aoe and self skills don't */
 function needsTarget(s){ return !!s.ef.dmg&&!s.ef.aoe; }
@@ -1700,7 +1721,7 @@ $('#party').addEventListener('click',e=>{ const u=e.target.closest('.unit'); if(
 function infoTip(el,text){ el.dataset.why=text; whyTip(el); }
 function bossInfo(){ const b=battle, o=b.boss; return `${b.def.ic} ${b.def.name} · HP ${o.hp}/${o.max}\n속도 ${spdWord(o.spd)}\n행동: ${b.def.cycle.map(m=>BOSS_ICON[m]+' '+moveName(m)).join(' → ')}`; }
 function mobInfo(j){ const m=battle.mobs[j]; return `${m.ic} ${m.name} · HP ${m.hp}/${m.max}\n${m.kind==='heal'?`보스 HP 회복 ${m.pw}`:m.kind==='buff'?'보스의 다음 공격 강화':`공격 ${m.pw}`}`; }
-function heroInfo(i){ const h=(lastSnap?lastSnap.h:battle.heroes)[i], x=battle.heroes[i], c=charById(x.uid); return `${x.name} · ${HERO_DB[x.id].name} Lv${c?c.lvl:1}\nHP ${h.hp}/${h.max} · SP ${h.sp}\n${x.row==='F'?'전열: 피해를 더 줘요':'후열: 받는 피해가 감소해요'}`; }
+function heroInfo(i){ const h=(lastSnap?lastSnap.h:battle.heroes)[i], x=battle.heroes[i], c=charById(x.uid); return `${x.name} · ${HERO_DB[x.id].name} Lv${c?c.lvl:1}\nHP ${h.hp}/${h.max} · SP ${h.sp}\n${x.row==='F'?'전열: 주는 피해 +20%':'후열: 받는 피해 -20%'}`; }
 function showNext(){ renderSkillPanel(); }
 
 /* ---------- log: kept for the battle log sheet ---------- */
@@ -2015,7 +2036,7 @@ function battleTips(){
       ['gauge','#bossAtb','금색 게이지가 먼저 꽉 찬 쪽부터\n움직여요.'],['aim','#party','아군은 전열과 후열에 설 수 있어요.'],['aimRed','.lane.danger','배경이 빨갛게 물든 열을\n보스가 노려요.'],
       ['front','.lane[data-lane="F"]','전열: 피해를 더 줘요.'],['back','.lane[data-lane="B"]','후열: 받는 피해가 감소해요.']],
     2:[['mobs','#mobs','보스 옆의 몬스터는 졸개예요.\n보스와 따로 움직이며 공격해요.']],
-    3:[['inspect','#bossWrap','싸우기 전에 보스를 누르면\n어떤 스킬을 쓰는지 볼 수 있어요.'],['inspectMob','#mobs','졸개도 눌러서\n어떤 공격을 하는지 확인해요.'],['inspectAlly','#party','아군을 누르면\n지금 상태를 볼 수 있어요.'],['auto','#fightBtn','이제 자동 전투!\n정해진 패턴대로 싸워요.\n멈추면 바로 직접 조작해요.']],
+    3:[['inspect','#bossAvatar','싸우기 전에 보스를 눌러 봐요!\n어떤 스킬을 쓰는지 볼 수 있어요.','battle',true,false,2400],['inspectMob','#mobs .mob','졸개도 눌러 봐요!\n어떤 공격을 하는지 볼 수 있어요.','battle',true,false,2400],['inspectAlly','.unit[data-unit="0"]','아군을 누르면\n지금 상태를 볼 수 있어요.','battle',true,false,2400],['auto','#fightBtn','이제 자동 전투!\n정해진 패턴대로 싸워요.\n멈추면 바로 직접 조작해요.']],
     [BG_STAGE]:[['hard','#bossWrap','여기부터는 진짜 전략 싸움!\n전직 · 스킬 · 배치를 잘 골라야 이겨요.'],['tabs','#nav','이제 자동 전투 중에\n다른 탭을 봐도 전투가 계속돼요.']]};
   (tips[battle.stage]||[]).forEach(t=>coach(...t));
   coach(battle.stage>1&&battle.stage<=TUTORIAL_END?'fight'+battle.stage:'fight','#fightBtn','준비가 되면 전투 시작!','battle',true);
@@ -2130,7 +2151,7 @@ function finish(){
   let autoJustOpened=false;
   const firstClear=won&&!prof.cleared[b.stage];
   if(won) prof.cleared[b.stage]=true;
-  if(!won&&b.stage===JOB_TUT_STAGE&&!prof.jobTutDone&&jobReadyChars().length) prof.jobTut=true;
+  if(!won&&b.stage===JOB_TUT_STAGE&&jobReadyChars().length&&!(prof.jobRound>1)){ prof.jobRound=2; prof.jobTut=true; prof.jobTutDone=false; }
   if(firstClear){
     if(b.stage===TUTORIAL_STAGES&&!prof.autoOpen){ prof.autoOpen=true; autoJustOpened=true; }
     if(b.stage===TUTORIAL_END) autoJustOpened=false;
@@ -2161,7 +2182,9 @@ function hintFor(b){
 }
 $('#retrySame').onclick=()=>{ setupBattle(cfg.muts,cfg.seed); enterBattle(); };
 $('#retryNew').onclick=()=>{ setupBattle(); openPrep(); if(needRecruit()) coach('recruitTab','[data-screen="characters"]','캐릭터 탭이 열렸어요!\n동료를 데려와 4명을 채워야\n다음 스테이지로 가요.','battle',true);
-  if(jobTutOn()) coach('jobTut','[data-screen="characters"]','전직하면 훨씬 강해져요!\n캐릭터 탭에서 전직해 봐요.','battle',true); else goTips(); };
+  if(jobTutOn()) coach('jobTut'+jobR(),'[data-screen="characters"]',jobR()?'한 명 더 전직하면\n훨씬 수월해져요!\n캐릭터 탭에서 전직해 봐요.':'전직하면 훨씬 강해져요!\n캐릭터 탭에서 전직해 봐요.','battle',true); else goTips(); };
+/* the second guided job change (after losing stage 7) has its own tips */
+function jobR(){ return prof.jobRound>1?'B':''; }
 /* map tips: what the map is (before stage 2), where to start stages 4 and 5, and which areas drop gear (before stage 7) */
 function goTips(){
   if($('#prep').hidden||$('#screen-battle').hidden) return;
@@ -2191,7 +2214,8 @@ function skillLine(id,extra){ const s=SKILLS[id]; return `<div><dt class="t-${s.
 function jobCard(job,c){
   const hd=HERO_DB[job], lv=c?c.lvl:1, hp=Math.round(hd.hp*(1+.06*(lv-1)));
   return `<div class="intro"><img class="intro-spr" ${spr(job,c&&c.look)} alt=""><div><b>${c?c.name+' · ':''}${hd.name}</b><small>${hd.role} · 체력 ${hp} · 속도 ${spdWord(hd.spd)}</small><p>${hd.trait}</p></div></div>
-    <dl class="tips">${skillLine(hd.basic,'기본기 · ')}${hd.skills.map(id=>skillLine(id,`Lv${SKILLS[id].lv} · `)).join('')}</dl>
+    <div class="jsk-row">${[hd.basic,...hd.skills].map(id=>`<button class="jsk t-${SKILLS[id].ty}" data-jsk="${id}" aria-label="${SKILLS[id].n}">${SKILLS[id].pic}</button>`).join('')}</div>
+    <div class="jsk-desc" id="jskDesc">👆 스킬을 눌러 설명을 봐요</div>
     <div class="hint" style="margin-top:10px">💡 ${hd.tip}</div>`;
 }
 function jobReadyCard(cs){ return `<div class="intro"><img class="intro-spr" ${spr('wanderer',cs[0].look)} alt=""><div><b>Lv${JOB_LVL}부터 전직할 수 있어요!</b><p>캐릭터 탭에서 <b>전직하기</b>를 눌러보세요!</p><p>꼭 모두 전직할 필요는 없어요. 동료는 언제든 새로 데려올 수 있으니 여러 직업을 키워 보며 특성을 알아 가는 걸 추천해요!</p></div></div>`; }
@@ -2210,6 +2234,15 @@ function openJobPicker(c,picked){
   openIntro(`${c.name}의 전직`,`<div class="jobgrid">${list}</div>${picked?jobCard(picked,c)+`<div class="btnrow"><button class="mainbtn" id="jobConfirm">${HERO_DB[picked].name}(으)로 전직</button></div>`:''}`);
   $('#introClose').textContent='닫기'; $('#introClose').className='outlinebtn';
   document.querySelectorAll('.jobpick').forEach(b=>b.onclick=()=>openJobPicker(c,b.dataset.job));
+  /* skills are read one by one; in the guided job change every one is opened before the change */
+  const seen=new Set(), all=picked?[HERO_DB[picked].basic,...HERO_DB[picked].skills]:[];
+  document.querySelectorAll('.jsk').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.jsk, s=SKILLS[id], hd=HERO_DB[picked]; seen.add(id);
+    document.querySelectorAll('.jsk').forEach(x=>x.classList.toggle('on',x===b));
+    $('#jskDesc').innerHTML=`<b class="t-${s.ty}">${s.pic} ${s.n}</b><small>${id===hd.basic?'기본기':`Lv${s.lv}`} · ${s.cost?'SP '+s.cost:'SP 0'}${s.cd?` · 쿨타임 ${s.cd}턴`:''}</small><p>${s.tip}</p>`;
+    const ok=$('#jobConfirm'); if(ok&&all.every(x=>seen.has(x))) setWhy(ok,'');
+  });
+  if(picked&&jobTutOn()){ setWhy($('#jobConfirm'),'스킬을 하나씩 눌러 확인해요'); setTimeout(()=>coach('jobSk'+jobR(),'.jsk-row','스킬을 하나씩 눌러\n설명을 확인해요.','characters'),120); }
   const ok=$('#jobConfirm'); if(ok) ok.onclick=()=>{ changeJob(c,picked); if(jobTutOn()){ prof.jobTutDone=true; saveProf(); } $('#introModal').hidden=true; resetIntroBtn(); renderCharacters(); toast(`${c.name}: ${HERO_DB[picked].name}(으)로 전직!`); };
 }
 function changeJob(c,job){
@@ -2261,13 +2294,13 @@ function renderCharacters(){
   if(prof.party.length>=4){
     coach('formDrag','#formation','캐릭터를 끌어다 놓으면\n배치를 바꿀 수 있어요.','characters');
     coachDo('formDemo',dragDemo,'characters');
-    coach('formF','#formation .fcol:nth-child(1)','전열: 피해를 더 줘요.','characters');
-    coach('formB','#formation .fcol:nth-child(2)','후열: 받는 피해가 감소해요.','characters');
+    coach('formF','#formation .fcol:nth-child(1)','전열: 주는 피해 +20%','characters');
+    coach('formB','#formation .fcol:nth-child(2)','후열: 받는 피해 -20%','characters');
   }
   if(jobTutOn()){
     const c=charById(detailHero), r=jobReadyChars();
-    if(c&&c.job==='wanderer'&&c.lvl>=JOB_LVL) coach('jobTut3','#dJob','🎓 전직하기를 눌러\n직업을 골라요.','characters',true);
-    else if(r.length) coach('jobTut2',`#formation .fslot[data-id="${r[0].uid}"]`,'전직할 캐릭터를 골라요.','characters',true);
+    if(c&&c.job==='wanderer'&&c.lvl>=JOB_LVL) coach('jobTut3'+jobR(),'#dJob','🎓 전직하기를 눌러\n직업을 골라요.','characters',true);
+    else if(r.length) coach('jobTut2'+jobR(),`#formation .fslot[data-id="${r[0].uid}"]`,'전직할 캐릭터를 골라요.','characters',true);
   }
   renderDetail();
 }
@@ -2465,7 +2498,7 @@ function goto(id){
   if(id==='battle'&&!jobTutOn()) goTips();
   window.scrollTo(0,0);
 }
-document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{ const id=b.dataset.screen; if(!tabOpen(id)){ goto('battle'); toast(tabLockWhy(id)); return; } goto(id); });
+document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{ const id=b.dataset.screen; if(!tabOpen(id)){ b.dataset.why=tabLockWhy(id); whyTip(b); return; } goto(id); });
 const TAB_TIPS={strategy:['#ruleRows','캐릭터마다 "이럴 때 → 이 스킬"을 정해요.\n위 규칙부터 확인해서\n맞는 첫 스킬을 써요.'],inventory:['#itemList','얻은 장비예요.\n캐릭터 탭에서 장착해요.'],boss:['#bestiary','만난 적의 행동 순서예요.\n작전을 짜기 전에 확인해요.']};
 $('#fightBtn').onclick=()=>{
   if(!battle) return;
@@ -2506,7 +2539,7 @@ function firstTips(){ coach('start','#startBtn','눌러서 전투 시작!','batt
 /* ---------- guided start: from the first hero until the companions are recruited, only the next step can be
    tapped and everything else is dimmed. Scripted battle steps (forceSk) use the same layer later on ---------- */
 function guideOn(){ return !prof.guideDone||!!forceSk||jobTutOn(); }
-/* first job-ready notice (or stage 7 lost) before anyone changed job: walk the player through one job change */
+/* first job-ready notice: walk the player through one job change; losing stage 7 with a Lv5 wanderer left does it once more */
 function jobTutOn(){ return !!prof.jobTut&&!prof.jobTutDone; }
 function jobReadyChars(){ return prof.party.map(charById).filter(c=>c&&c.job==='wanderer'&&c.lvl>=JOB_LVL); }
 /* screens get a moment to be seen before the next point lights up */
@@ -2553,9 +2586,10 @@ function guideOk(t){
   return g.dim.some(sel=>[...document.querySelectorAll(sel)].some(el=>el.contains(t)));
 }
 ['pointerdown','click'].forEach(ev=>document.addEventListener(ev,e=>{ if(!guideOk(e.target)){ e.stopImmediatePropagation(); e.preventDefault(); } },true));
-let guideKey='';
+let guideKey='', guideSels='';
 function drawGuide(){
   const g=guideSel(), el=$('#guide'); document.body.classList.toggle('guiding',guideOn());
+  const sk=g?g.dim.join():''; if(sk!==guideSels){ guideSels=sk; const t=g&&g.dim.length===1&&document.querySelector(g.dim[0]); if(t) scrollToSee(t); }
   const rs=g?g.dim.flatMap(sel=>[...document.querySelectorAll(sel)]).map(x=>x.getBoundingClientRect()).filter(r=>r.width&&r.height):[];
   if(!rs.length){ el.hidden=true; guideKey=''; return; }
   const p=5, holes=rs.map(r=>`<rect x="${Math.round(r.left-p)}" y="${Math.round(r.top-p)}" width="${Math.round(r.width+p*2)}" height="${Math.round(r.height+p*2)}" rx="12"/>`).join(''), key=holes+innerWidth+'x'+innerHeight;
@@ -2600,8 +2634,8 @@ $('#mkOk').onclick=()=>{
   if(!mk) return; const cost=mk.first?0:recruitCost(); if(prof.gold<cost) return;
   const name=$('#mkName').value.trim().slice(0,6); if(!name) return;
   const c=makeChar('c'+(prof.nextUid++),name,{...mk.look});
-  /* a companion joins at the party's lowest level so nobody has to grind alone */
-  if(!mk.first) c.lvl=Math.max(1,Math.min(...prof.chars.map(x=>x.lvl)));
+  /* the free companions that fill the first party join at its lowest level so stage 3 isn't a grind; later ones start at Lv1 */
+  if(!mk.first&&!cost) c.lvl=Math.max(1,Math.min(...prof.chars.map(x=>x.lvl)));
   prof.gold-=cost; prof.chars.push(c); ensureChar(c); saveRules();
   if(prof.party.length<4){ const f=prof.party.filter(u=>rowOf(u)==='F').length; prof.rows[c.uid]=f>prof.party.length-f?'B':'F'; prof.party.push(c.uid); fixRows(); partyDirty=true; }
   saveProf(); $('#makeModal').hidden=true;
