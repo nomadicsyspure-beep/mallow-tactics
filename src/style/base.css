@@ -1,0 +1,43 @@
+/* Layout: one handheld column sized to the screen. The battle stage is the main area (turn order strip, boss vs 2x2 party, skill pop-ups, cut-ins); under it a slim skill bar for whoever acts now, the action row and the bottom nav. */
+:root{
+  --bg:#05070b;
+  --panel:#0b1118;
+  --panel-2:#101823;
+  --card:#111a24;
+  --line:#1e2a36;
+  --line-2:#2a3947;
+  --ink:#e7edf4;
+  --muted:#91a1b3;
+  --muted-2:#6d7b8a;
+  --accent:#8a6bff;
+  --accent-ink:#b9a8ff;
+  --danger:#e06a7a;
+  --heal:#53c79a;
+  --steel:#7fb2e5;
+  --gold:#f2c25b;
+  --font-display:'Black Han Sans','Noto Sans KR',system-ui,sans-serif;
+  --font-body:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* scrolling stays, the scrollbars go */
+*{scrollbar-width:none}
+*::-webkit-scrollbar{display:none}
+html,body{height:100%}
+body{height:100dvh}
+body{margin:0;background:radial-gradient(circle at top,#101722 0%,var(--bg) 70%) var(--bg);font-family:var(--font-body);color:var(--ink);-webkit-tap-highlight-color:transparent}
+button,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled,button[aria-disabled="true"]{cursor:default}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-variant-numeric:tabular-nums}
+.phone{width:min(100%,460px);height:100%;min-height:560px;margin:auto;background:var(--panel);box-shadow:0 12px 80px #000a;display:flex;flex-direction:column;border-left:1px solid #0f1822;border-right:1px solid #0f1822;position:relative}
+.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.topbar{height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0c1219,#0a0f15)}
+.brand{font-family:var(--font-display);letter-spacing:.2px;font-size:17px;color:var(--ink)}
+.brand span{color:#9b8aff}
+.wallet{display:flex;gap:8px;font-size:11px;font-weight:900;color:#c9d4e0}
+.wallet span{display:flex;align-items:center;gap:3px}
+.btn-icon{border:0;background:transparent;font-size:21px;line-height:1;color:var(--muted);padding:4px}
+

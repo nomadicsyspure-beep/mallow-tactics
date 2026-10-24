@@ -1,0 +1,79 @@
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;background:#020406c9;display:flex;z-index:20;align-items:center;justify-content:center;padding:16px max(16px,env(safe-area-inset-left,0px))}
+.modal-inner{width:min(400px,100%);max-height:100%;overflow:auto;border-radius:19px;padding:18px 18px 16px;background:#0f161f;border:1px solid #243142;box-shadow:0 20px 60px #000a;animation:modalIn .4s cubic-bezier(.2,1.4,.4,1)}
+.modal-inner.tall{height:100%;display:flex;flex-direction:column;overflow:hidden}
+@keyframes modalIn{from{transform:scale(.85);opacity:0}}
+.modal h3{margin:0;font-family:var(--font-display);font-weight:400;font-size:28px;text-align:center;letter-spacing:.5px}
+.modal h3.win{color:var(--gold)}
+.modal h3.lose{color:var(--danger)}
+.modal h3.plain{font-size:20px;text-align:left}
+/* rewards: currency, EXP per character, item drops */
+.rw-cur{display:flex;justify-content:center;gap:10px;margin:12px 0 10px}
+.rw-cur span{font-family:var(--font-display);font-size:24px;line-height:1.2;padding:6px 16px;border-radius:14px;background:#1d1a0d;border:1px solid #6a5a26;color:#ffe7a8}
+.rw-chars{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.rw-char{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 10px;border-radius:12px;background:#121b26;border:1px solid #1d2a38}
+.rw-char .thumb{height:38px}
+.rw-char b{font-size:14px}
+.rw-char small{font-size:11px;color:var(--muted);font-weight:700}
+.rw-char .expbar{height:8px;margin-top:5px}
+.rw-char .expbar div{transition:width 1s ease .35s}
+.rw-char .gain{font-family:var(--font-display);font-size:22px;color:#8ff5d2;white-space:nowrap;text-align:right;line-height:1}
+.rw-char .gain small{display:block;font-family:var(--font-body);font-size:9px;color:#5fae92}
+.rw-char.up{border-color:#c79a2c;background:#221c0c}
+.lvup{display:inline-block;font-size:10px;font-weight:900;color:#1d1a0e;background:var(--gold);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px;animation:pillPulse .8s ease-in-out infinite}
+.lvup.job{background:#b9a8ff}
+.rw-char{padding:5px 9px}
+.rw-char .thumb{height:30px}
+.rw-items{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.rw-items:empty{display:none}
+.rw-items:before{content:"✨ 획득 아이템";text-align:center;font-family:var(--font-display);font-size:17px;color:#fff2c4;text-shadow:0 0 12px #f2c25b}
+.rep{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.rep div{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:6px 10px;background:#121b26;border:1px solid #1d2a38;border-radius:8px;color:var(--muted)}
+.rep b{color:var(--ink);font-variant-numeric:tabular-nums}
+.rep b.ok{color:#7fe0b8}.rep b.bad{color:#ff7b8a}
+.hint{font-size:12px;line-height:1.6;color:#c3cfdd;background:#18142c;border:1px solid #3a2f6a;border-radius:10px;padding:9px 11px}
+.hint b{color:#d9ceff}
+.near{font-size:11.5px;color:#ffb3c0;text-align:center;margin-top:6px;font-weight:700}
+.near.prac{color:#9fd0ff}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.setrow label{font-size:13px;font-weight:700}
+.setrow small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:2px}
+.switch{appearance:none;-webkit-appearance:none;flex-shrink:0;width:44px;height:26px;border-radius:999px;background:#253242;position:relative;cursor:pointer;transition:background .2s;margin:0}
+.switch:before{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#cfd9e4;transition:transform .2s}
+.switch:checked{background:var(--accent)}
+.switch:checked:before{transform:translateX(18px)}
+.log-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.log-cap{font-size:11px;color:var(--muted);margin-bottom:8px}
+.log-tabs{display:flex;gap:4px;margin-bottom:8px}
+.log-tabs button{border:1px solid transparent;background:none;color:var(--muted-2);font-size:11.5px;font-weight:900;padding:5px 10px;border-radius:8px}
+.log-tabs button[aria-pressed="true"]{background:#16202d;border-color:#2c3a4c;color:var(--ink)}
+.log-body{flex:1;min-height:0;overflow:auto}
+.sumrow{display:grid;grid-template-columns:34px 24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid #121b25;font-size:11.5px}
+.sumrow .r{font-size:10px;color:var(--muted-2);font-weight:900}
+.sumrow .v{font-weight:900;white-space:nowrap}
+.v-ok{color:#7fe0b8}.v-bad{color:#ff7b8a}.v-mid{color:var(--gold)}
+.pempty{font-size:11.5px;color:var(--muted-2);padding:14px 4px;line-height:1.6}
+.entry{font-size:11px;line-height:1.5;padding:4px 0;border-bottom:1px solid #121b25;color:#aebccb}
+.entry strong{color:#eef3f8}
+.entry.boss{color:#e09098}
+.entry.good{color:#7fe0b8}
+.entry.alert{color:#f2c25b}
+.entry .turn{color:#5f7284;font-size:9.5px;margin-right:6px;font-weight:700}
+
+@media(max-height:720px){
+  .battle{min-height:330px}
+  .boss-body{width:min(112px,100%);margin:6px auto}
+  .unit{padding:8px 4px 7px}
+  .unit-badge{width:36px;height:36px;font-size:16px}
+}
+@media(max-width:370px){
+  .arena{left:2%;right:2%;gap:6px}
+  .party{gap:6px 5px}
+  .sk{padding:6px}
+  .sk .ic{width:26px;height:26px;font-size:15px}
+  .banner b{font-size:38px}
+  .ci-skill{font-size:30px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important}
+}

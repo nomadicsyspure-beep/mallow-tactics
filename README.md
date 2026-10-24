@@ -1,13 +1,18 @@
 # MALLOW / TACTICS (말랑 작전실)
 
-행동 패턴을 짜서 보스를 공략하는 2D 턴제 전투 프로토타입입니다. 빌드 과정 없이 HTML 파일 하나로 돌아갑니다.
+행동 패턴을 짜서 보스를 공략하는 2D 턴제 전투 프로토타입입니다. 실행은 HTML 파일 하나로 됩니다.
 
 ## 파일
 
-- `mallow-tactics.html`: 원본. Claude 아티팩트로 올리는 버전이라 `<!doctype>`/`<head>` 뼈대가 없습니다. 수정은 이 파일에서 합니다.
-- `index.html`: `mallow-tactics.html`에 문서 뼈대만 붙인 단독 실행용 파일. 브라우저로 바로 열 수 있습니다. 원본을 고친 뒤에는 이 파일도 같은 내용으로 다시 만들어 주세요.
+- `src/`: 게임 코드 원본. 전투 · 캐릭터 · 튜토리얼 등 영역별 조각 파일로 나뉘어 있습니다. 수정은 여기서 합니다. 어느 파일에 무엇이 있는지는 `docs/CODEMAP.md`
+- `tools/build.py`: `src/page.html`의 `@@include` 순서대로 조각을 이어 붙여 아래 두 파일을 만들고 문법 검사를 합니다 (`python3 tools/build.py`)
+  - `mallow-tactics.html`: Claude 아티팩트로 올리는 버전(`<!doctype>`/`<head>` 뼈대 없음)
+  - `index.html`: 문서 뼈대를 붙인 단독 실행용. 브라우저로 바로 열 수 있습니다
+  - 두 파일은 만들어지는 결과물이라 직접 고치지 않습니다
+- `tools/sim.js`: 밸런스 시뮬레이션, `tools/test-guide.js` · `tools/test-battle.js`: 브라우저 자동 테스트(Playwright)
+- `docs/`: 규칙 문서(`rules-*.md`), 코드 지도(`CODEMAP.md`), 진행 기록(`HISTORY.md`). 목차는 `PROJECT_NOTES.md`
 
-## 구조 (mallow-tactics.html)
+## 구조 (합친 결과 기준, 조각은 `src/`)
 
 - `/*ENGINE*/ … /*END ENGINE*/`: 전투 규칙. 화면과 분리된 순수 로직이라 `simulate(cfg)`로 밸런스를 시험할 수 있습니다.
   - 행동 게이지: 각 유닛이 속도만큼 게이지를 채우고 100%에 먼저 닿은 유닛이 행동 (`nextActor`)

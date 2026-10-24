@@ -1,0 +1,276 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>말랑 작전실</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#05070b">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+@@include style/base.css
+@@include style/battle.css
+@@include style/skillbar.css
+@@include style/screens.css
+@@include style/modals.css
+</style>
+
+<div class="phone">
+  <div class="topbar pad">
+    <button class="btn-icon" id="menuBtn" aria-label="설정 열기">☰</button>
+    <div class="brand">MALLOW<span> / TACTICS</span></div>
+    <div class="wallet"><button class="btn-icon" id="fsBtn" aria-label="전체 화면" hidden style="font-size:17px;padding:0 4px">⛶</button><span title="골드">🪙 <b id="wGold" class="mono">0</b></span></div>
+  </div>
+
+  <!-- 전투 -->
+  <div id="screen-battle">
+    <div class="battle" id="battle">
+      <div class="vignette" id="vignette"></div>
+      <div class="order" id="order"></div>
+
+      <div class="arena">
+      <div class="boss-wrap" id="bossWrap">
+        <div class="boss-label"><span id="bossName"></span> <span id="bossHPText" class="mono"></span></div>
+        <div class="hp-track"><div class="hp-lag" id="bossHPLag"></div><div class="hp-fill" id="bossHPBar"></div></div>
+        <div class="bar atb boss-atb" id="bossAtb" title="행동 게이지"><div></div></div>
+        <div class="debuffs" id="debuffs"></div>
+        <div class="boss-body" id="bossBody">
+          <div class="boss-ring"></div>
+          <div class="boss-avatar" id="bossAvatar">
+            <div class="boss-eye"></div>
+            <div class="boss-aura"></div>
+            <div class="boss-reticle"></div>
+          </div>
+          <div class="boss-shell"></div>
+          <div class="boss-stars"><span>✦</span><span>★</span><span>✦</span></div>
+        </div>
+        <span class="boss-status calm" id="bossStatus"></span>
+        <div class="mobs" id="mobs"></div>
+      </div>
+
+      <div class="party" id="party"></div>
+      </div>
+      <div class="stage-foot">
+        <div class="round" id="roundInfo"></div>
+      </div>
+      <div class="fx" id="fx"></div>
+      <div class="banner" id="banner" hidden></div>
+      <div class="toast" id="toast" hidden></div>
+      <div class="cutin" id="cutin" hidden>
+        <div class="ci-flash"></div>
+        <div class="ci-band">
+          <div class="ci-lines"></div>
+          <div class="ci-portrait" id="ciPortrait"></div>
+          <div class="ci-text"><small class="ci-who" id="ciWho"></small><b class="ci-skill" id="ciSkill"></b><em class="ci-sub" id="ciSub"></em></div>
+        </div>
+      </div>
+
+      <div class="prep" id="prep">
+        <div class="prep-box">
+          <div class="prep-row"><h3>모험 지도</h3><span class="lab" id="mapProg"></span></div>
+          <div class="map" id="mapList"></div>
+          <div class="prep-row"><span class="lab">출전 파티</span><button class="textbtn" id="toRoster">편성 바꾸기 ›</button></div>
+          <div class="partyline" id="partyLine"></div>
+          <div class="reward" id="rewardInfo"></div>
+          <div class="btnrow" style="margin-top:2px">
+            <button class="mainbtn" id="startBtn">▶ 전투 시작</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mid pad" id="mid">
+      <div class="ctabs" id="ctabs" role="tablist" aria-label="캐릭터 스킬"></div>
+      <div class="mskills" id="mSkills"></div>
+      <div class="skpop" id="skPop" hidden></div>
+    </div>
+
+    <div class="actionrow pad">
+      <button class="iconbtn" id="resetBtn" aria-label="새 판 준비">↻</button>
+      <button class="mainbtn" id="fightBtn">▶ 진행</button>
+    </div>
+  </div>
+
+  <!-- 캐릭터 -->
+  <div class="screen pad" id="screen-characters" hidden>
+    <div class="eyebrow">PARTY / UNITS</div>
+    <h2>편성과 성장</h2>
+    <div class="subtabs" id="charTabs"><button data-ctab="party" aria-pressed="true">출전 파티</button><button data-ctab="bench" aria-pressed="false">대기 파티<i id="benchCount"></i></button></div>
+    <div id="partyPane"><div class="card">
+      <div class="section-title"><span>출전 파티</span><span id="partyCount"></span></div>
+      <div class="formation" id="formation"></div>
+    </div></div>
+    <div id="benchPane" hidden><div class="card" id="benchCard">
+      <div class="section-title"><span>대기 파티</span></div>
+      <div class="roster" id="roster"></div>
+      <button class="mainbtn recruit" id="recruitBtn"></button>
+    </div></div>
+    <div class="card" id="heroDetail"></div>
+  </div>
+
+  <!-- 작전 -->
+  <div class="screen pad" id="screen-strategy" hidden>
+    <div class="eyebrow">BEHAVIOR / PATTERN</div>
+    <h2>행동 패턴</h2>
+    <div class="tabs" id="tabs" role="group" aria-label="영웅 선택"></div>
+    <div class="card">
+      <div class="section-title"><span>우선순위 · 조건 → 스킬</span><button class="textbtn" id="defaultBtn">기본값으로</button></div>
+      <div id="ruleRows"></div>
+      <div class="tgtrow" id="tgtRow"></div>
+      <div class="saveinfo" id="ruleNote" hidden></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><span>스킬 정보</span><span id="heroSpd"></span></div>
+      <dl class="tips" id="skillTips"></dl>
+    </div>
+  </div>
+
+  <!-- 가방 -->
+  <div class="screen pad" id="screen-inventory" hidden>
+    <div class="eyebrow">INVENTORY</div>
+    <h2>가방</h2>
+    <div class="card">
+      <div class="section-title"><span>재화</span></div>
+      <div class="statgrid" style="grid-template-columns:1fr;margin:0"><div>🪙 골드<b id="iGold">0</b></div></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><span>장비</span><span id="itemCount"></span></div>
+      <div class="gpick" id="itemList"></div>
+    </div>
+  </div>
+
+  <!-- 보스 -->
+  <div class="screen pad" id="screen-boss" hidden>
+    <div class="eyebrow">MONSTER GUIDE</div>
+    <h2>몬스터 도감</h2>
+    <div id="bestiary"></div>
+    <div class="card">
+      <div class="section-title"><span>행동 종류</span></div>
+      <table class="tbl"><tbody>
+        <tr><td>🐙 공격</td><td>예고된 줄(전열/후열) 전원 피해. 가드 중인 아군이 있으면 혼자 대신 맞아요.</td></tr>
+        <tr><td>🌊 광역 공격</td><td>아군 전원 피해.</td></tr>
+        <tr><td>💥 돌진</td><td>예고된 줄에 강한 피해.</td></tr>
+        <tr><td>🐚 껍질 닫기</td><td>다음 차례까지 받는 피해 절반. 어둠 화염은 무시해요.</td></tr>
+        <tr><td>👁️ 응시</td><td>다음 차례 강공격. 돌팔매나 유인 외침으로 끊으면 BREAK.</td></tr>
+        <tr><td>전열 / 후열</td><td>보스는 주로 전열을 노려요. 전열: 주는 피해 +20% · 후열: 받는 피해 -20%</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <div class="spot" id="spot" role="status" hidden><div class="spot-hole" id="spotHole"></div><div class="spot-msg" id="spotMsg"></div><div class="spot-tap">화면을 터치하면 넘어가요</div></div>
+
+  <nav class="nav" id="nav" aria-label="메뉴">
+    <button data-screen="battle" aria-current="page"><span class="ni">⚔️</span>전투</button>
+    <button data-screen="characters"><span class="ni">👥</span>캐릭터</button>
+    <button data-screen="strategy"><span class="ni">🧠</span>작전</button>
+    <button data-screen="inventory"><span class="ni">🎒</span>가방</button>
+    <button data-screen="boss"><span class="ni">👁️</span>보스</button>
+  </nav>
+</div>
+
+<div class="modal intro-modal" id="introModal" role="dialog" aria-modal="true" aria-labelledby="introTitle" hidden>
+  <div class="modal-inner">
+    <h3 class="plain" id="introTitle"></h3>
+    <div id="introBody"></div>
+    <div class="btnrow"><button class="mainbtn" id="introClose">확인</button></div>
+  </div>
+</div>
+
+<div class="modal make-modal" id="makeModal" role="dialog" aria-modal="true" aria-labelledby="makeTitle" hidden>
+  <div class="modal-inner">
+    <h3 class="plain" id="makeTitle"></h3>
+    <div class="mk-prev" id="mkPrev"></div>
+    <label class="sr" for="mkName">닉네임</label><input class="mk-name" id="mkName" maxlength="6" autocomplete="off">
+    <div class="mk-row"><span>성별</span><div class="mk-opts" id="mkSex"></div></div>
+    <div class="mk-row"><span>헤어</span><div class="mk-opts" id="mkHair"></div></div>
+    <div class="mk-row"><span>피부</span><div class="mk-opts" id="mkSkin"></div></div>
+    <div class="btnrow"><button class="outlinebtn" id="mkCancel">취소</button><button class="mainbtn" id="mkOk"></button></div>
+  </div>
+</div>
+
+<div class="modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle" hidden>
+  <div class="modal-inner">
+    <h3 id="resultTitle"></h3>
+    <div class="rw-chars" id="resultChars" style="margin-top:12px"></div>
+    <div class="rw-cur" id="resultCur"></div>
+    <div class="rw-items" id="resultItems"></div>
+    <div class="hint" id="resultHint" hidden></div>
+    <div class="near" id="resultNear"></div>
+    <div class="btnrow">
+      <button class="outlinebtn" id="resultLog">📜 로그</button>
+      <button class="outlinebtn" id="toStrategy">🧠 작전</button>
+      <button class="outlinebtn" id="retrySame">⟳ 다시</button>
+    </div>
+    <div class="btnrow" style="margin-top:8px">
+      <button class="mainbtn" id="retryNew">▶ 다음 판</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="repeatModal" role="dialog" aria-modal="true" aria-labelledby="repeatTitle" hidden>
+  <div class="modal-inner">
+    <h3 class="plain" id="repeatTitle">반복 전투 ×5</h3>
+    <div class="rep" id="repeatRows" style="margin-top:10px"></div>
+    <div class="rw-chars" id="repeatChars"></div>
+    <div class="rw-cur" id="repeatCur"></div>
+    <div class="rw-items" id="repeatItems"></div>
+    <div class="btnrow"><button class="mainbtn" id="repeatClose">확인</button></div>
+  </div>
+</div>
+
+<div class="modal" id="logModal" role="dialog" aria-modal="true" aria-labelledby="logTitle" hidden>
+  <div class="modal-inner tall">
+    <div class="log-head"><h3 class="plain" id="logTitle">전투 로그</h3><button class="outlinebtn" id="logClose">닫기</button></div>
+    <div class="log-cap" id="logCap"></div>
+    <div class="log-tabs" role="group" aria-label="로그 종류">
+      <button data-ltab="sum" aria-pressed="true">보스 턴 요약</button>
+      <button data-ltab="text" aria-pressed="false">전체 기록</button>
+    </div>
+    <div class="log-body" id="logSum"></div>
+    <div class="log-body" id="logText" hidden></div>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+  <div class="modal-inner">
+    <h3 class="plain" id="settingsTitle">설정</h3>
+    <div class="setrow"><label for="setCutin">필살기 컷신<small>BREAK · 크리티컬 · 보스 강공격에 컷신 연출</small></label><input type="checkbox" class="switch" id="setCutin"></div>
+    <div class="setrow"><label>전투 로그<small>지난 전투도 다시 볼 수 있어요</small></label><button class="outlinebtn" id="setLog">열기</button></div>
+    <div class="setrow"><label>진행 초기화<small>재화 · 레벨 · 장비 · 기록을 처음으로</small></label><button class="outlinebtn" id="setWipe">초기화</button></div>
+    <div class="btnrow"><button class="mainbtn" id="setClose">닫기</button></div>
+  </div>
+</div>
+
+<div id="logStore" hidden></div>
+<div class="whytip" id="whyTip" hidden></div>
+<div class="guide" id="guide" hidden></div>
+
+<script>
+@@include engine/data.js
+@@include engine/rules.js
+@@include assets/sprites.js
+@@include game/looks.js
+@@include game/profile.js
+@@include game/state.js
+@@include battle/view.js
+@@include tutorial/coach.js
+@@include battle/hud.js
+@@include battle/skillbar.js
+@@include battle/fx.js
+@@include battle/playback.js
+@@include battle/loop.js
+@@include battle/setup.js
+@@include game/unlocks.js
+@@include screens/map.js
+@@include battle/result.js
+@@include screens/jobcard.js
+@@include screens/logsheet.js
+@@include screens/characters.js
+@@include screens/inventory.js
+@@include screens/strategy.js
+@@include screens/bestiary.js
+@@include screens/nav.js
+@@include tutorial/guide.js
+@@include screens/maker.js
+@@include game/boot.js
+</script>
