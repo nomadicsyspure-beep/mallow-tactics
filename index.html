@@ -940,9 +940,9 @@ const STAGES=[
     learn:'스킬을 고르고, 공격할 적을 눌러요.'},
   {name:'버섯 언덕',boss:'독버섯',ic:'🍄',mobs:[{name:'포자 덩어리',ic:'🟣',hp:30,spd:90,kind:'poke',pw:12}],talk:{start:'포자 냄새 좋지? 숨 한번 참아 봐!',half:'포자들아, 전부 터뜨려!',die:'버섯은… 다시 자라…',win:'숲의 거름이 되어라.'},hp:200,spd:85,cycle:['swipe','swipe','wave'],pw:{swipe:28,wave:110},hue:300,
     learn:'🌊 광역 공격 예고엔 🧱 버티기!'},
-  {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:40,spd:118,kind:'poke',pw:14},{name:'새끼 늑대',ic:'🐾',hp:40,spd:112,kind:'poke',pw:14}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:200,spd:120,cycle:['swipe'],pw:{swipe:30},hue:200,
+  {name:'늑대 굴',boss:'회색 늑대',ic:'🐺',mobs:[{name:'새끼 늑대',ic:'🐾',hp:120,spd:118,kind:'poke',pw:14},{name:'새끼 늑대',ic:'🐾',hp:120,spd:112,kind:'poke',pw:14}],talk:{start:'아우우— 사냥 시간이다.',half:'무리여, 둘러싸라!',die:'깨갱…',win:'느린 먹잇감이군.'},hp:200,spd:120,cycle:['swipe'],pw:{swipe:30},hue:200,
     learn:'자동 전투 시작! 적을 누르면 집중 공격.'},
-  {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:1100,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:110,wave:130},hue:30,
+  {name:'바위 계곡',boss:'바위 골렘',ic:'🗿',talk:{start:'…침입자 확인. 배제한다.',half:'외피 강화.',die:'기능… 정지…',win:'임무 완료.'},hp:900,spd:105,cycle:['swipe','gaze','wave','swipe','shell'],pw:{swipe:110,wave:130},hue:30,
     learn:'👁️ 응시는 🪨 돌팔매로 끊어 BREAK! 🐚 껍질엔 피해 절반.'},
   {name:'고블린 야영지',boss:'고블린 대장',ic:'👺',mobs:[{name:'고블린 주술사',ic:'🧪',hp:80,spd:92,kind:'heal',pw:50},{name:'고블린 병사',ic:'🪓',hp:90,spd:96,kind:'poke',pw:22}],talk:{start:'이 야영지는 우리 거다! 꺼져!',half:'주술사! 나 좀 고쳐!',die:'대장은… 도망 안 가… 꽥',win:'끌끌, 전리품 챙겨라!'},hp:650,spd:110,cycle:['swipe','swipe','charge'],pw:{swipe:80,charge:110},hue:60,
     learn:'주술사가 대장을 치료해요. 눌러서 먼저 잡아요.'},
@@ -1005,7 +1005,7 @@ function has(b,m){ return b.muts.includes(m); }
 function rng(b){ b.seed=(b.seed+0x6D2B79F5)|0; let t=b.seed; t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; }
 function cycle(b){ const D=b.def; if(b.boss.p2&&D.p2) return D.p2.slice(); if(D.gk&&has(b,'fickle')) return ['swipe','gaze','br']; return D.cycle.slice(); }
 function fill(b){ if(!b.boss.queue.length) b.boss.queue=cycle(b); }
-function intent(b){ fill(b); return b.boss.queue[0]; }
+function intent(b){ if(b.boss.hp<=0) return null; fill(b); return b.boss.queue[0]; }
 const isBig=m=>m==='wave'||m==='charge'||m==='br';
 const isHit=m=>m==='swipe'||m==='wave'||m==='charge';
 const CONDS=[
@@ -1069,7 +1069,7 @@ function aimOf(b){
 }
 /* actor keys: hero slot number, 'B' for the boss, 'M0'/'M1' for minions */
 function actors(b){
-  const us=[]; b.heroes.forEach((h,i)=>{ if(h.hp>0) us.push({k:i,u:h}); }); us.push({k:'B',u:b.boss});
+  const us=[]; b.heroes.forEach((h,i)=>{ if(h.hp>0) us.push({k:i,u:h}); }); if(b.boss.hp>0) us.push({k:'B',u:b.boss});
   (b.mobs||[]).forEach((m,j)=>{ if(m.hp>0) us.push({k:'M'+j,u:m}); });
   return us;
 }
@@ -1081,7 +1081,7 @@ function nextActor(b,dry){
   return best.k;
 }
 function orderPreview(b,n){
-  const c={heroes:b.heroes.map(h=>({hp:h.hp,g:h.g,spd:h.spd})),boss:{g:b.boss.g,spd:b.boss.spd},mobs:(b.mobs||[]).map(m=>({hp:m.hp,g:m.g,spd:m.spd}))}, out=[];
+  const c={heroes:b.heroes.map(h=>({hp:h.hp,g:h.g,spd:h.spd})),boss:{g:b.boss.g,spd:b.boss.spd,hp:b.boss.hp},mobs:(b.mobs||[]).map(m=>({hp:m.hp,g:m.g,spd:m.spd}))}, out=[];
   for(let i=0;i<n;i++) out.push(nextActor(c));
   return out;
 }
@@ -1100,15 +1100,17 @@ function mobTarget(b){
 }
 function snap(b){
   const o=b.boss;
-  return {round:b.round,bhp:o.hp,bmax:o.max,bg:o.g,bspd:o.spd,stun:o.stun,shell:o.shell,mark:o.mark,vuln:o.vuln,poison:o.poison?o.poison.left:0,p2:o.p2,q:preview(b,3),aim:aimOf(b),order:orderPreview(b,8),
+  return {round:b.round,bhp:o.hp,bmax:o.max,bg:o.g,bspd:o.spd,stun:o.stun,shell:o.shell,mark:o.mark,vuln:o.vuln,poison:o.poison?o.poison.left:0,p2:o.p2,q:o.hp>0?preview(b,3):[],aim:o.hp>0?aimOf(b):[],order:orderPreview(b,8),
     h:b.heroes.map(h=>({hp:h.hp,max:h.max,sp:h.sp,cd:h.cd.slice(),g:h.g,spd:h.spd,ward:h.ward,guard:h.guard,brace:h.brace,taunt:h.taunt,insp:h.insp})),
     mobs:b.mobs.map(m=>({hp:m.hp,max:m.max,g:m.g,spd:m.spd})),rage:o.rage};
 }
 /* who a hero's attack lands on: manual pick → the enemy the player tapped to focus → 'mob' preference hits the weakest living minion first, otherwise the boss */
+/* a fallen boss is never a target: the remaining minions are */
 function pickTarget(b,i){
-  const o=b.overrideTgt; if(o==='B') return 'B'; if(o!=null&&b.mobs[o]&&b.mobs[o].hp>0) return o;
-  const f=b.focus; if(f==='B') return 'B'; if(f!=null&&b.mobs[f]&&b.mobs[f].hp>0) return f;
-  if(b.targets[i]!=='boss'){ let j=-1; b.mobs.forEach((m,n)=>{ if(m.hp>0&&(j<0||m.hp<b.mobs[j].hp)) j=n; }); if(j>=0) return j; }
+  const up=b.boss.hp>0, live=t=>t!=='B'&&b.mobs[t]&&b.mobs[t].hp>0;
+  const o=b.overrideTgt; if(o==='B'&&up) return 'B'; if(o!=null&&live(o)) return o;
+  const f=b.focus; if(f==='B'&&up) return 'B'; if(f!=null&&live(f)) return f;
+  if(b.targets[i]!=='boss'||!up){ let j=-1; b.mobs.forEach((m,n)=>{ if(m.hp>0&&(j<0||m.hp<b.mobs[j].hp)) j=n; }); if(j>=0) return j; }
   return 'B';
 }
 function tgtName(b,t){ return t==='B'?b.def.name:b.mobs[t].name; }
@@ -1189,8 +1191,8 @@ function doHero(b,i){
     let base=ef.dmg*h.dmg*(h.row==='F'?FRONT_DMG:1);
     if(h.insp){ base*=1.3; h.insp=false; e.insp=true; }
     const bossHit=()=>{ let bb=base; if(ef.stunBonus&&o.stun>0){ bb*=ef.stunBonus; e.combo=true; } if(ef.execute&&o.hp<=o.max*.3){ bb*=2; e.exec=true; } hitBoss(b,bb,e,ef.ignoreShell); };
-    if(ef.aoe){ bossHit(); b.mobs.forEach((m,j)=>{ if(m.hp>0) hitMob(b,j,base,e); }); }
-    else{ const brk=ef.breakGaze&&!o.stun&&b.overrideTgt==null&&intent(b)==='gaze'; for(let n=0;n<(ef.hits||1)&&o.hp>0;n++){ const t=brk?'B':pickTarget(b,i); if(t==='B') bossHit(); else hitMob(b,t,base,e); } }
+    if(ef.aoe){ if(o.hp>0) bossHit(); b.mobs.forEach((m,j)=>{ if(m.hp>0) hitMob(b,j,base,e); }); }
+    else{ const brk=ef.breakGaze&&!o.stun&&b.overrideTgt==null&&intent(b)==='gaze'; for(let n=0;n<(ef.hits||1)&&(o.hp>0||b.mobs.some(m=>m.hp>0));n++){ const t=brk?'B':pickTarget(b,i); if(t==='B') bossHit(); else hitMob(b,t,base,e); } }
     if(ef.fire) e.fire=true;
     const names=[...new Set(e.tgts.map(t=>tgtName(b,t)))].join(', ');
     parts.push(`${ef.aoe?'모든 적':names}에게 <strong>${e.hits.reduce((a,c)=>a+c,0)}</strong> 피해${e.combo?' (BREAK 추격)':''}${e.exec?' (처형)':''}${e.kills?` · ${e.kills.map(j=>b.mobs[j].name).join(', ')} 처치!`:''}`);
@@ -1275,6 +1277,8 @@ function bossTurn(b){
 /* minions: poke = small single hit, heal = restore boss HP, buff = boss's next attack +30% */
 function mobTurn(b,j){
   const m=b.mobs[j], o=b.boss, e={t:'mob',j,kind:m.kind,hits:[]};
+  /* with the boss down, healers and buffers just poke */
+  if(o.hp<=0&&m.kind!=='poke'){ e.kind='poke'; const t=mobTarget(b); if(t>=0) e.hits.push(hurtHero(b,t,Math.round((m.pw||30)*.3))); return e; }
   if(m.kind==='heal'){ const v=Math.min(m.pw,o.max-o.hp); o.hp+=v; e.heal=v; }
   else if(m.kind==='buff'){ o.rage=1; e.buff=true; }
   else{ const t=mobTarget(b); if(t>=0) e.hits.push(hurtHero(b,t,m.pw)); }
@@ -1288,12 +1292,14 @@ function step(b,ov,tg){
   else if(typeof a==='string'){ const e=mobTurn(b,+a.slice(1)); e.snap=snap(b); ev.push(e); }
   else{ const e=doHero(b,a); e.snap=snap(b); ev.push(e); if(e.phase&&b.boss.hp>0) ev.push({t:'phase',snap:snap(b)}); }
   b.override=null; b.overrideTgt=null;
-  if(b.boss.hp<=0){ b.over='win'; ev.push({t:'win',snap:snap(b)}); }
+  const mobsUp=b.mobs.some(m=>m.hp>0);
+  if(b.boss.hp<=0&&!b.bossDown&&mobsUp){ b.bossDown=true; ev.push({t:'bossDown',snap:snap(b)}); }
+  if(b.boss.hp<=0&&!mobsUp){ b.over='win'; ev.push({t:'win',snap:snap(b)}); }
   else if(!b.heroes.some(h=>h.hp>0)){ b.over='lose'; b.reason='wipe'; }
   return ev;
 }
 /* no time limit in play; the cap only stops a simulated stalemate (a healer out-healing the party) from looping forever */
-function simulate(cfg){ const b=newBattle(cfg); while(!b.over&&b.round<200) step(b); if(!b.over){ b.over='lose'; b.reason='stall'; } return b; }
+function simulate(cfg){ const b=newBattle(cfg); while(!b.over&&b.round<200&&b.actions<4000) step(b); if(!b.over){ b.over='lose'; b.reason='stall'; } return b; }
 /*END ENGINE*/
 
 /* job sprites (transparent PNG data URIs cut from the sprite sheet) */
@@ -1348,7 +1354,7 @@ const $=s=>document.querySelector(s);
 const PROF_KEY='mallow-profile-v11', RULE_KEY='mallow-rules-v11', SET_KEY='mallow-settings-v9', LOG_KEY='mallow-lastlog-v11', TGT_KEY='mallow-target-v11';
 /* stages 1-2 are hand-played tutorials; clearing stage 2 opens auto battle. From BG_STAGE on the fights need
    real planning, and an auto battle keeps running while another tab is open */
-/* from MANUAL_FROM on every battle starts in manual play (the auto button switches it on) */
+/* from MANUAL_FROM on the 🩹 low-HP tip is no longer shown (every battle starts in manual play; the auto button switches it on) */
 const MANUAL_FROM=7;
 const MAX_LVL=20, JOB_LVL=5, TUTORIAL_STAGES=2, EQUIP_SLOTS=8, BG_STAGE=6, MAX_CHARS=8;
 /* the game starts with one hero; companions are free until there are FREE_RECRUITS characters, later ones cost gold */
@@ -1496,6 +1502,7 @@ function renderHeroes(s){
   });
 }
 function statusOf(s){
+  if(s.bhp<=0) return ['calm','💀 격파 · 남은 졸개를 잡아요'];
   if(s.stun>0) return ['break','💫 BREAK'];
   const t=s.q[0];
   if(t==='gaze') return s.p2&&!s.mark?['alert','👁️ 응시 · 표식 필요']:['chance','👁️ 응시 · 끊을 기회'];
@@ -1515,7 +1522,7 @@ function renderBoss(s){
   const [cls,txt]=battle.over?['calm',battle.over==='win'?`${bossShort()} 격파`:`${bossShort()}의 승리`]:statusOf(s);
   const pill=$('#bossStatus'); pill.className='boss-status '+cls; pill.textContent=txt;
   $('#debuffs').innerHTML=(s.stun>0?'<span class="db stun">💫 기절</span>':'')+(s.shell?'<span class="db shell">🐚 껍질</span>':'')+(s.rage?'<span class="db vuln">😾 강화</span>':'')+(s.mark?`<span class="db mark">◎ 표식 ${s.mark}</span>`:'')+(s.vuln?`<span class="db vuln">🔻 약화 ${s.vuln}</span>`:'')+(s.poison?`<span class="db poison">☠ 독 ${s.poison}</span>`:'');
-  const bf=$('#bossAtb>div'); bf.style.transitionDuration=''; bf.style.width=Math.min(100,Math.max(0,s.bg))+'%'; $('#bossAtb').classList.remove('ready');
+  const bf=$('#bossAtb>div'); bf.style.transitionDuration=''; bf.style.width=(s.bhp>0?Math.min(100,Math.max(0,s.bg)):0)+'%'; $('#bossAtb').classList.remove('ready');
   if(!$('#speed')){ $('#order').innerHTML='<span class="sep"></span><button class="speed" id="logBtn" aria-label="전투 로그">📜</button><button class="speed" id="speed" aria-label="전투 속도">×'+speed+'</button>'; $('#speed').onclick=cycleSpeed; $('#logBtn').onclick=openLog; }
   $('#roundInfo').innerHTML=`${STAGES[battle.stage-1].name} · 턴 <b class="mono">${s.round}</b>`;
   (s.mobs||[]).forEach((m,j)=>{
@@ -1692,7 +1699,7 @@ $('#mSkills').onclick=e=>{
 };
 function atkTips(){
   coach('tgt','#skPop','설명 창을 한 번 더 누르면 공격해요.');
-  coach('tgt2','#bossWrap','적을 직접 눌러\n때릴 적을 고를 수도 있어요.');
+  if(battle.boss.hp>0) coach('tgt2','#bossWrap','적을 직접 눌러\n때릴 적을 고를 수도 있어요.');
   if(battle.mobs.some(m=>m.hp>0)) coach('tgtMob','#skPop','공격 스킬은 타겟을 선택하지 않으면\n체력이 가장 낮은 졸개부터 때려요.\n설명 창을 한 번 더 눌러 봐요!','battle',true);
 }
 /* single-target attacks ask who to hit (the boss is always a choice); aoe and self skills don't */
@@ -1711,7 +1718,7 @@ function autoTgt(s){
 }
 function setTgtPick(k){
   tgtPick=k;
-  $('#bossAvatar').classList.toggle('tgtable',k!=null);
+  $('#bossAvatar').classList.toggle('tgtable',k!=null&&battle.boss.hp>0);
   document.querySelectorAll('#mobs .mob').forEach(el=>el.classList.toggle('tgtable',k!=null&&battle.mobs[+el.dataset.m].hp>0));
 }
 function commitChoice(k,t){
@@ -1723,8 +1730,10 @@ function commitChoice(k,t){
   pendingChoice=k; pendingTgt=t; waitChoice=false; waitHero=-1; skPick=null; playing=true;
   setButtons(); renderSkillPanel(); if(lastSnap) renderHeroes(lastSnap); if(!tid) pump();
 }
-$('#bossAvatar').addEventListener('click',()=>{ if(preFight){ infoTip($('#bossAvatar'),bossInfo()); return; } if(tgtPick!=null) commitChoice(tgtPick,'B'); else setFocus('B'); });
-$('#mobs').addEventListener('click',e=>{ const m=e.target.closest('.mob'); if(!m) return; const j=+m.dataset.m; if(preFight){ infoTip(m,mobInfo(j)); return; } if(battle.mobs[j].hp<=0) return; if(tgtPick!=null) commitChoice(tgtPick,j); else setFocus(j); });
+/* tap an enemy: picks it as the target while an attack waits for one; in a manual battle (or before the fight)
+   it shows the enemy's info; during the auto battle it marks it for focus fire */
+$('#bossAvatar').addEventListener('click',()=>{ if(!battle) return; const up=battle.boss.hp>0; if(tgtPick!=null&&up&&!preFight) return commitChoice(tgtPick,'B'); if(preFight||isManual()||!up) return infoTip($('#bossAvatar'),bossInfo()); setFocus('B'); });
+$('#mobs').addEventListener('click',e=>{ const m=e.target.closest('.mob'); if(!m||!battle) return; const j=+m.dataset.m, up=battle.mobs[j].hp>0; if(tgtPick!=null&&up&&!preFight) return commitChoice(tgtPick,j); if(preFight||isManual()||!up) return infoTip(m,mobInfo(j)); setFocus(j); });
 /* status check: before the fight enemies can be tapped, and allies any time */
 $('#party').addEventListener('click',e=>{ const u=e.target.closest('.unit'); if(u&&battle) infoTip(u,heroInfo(+u.dataset.unit)); });
 function infoTip(el,text){ if(whyTip.el===el&&Date.now()-(whyTip.skip||0)<700) return; el.dataset.why=text; whyTip(el,true); }
@@ -1843,6 +1852,7 @@ function delayOf(e,cut){
   if(e.t==='tick') return 520;
   if(e.t==='mob') return e.heal!=null||e.buff?640:720;
   if(e.t==='phase') return cut?500:1350;
+  if(e.t==='bossDown') return 1500;
   if(e.t==='win') return 1700;
   return 240;
 }
@@ -1865,9 +1875,16 @@ function playInner(e,cut){
     later(cut?0:120,()=>{ renderSnap(s); if(!cut) banner('PHASE 2','phase','수문장 각성 · 피해 +20%'); retrigger(battleEl,'quake'); retrigger($('#bossBody'),'roar'); });
     addLog('⚠️ 수문장이 각성했다! 껍질 닫기와 돌진이 추가되고 피해가 20% 늘어난다.','alert'); addSum('😡','2페이즈 돌입','',''); return;
   }
+  /* the boss fell but minions are still up: the stage is cleared only when every enemy is down */
+  if(e.t==='bossDown'){
+    battle.downShown=true;
+    later(250,()=>{ $('#bossWrap').classList.add('dying'); sparks(at($('#bossAvatar')),'#f2c25b',26,110); banner('보스 격파!','win','남은 졸개를 모두 잡아요'); renderSnap(s); if(battle.def.talk) bossSay(battle.def.talk.die); });
+    addLog(`💀 <strong>${battle.def.name}</strong> 격파! 남은 졸개를 모두 잡아야 이겨요.`,'good'); addSum('💀','보스 격파','✓','ok'); return;
+  }
   if(e.t==='win'){
-    later(250,()=>{ $('#bossWrap').classList.add('dying'); sparks(at($('#bossAvatar')),'#f2c25b',26,110); banner('격파!','win',`${battle.def.name} 쓰러짐`); renderSnap(s); });
-    addLog(`🏆 <strong>${battle.def.name}</strong> 격파!`,'good'); addSum('🏆','격파','✓','ok');
+    const down=battle.downShown;
+    later(250,()=>{ if(!down){ $('#bossWrap').classList.add('dying'); sparks(at($('#bossAvatar')),'#f2c25b',26,110); } banner(down?'승리!':'격파!','win',down?'모든 적 처치':`${battle.def.name} 쓰러짐`); renderSnap(s); });
+    addLog(down?'🏆 모든 적 처치!':`🏆 <strong>${battle.def.name}</strong> 격파!`,'good'); addSum('🏆',down?'모든 적 처치':'격파','✓','ok');
   }
 }
 function playMob(e){
@@ -1974,6 +1991,8 @@ function pump(){
       coach('wait',`.unit[data-unit="${nx}"]`,`${h.name} 차례예요!\n금색으로 빛나는 캐릭터가 지금 움직여요.`);
       if(keep!=null){ if(aim) atkTips(); else if(ready(battle,nx,keep)) coach('use','#skPop','설명 창을 한 번 더 누르면 써요.'); }
       coach('cats','#mSkills','스킬은 크게 4가지로,\n아래와 같이 구분해요.\n🟥 공격  🟩 회복  🟦 방어  🟨 특수');
+      /* every battle opens in manual: the first manual turn once auto is open points at the auto button */
+      if(canAuto()&&!force) coach('auto2','#fightBtn','🤖 자동 전투를 누르면\n정해진 패턴대로 싸워요.\n다시 누르면 직접 조작해요.','battle',true);
       if(force){ const fs=`#mSkills .sk[data-k="${force.k}"]`;
         if(force.tip==='stoneUse') coach('stoneTap',fs,'🪨 돌팔매를 직접 눌러\n보스에게 던져 봐요!');
         if(force.tip==='punchUse') coach('punchTap',fs,'👊 먼저 주먹질로\n보스를 때려 봐요!');
@@ -2044,7 +2063,7 @@ function battleTips(){
       ['gauge','#bossAtb','금색 게이지가 먼저 꽉 찬 쪽부터\n움직여요.'],['aim','#party','아군은 전열과 후열에 설 수 있어요.'],['aimRed','.lane.danger','배경이 빨갛게 물든 열을\n보스가 노려요.'],
       ['front','.lane[data-lane="F"]','전열: 상대에게 주는 피해가 증가해요.'],['back','.lane[data-lane="B"]','후열: 상대로부터 받는 피해가 감소해요.']],
     2:[['mobs','#mobs','보스 옆의 몬스터는 졸개예요.\n보스와 따로 움직이며 공격해요.']],
-    3:[['inspect','#bossAvatar','싸우기 전에 보스를 눌러 봐요!\n어떤 스킬을 쓰는지 볼 수 있어요.','battle',true,false,500],['inspectMob','#mobs .mob','졸개도 눌러 봐요!\n어떤 공격을 하는지 볼 수 있어요.','battle',true,false,500],['inspectAlly','.unit[data-unit="0"]','아군을 누르면\n지금 상태를 볼 수 있어요.','battle',true,false,500],['auto','#fightBtn','이제 자동 전투!\n정해진 패턴대로 싸워요.\n멈추면 바로 직접 조작해요.']],
+    3:[['inspect','#bossAvatar','싸우기 전에 보스를 눌러 봐요!\n어떤 스킬을 쓰는지 볼 수 있어요.','battle',true,false,500],['inspectMob','#mobs .mob','졸개도 눌러 봐요!\n어떤 공격을 하는지 볼 수 있어요.','battle',true,false,500],['inspectAlly','.unit[data-unit="0"]','아군을 누르면\n지금 상태를 볼 수 있어요.','battle',true,false,500]],
     [BG_STAGE]:[['hard','#bossWrap','여기부터는 진짜 전략 싸움!\n전직 · 스킬 · 배치를 잘 골라야 이겨요.'],['tabs','#nav','이제 자동 전투 중에\n다른 탭을 봐도 전투가 계속돼요.']]};
   (tips[battle.stage]||[]).forEach(t=>coach(...t));
   coach(battle.stage>1&&battle.stage<=TUTORIAL_END?'fight'+battle.stage:'fight','#fightBtn','준비가 되면 전투 시작!','battle',true);
@@ -2062,7 +2081,7 @@ function setupBattle(muts,seed){
   waitHero=-1; skPick=null; skTab=0; lastSnap=null; flashState=null; saidHalf=false; saidStart=false;
   if(!prof.party.length) prof.party=[prof.chars[0].uid];
   cfg=makeCfg(muts||[],seed); pausedByTab=false; curTurn=null;
-  battle=newBattle(cfg); lastBhp=battle.boss.max; loggedRound=0; autoMode=canAuto()&&cfg.stage<MANUAL_FROM;
+  battle=newBattle(cfg); lastBhp=battle.boss.max; loggedRound=0; autoMode=false;
   $('#logStore').innerHTML='';
   $('#bossName').textContent=battle.def.name;
   $('#bossBody').style.filter=battle.def.hue?`hue-rotate(${battle.def.hue}deg)`:'';
@@ -2080,7 +2099,9 @@ function tabOpen(id){ return id==='battle'||(id==='characters'?!!prof.cleared[RE
 function tabLockWhy(id){ return `🔒 ${id==='characters'?RECRUIT_STAGE:TABS_STAGE}스테이지를 깨면 열려요`; }
 /* the stage after RECRUIT_STAGE is the first party fight: its first try needs a full party of 4 */
 function needRecruit(){ return prof.stage===RECRUIT_STAGE+1&&!prof.cleared[RECRUIT_STAGE+1]&&prof.party.length<4; }
-function renderNav(){ document.querySelectorAll('[data-screen]').forEach(b=>b.classList.toggle('locked',!tabOpen(b.dataset.screen))); }
+/* before BG_STAGE a started battle keeps the player on the battle tab until it ends */
+function fightLock(id){ return id!=='battle'&&!!battle&&battle.stage<BG_STAGE&&!preFight&&$('#prep').hidden&&inBattle(); }
+function renderNav(){ document.querySelectorAll('[data-screen]').forEach(b=>b.classList.toggle('locked',!tabOpen(b.dataset.screen)||fightLock(b.dataset.screen))); }
 /* disabled buttons say why: aria-disabled keeps them tappable, and a tap shows the reason instead of acting */
 function setWhy(b,why){ b.disabled=false; if(why){ b.setAttribute('aria-disabled','true'); b.dataset.why=why; } else { b.removeAttribute('aria-disabled'); delete b.dataset.why; } }
 const whyAttr=w=>w?` aria-disabled="true" data-why="${w}"`:'';
@@ -2167,7 +2188,7 @@ function finish(){
   }
   saveProf(); renderNav();
   const stName=STAGES[b.stage-1].name;
-  if(b.def.talk) later(won?600:300,()=>bossSay(won?b.def.talk.die:b.def.talk.win));
+  if(b.def.talk&&!(won&&b.downShown)) later(won?600:300,()=>bossSay(won?b.def.talk.die:b.def.talk.win));
   save(LOG_KEY,{cap:`${stName} · ${won?`승리 · 보스 ${b.round}턴`:'파티 전멸'}`,sum:sumList,text:$('#logStore').innerHTML});
   liveLog(); showNext();
   if(!won) banner('전멸','lose');
@@ -2522,7 +2543,7 @@ function goto(id){
   if(id==='battle'&&!jobTutOn()) goTips();
   window.scrollTo(0,0);
 }
-document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{ const id=b.dataset.screen; if(!tabOpen(id)){ b.dataset.why=tabLockWhy(id); whyTip(b); return; } goto(id); });
+document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{ const id=b.dataset.screen; if(!tabOpen(id)||fightLock(id)){ b.dataset.why=tabOpen(id)?'⚔️ 전투가 끝나면 갈 수 있어요':tabLockWhy(id); whyTip(b); return; } goto(id); });
 const TAB_TIPS={strategy:['#ruleRows','캐릭터마다 "이럴 때 → 이 스킬"을 정해요.\n위 규칙부터 확인해서\n맞는 첫 스킬을 써요.'],inventory:['#itemList','얻은 장비예요.\n캐릭터 탭에서 장착해요.'],boss:['#bestiary','만난 적의 행동 순서예요.\n작전을 짜기 전에 확인해요.']};
 $('#fightBtn').onclick=()=>{
   if(!battle) return;
@@ -2531,6 +2552,7 @@ $('#fightBtn').onclick=()=>{
   if(!canAuto()) return;
   autoMode=!autoMode;
   if(autoMode&&waitChoice){ waitChoice=false; waitHero=-1; skPick=null; setTgtPick(null); }
+  if(!autoMode){ battle.focus=null; renderFocus(); }
   toast(autoMode?(tabsOpen()?'🤖 자동 전투 · 작전 탭의 패턴대로':'🤖 자동 전투 · 기본 설정된 패턴대로'):'✋ 직접 조작 · 차례마다 스킬을 골라요');
   setButtons(); renderSkillPanel(); if(lastSnap) renderHeroes(lastSnap);
   if(autoMode) start();
@@ -2601,7 +2623,7 @@ function guideSel(){
     const i=waitHero, f=forceSk&&forceSk.i===i?forceSk.k:null;
     if(f!=null&&skPick!==f) return {dim:[`#mSkills .sk[data-k="${f}"]`]};
     if(skPick==null||skTab!==i) return {dim:['#mSkills']};
-    if(tgtPick!=null) return {dim:['#skPop','#bossAvatar',...(f!=null?[]:['#mobs .mob.tgtable'])]};
+    if(tgtPick!=null) return {dim:['#skPop',...(battle.boss.hp>0?['#bossAvatar']:[]),...(f!=null?[]:['#mobs .mob.tgtable'])]};
     return {dim:['#skPop']};
   }
   return {dim:[]};
